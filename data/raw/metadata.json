@@ -1,0 +1,1123 @@
+{
+  "download_started_utc": "2026-10-13T19:43:14+00:00",
+  "download_started_tehran": "2026-10-13T23:13:14+03:30",
+  "library": {
+    "name": "algotik-tse",
+    "import_name": "algotik_tse",
+    "version": "1.8.0"
+  },
+  "python": "3.12.10",
+  "pandas": "3.0.6",
+  "period": {
+    "start": "1402-07-01",
+    "end": "1405-06-31",
+    "fetch_start": "1402-06-01"
+  },
+  "symbols": [
+    "فولاد",
+    "فملی",
+    "شپنا",
+    "خودرو",
+    "وبملت",
+    "اخابر",
+    "شستا",
+    "تیپیکو"
+  ],
+  "notes": [
+    "CSV files are the DataFrames returned by algotik-tse, unchanged; the Gregorian 'Date' index is written as the first column.",
+    "Close = last trade price (<LAST>); Final = official closing price (<CLOSE>, qeymat-e payani); mapping per algotik_tse/core/stock.py.",
+    "auto_adjust=True back-adjusts OHLC/Close/Final by the cumulative product of (next day's yesterday-price / today's Final), computed only from events inside the requested window, and truncates prices to int.",
+    "Prices are fetched from period.fetch_start, one month before the analysis start, so the base price at the end of 1402-06 is available."
+  ],
+  "symbol_resolution": {
+    "فولاد": {
+      "requested_name": "فولاد",
+      "used_name": "فولاد",
+      "ins_code": "46348559193224090",
+      "tsetmc_name": "فولاد مباركه اصفهان",
+      "resolution": "exact"
+    },
+    "فملی": {
+      "requested_name": "فملی",
+      "used_name": "فملی",
+      "ins_code": "35425587644337450",
+      "tsetmc_name": "ملي‌ صنايع‌ مس‌ ايران‌",
+      "resolution": "exact"
+    },
+    "شپنا": {
+      "requested_name": "شپنا",
+      "used_name": "شپنا",
+      "ins_code": "7745894403636165",
+      "tsetmc_name": "پالايش نفت اصفهان",
+      "resolution": "exact"
+    },
+    "خودرو": {
+      "requested_name": "خودرو",
+      "used_name": "خودرو",
+      "ins_code": "65883838195688438",
+      "tsetmc_name": "ايران‌ خودرو",
+      "resolution": "exact"
+    },
+    "وبملت": {
+      "requested_name": "وبملت",
+      "used_name": "وبملت",
+      "ins_code": "778253364357513",
+      "tsetmc_name": "بانك ملت",
+      "resolution": "exact"
+    },
+    "اخابر": {
+      "requested_name": "اخابر",
+      "used_name": "اخابر",
+      "ins_code": "22811176775480091",
+      "tsetmc_name": "مخابرات ايران",
+      "resolution": "exact"
+    },
+    "شستا": {
+      "requested_name": "شستا",
+      "used_name": "شستا",
+      "ins_code": "2400322364771558",
+      "tsetmc_name": "سرمايه گذاري تامين اجتماعي",
+      "resolution": "exact"
+    },
+    "تیپیکو": {
+      "requested_name": "تیپیکو",
+      "used_name": "تیپیکو",
+      "ins_code": "29758477602878557",
+      "tsetmc_name": "سرمايه گذاري دارويي تامين",
+      "resolution": "exact"
+    }
+  },
+  "index_resolution": {
+    "شاخص کل": {
+      "requested_name": "شاخص کل",
+      "used_name": "شاخص کل",
+      "ins_code": "32097828799138957",
+      "tsetmc_name": "شاخص کل",
+      "resolution": "exact"
+    },
+    "شاخص کل (هم وزن)": {
+      "requested_name": "شاخص کل (هم وزن)",
+      "resolution_error": "StockNotFoundError: No exact instrument matched 'شاخص کل (هم وزن)'",
+      "search_candidates": [
+        {
+          "name": "شاخص كل (هم وزن)",
+          "ins_code": "67130298613737946",
+          "score": 1.0
+        },
+        {
+          "name": "شاخص كل",
+          "ins_code": "32097828799138957",
+          "score": 0.75
+        },
+        {
+          "name": "شاخص قيمت (هم وزن)",
+          "ins_code": "8384385859414435",
+          "score": 0.675
+        },
+        {
+          "name": "شاخص صنعت",
+          "ins_code": "43754960038275285",
+          "score": 0.35
+        },
+        {
+          "name": "شاخص آزاد شناور",
+          "ins_code": "49579049405614711",
+          "score": 0.25
+        },
+        {
+          "name": "شاخص بازار اول",
+          "ins_code": "62752761908615603",
+          "score": 0.25
+        },
+        {
+          "name": "شاخص بازار دوم",
+          "ins_code": "71704845530629737",
+          "score": 0.25
+        },
+        {
+          "name": "شاخص 30 شركت بزرگ",
+          "ins_code": "10523825119011581",
+          "score": 0.196
+        }
+      ],
+      "used_name": "شاخص هم وزن",
+      "ins_code": "67130298613737946",
+      "tsetmc_name": "شاخص هم وزن",
+      "tsetmc_symbol": "شاخص هم وزن",
+      "resolution": "search_fallback"
+    },
+    "فلزات اساسی": {
+      "requested_name": "فلزات اساسی",
+      "used_name": "فلزات اساسی",
+      "ins_code": "32453344048876642",
+      "tsetmc_name": "Basic Metals",
+      "resolution": "exact"
+    },
+    "فرآورده‌های نفتی": {
+      "requested_name": "فرآورده‌های نفتی",
+      "used_name": "فرآورده‌های نفتی",
+      "ins_code": "12331083953323969",
+      "tsetmc_name": "Petroleum Products",
+      "resolution": "exact"
+    },
+    "خودرو و ساخت قطعات": {
+      "requested_name": "خودرو و ساخت قطعات",
+      "used_name": "خودرو و ساخت قطعات",
+      "ins_code": "20213770409093165",
+      "tsetmc_name": "Automobile",
+      "resolution": "exact"
+    },
+    "بانک‌ها و موسسات اعتباری": {
+      "requested_name": "بانک‌ها و موسسات اعتباری",
+      "resolution_error": "StockNotFoundError: No exact instrument matched 'بانک\\u200cها و موسسات اعتباری'",
+      "search_candidates": [
+        {
+          "name": "بانکها",
+          "ins_code": "72002976013856737",
+          "score": 0.667
+        }
+      ],
+      "used_name": "بانکها",
+      "ins_code": "72002976013856737",
+      "tsetmc_name": "Banking",
+      "tsetmc_symbol": "بانکها",
+      "resolution": "search_fallback"
+    },
+    "مخابرات": {
+      "requested_name": "مخابرات",
+      "used_name": "مخابرات",
+      "ins_code": "41867092385281437",
+      "tsetmc_name": "Telecommunications",
+      "resolution": "exact"
+    },
+    "سرمایه‌گذاری‌ها": {
+      "requested_name": "سرمایه‌گذاری‌ها",
+      "resolution_error": "StockNotFoundError: No exact instrument matched 'سرمایه\\u200cگذاری\\u200cها'",
+      "search_candidates": [
+        {
+          "name": "سرمایه گذاریها",
+          "ins_code": "34295935482222451",
+          "score": 1.0
+        },
+        {
+          "name": "سرمایه گذاری",
+          "ins_code": "34295935482222451",
+          "score": 0.417
+        }
+      ],
+      "used_name": "سرمایه گذاریها",
+      "ins_code": "34295935482222451",
+      "tsetmc_name": "Investment Companies",
+      "tsetmc_symbol": "سرمایه گذاریها",
+      "resolution": "search_fallback"
+    },
+    "مواد و محصولات دارویی": {
+      "requested_name": "مواد و محصولات دارویی",
+      "resolution_error": "StockNotFoundError: No exact instrument matched 'مواد و محصولات دارویی'",
+      "search_candidates": [
+        {
+          "name": "مواد دارویی",
+          "ins_code": "3615666621538524",
+          "score": 0.833
+        },
+        {
+          "name": "دارویی",
+          "ins_code": "3615666621538524",
+          "score": 0.667
+        },
+        {
+          "name": "محصولات چرمی",
+          "ins_code": "69306841376553334",
+          "score": 0.375
+        },
+        {
+          "name": "محصولات چوبی",
+          "ins_code": "58440550086834602",
+          "score": 0.375
+        },
+        {
+          "name": "محصولات کاغذ",
+          "ins_code": "30106839080444358",
+          "score": 0.375
+        },
+        {
+          "name": "محصولات فلزی",
+          "ins_code": "1123534346391630",
+          "score": 0.375
+        },
+        {
+          "name": "محصولات کاغذی",
+          "ins_code": "30106839080444358",
+          "score": 0.375
+        },
+        {
+          "name": "مواد غذایی",
+          "ins_code": "15508900928481581",
+          "score": 0.375
+        }
+      ],
+      "used_name": "مواد دارویی",
+      "ins_code": "3615666621538524",
+      "tsetmc_name": "Pharmaceutical",
+      "tsetmc_symbol": "مواد دارویی",
+      "resolution": "search_fallback"
+    }
+  },
+  "files": {
+    "data/raw/stock_foolad_adjusted.csv": {
+      "file": "data/raw/stock_foolad_adjusted.csv",
+      "rows": 600,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('فولاد', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "فولاد",
+      "ins_code": "46348559193224090",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_foolad_unadjusted.csv": {
+      "file": "data/raw/stock_foolad_unadjusted.csv",
+      "rows": 600,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('فولاد', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "فولاد",
+      "ins_code": "46348559193224090",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_foolad.csv": {
+      "file": "data/raw/adjustments_foolad.csv",
+      "rows": 3,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('فولاد', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "فولاد",
+      "ins_code": "46348559193224090",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_fameli_adjusted.csv": {
+      "file": "data/raw/stock_fameli_adjusted.csv",
+      "rows": 630,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('فملی', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "فملی",
+      "ins_code": "35425587644337450",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_fameli_unadjusted.csv": {
+      "file": "data/raw/stock_fameli_unadjusted.csv",
+      "rows": 630,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('فملی', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "فملی",
+      "ins_code": "35425587644337450",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_fameli.csv": {
+      "file": "data/raw/adjustments_fameli.csv",
+      "rows": 3,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('فملی', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "فملی",
+      "ins_code": "35425587644337450",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_shepna_adjusted.csv": {
+      "file": "data/raw/stock_shepna_adjusted.csv",
+      "rows": 655,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('شپنا', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "شپنا",
+      "ins_code": "7745894403636165",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_shepna_unadjusted.csv": {
+      "file": "data/raw/stock_shepna_unadjusted.csv",
+      "rows": 655,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('شپنا', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "شپنا",
+      "ins_code": "7745894403636165",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_shepna.csv": {
+      "file": "data/raw/adjustments_shepna.csv",
+      "rows": 3,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('شپنا', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "شپنا",
+      "ins_code": "7745894403636165",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_khodro_adjusted.csv": {
+      "file": "data/raw/stock_khodro_adjusted.csv",
+      "rows": 601,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('خودرو', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "خودرو",
+      "ins_code": "65883838195688438",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_khodro_unadjusted.csv": {
+      "file": "data/raw/stock_khodro_unadjusted.csv",
+      "rows": 601,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('خودرو', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "خودرو",
+      "ins_code": "65883838195688438",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_khodro.csv": {
+      "file": "data/raw/adjustments_khodro.csv",
+      "rows": 0,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('خودرو', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "خودرو",
+      "ins_code": "65883838195688438",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_vbmellat_adjusted.csv": {
+      "file": "data/raw/stock_vbmellat_adjusted.csv",
+      "rows": 648,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('وبملت', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "وبملت",
+      "ins_code": "778253364357513",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_vbmellat_unadjusted.csv": {
+      "file": "data/raw/stock_vbmellat_unadjusted.csv",
+      "rows": 648,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('وبملت', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "وبملت",
+      "ins_code": "778253364357513",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_vbmellat.csv": {
+      "file": "data/raw/adjustments_vbmellat.csv",
+      "rows": 3,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('وبملت', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "وبملت",
+      "ins_code": "778253364357513",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_akhaber_adjusted.csv": {
+      "file": "data/raw/stock_akhaber_adjusted.csv",
+      "rows": 625,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('اخابر', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "اخابر",
+      "ins_code": "22811176775480091",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_akhaber_unadjusted.csv": {
+      "file": "data/raw/stock_akhaber_unadjusted.csv",
+      "rows": 625,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('اخابر', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "اخابر",
+      "ins_code": "22811176775480091",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_akhaber.csv": {
+      "file": "data/raw/adjustments_akhaber.csv",
+      "rows": 3,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('اخابر', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "اخابر",
+      "ins_code": "22811176775480091",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_shasta_adjusted.csv": {
+      "file": "data/raw/stock_shasta_adjusted.csv",
+      "rows": 667,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('شستا', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "شستا",
+      "ins_code": "2400322364771558",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_shasta_unadjusted.csv": {
+      "file": "data/raw/stock_shasta_unadjusted.csv",
+      "rows": 667,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('شستا', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "شستا",
+      "ins_code": "2400322364771558",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_shasta.csv": {
+      "file": "data/raw/adjustments_shasta.csv",
+      "rows": 3,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('شستا', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "شستا",
+      "ins_code": "2400322364771558",
+      "kind": "price_adjustments"
+    },
+    "data/raw/stock_tipico_adjusted.csv": {
+      "file": "data/raw/stock_tipico_adjusted.csv",
+      "rows": 656,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('تیپیکو', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "symbol": "تیپیکو",
+      "ins_code": "29758477602878557",
+      "kind": "stock_adjusted"
+    },
+    "data/raw/stock_tipico_unadjusted.csv": {
+      "file": "data/raw/stock_tipico_unadjusted.csv",
+      "rows": 656,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Final",
+        "Adj Close",
+        "Volume",
+        "No.",
+        "Value",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('تیپیکو', start='1402-06-01', end='1405-06-31', auto_adjust=False, output_type='full', date_format='both', progress=False)",
+      "symbol": "تیپیکو",
+      "ins_code": "29758477602878557",
+      "kind": "stock_unadjusted"
+    },
+    "data/raw/adjustments_tipico.csv": {
+      "file": "data/raw/adjustments_tipico.csv",
+      "rows": 4,
+      "columns": [
+        "index",
+        "InsCode",
+        "Symbol",
+        "GregorianDate",
+        "JalaliDate",
+        "AdjustedClosingPrice",
+        "UnadjustedClosingPrice",
+        "AdjustmentAmount",
+        "CorporateTypeCode",
+        "CorporateActionType",
+        "IsConfirmedDPS",
+        "IdentityVerified",
+        "Source",
+        "FetchedAt"
+      ],
+      "call": "algotik_tse.get_price_adjustments('تیپیکو', start='1402-06-01', end='1405-06-31', progress=False)",
+      "symbol": "تیپیکو",
+      "ins_code": "29758477602878557",
+      "kind": "price_adjustments"
+    },
+    "data/raw/index_total.csv": {
+      "file": "data/raw/index_total.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('شاخص کل', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "شاخص کل",
+      "used_name": "شاخص کل",
+      "ins_code": "32097828799138957",
+      "kind": "index"
+    },
+    "data/raw/index_equal_weight.csv": {
+      "file": "data/raw/index_equal_weight.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('شاخص هم وزن', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "شاخص کل (هم وزن)",
+      "used_name": "شاخص هم وزن",
+      "ins_code": "67130298613737946",
+      "kind": "index"
+    },
+    "data/raw/sector_of_foolad.csv": {
+      "file": "data/raw/sector_of_foolad.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('فلزات اساسی', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "فلزات اساسی",
+      "used_name": "فلزات اساسی",
+      "ins_code": "32453344048876642",
+      "kind": "sector_index"
+    },
+    "data/raw/sector_of_shepna.csv": {
+      "file": "data/raw/sector_of_shepna.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('فرآورده\\u200cهای نفتی', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "فرآورده‌های نفتی",
+      "used_name": "فرآورده‌های نفتی",
+      "ins_code": "12331083953323969",
+      "kind": "sector_index"
+    },
+    "data/raw/sector_of_khodro.csv": {
+      "file": "data/raw/sector_of_khodro.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('خودرو و ساخت قطعات', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "خودرو و ساخت قطعات",
+      "used_name": "خودرو و ساخت قطعات",
+      "ins_code": "20213770409093165",
+      "kind": "sector_index"
+    },
+    "data/raw/sector_of_vbmellat.csv": {
+      "file": "data/raw/sector_of_vbmellat.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('بانکها', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "بانک‌ها و موسسات اعتباری",
+      "used_name": "بانکها",
+      "ins_code": "72002976013856737",
+      "kind": "sector_index"
+    },
+    "data/raw/sector_of_akhaber.csv": {
+      "file": "data/raw/sector_of_akhaber.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('مخابرات', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "مخابرات",
+      "used_name": "مخابرات",
+      "ins_code": "41867092385281437",
+      "kind": "sector_index"
+    },
+    "data/raw/sector_of_shasta.csv": {
+      "file": "data/raw/sector_of_shasta.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('سرمایه گذاریها', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "سرمایه‌گذاری‌ها",
+      "used_name": "سرمایه گذاریها",
+      "ins_code": "34295935482222451",
+      "kind": "sector_index"
+    },
+    "data/raw/sector_of_tipico.csv": {
+      "file": "data/raw/sector_of_tipico.csv",
+      "rows": 739,
+      "columns": [
+        "Date",
+        "High",
+        "Low",
+        "Close",
+        "J-Date",
+        "Weekday",
+        "Weekday_fa",
+        "Ticker"
+      ],
+      "first_date_jalali": "1402-06-01",
+      "last_date_jalali": "1405-06-31",
+      "first_date_gregorian": "2023-08-23",
+      "last_date_gregorian": "2026-09-22",
+      "call": "algotik_tse.get_history('مواد دارویی', start='1402-06-01', end='1405-06-31', auto_adjust=True, output_type='full', date_format='both', progress=False)",
+      "index_name": "مواد و محصولات دارویی",
+      "used_name": "مواد دارویی",
+      "ins_code": "3615666621538524",
+      "kind": "sector_index"
+    }
+  },
+  "failures": [],
+  "symbol_to_sector_index_file": {
+    "فولاد": "data/raw/sector_of_foolad.csv",
+    "فملی": "data/raw/sector_of_foolad.csv",
+    "شپنا": "data/raw/sector_of_shepna.csv",
+    "خودرو": "data/raw/sector_of_khodro.csv",
+    "وبملت": "data/raw/sector_of_vbmellat.csv",
+    "اخابر": "data/raw/sector_of_akhaber.csv",
+    "شستا": "data/raw/sector_of_shasta.csv",
+    "تیپیکو": "data/raw/sector_of_tipico.csv"
+  },
+  "download_finished_utc": "2026-10-13T19:44:00+00:00"
+}

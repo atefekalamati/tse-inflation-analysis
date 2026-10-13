@@ -1,0 +1,10 @@
+# Pinned project dependencies (Python 3.12)
+algotik-tse==1.8.0
+pandas==3.0.6
+numpy==2.5.4
+PyYAML==6.0.3
+requests==2.34.2
+openpyxl==3.1.5
+persiantools==6.2.0
+truststore==0.10.5
+pytest==9.1.1

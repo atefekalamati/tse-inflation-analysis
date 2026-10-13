@@ -1,0 +1,99 @@
+# Project: Did Tehran Stock Exchange stocks beat inflation? (Mehr 1402 - Shahrivar 1405)
+period:
+  start: "1402-07-01"   # Jalali, inclusive
+  end:   "1405-06-31"   # Jalali, inclusive
+  # Prices are downloaded from this earlier date so that the last close before
+  # the analysis start (end of Shahrivar 1402) is available as the base price,
+  # matching the CPI base month 1402-06.
+  fetch_start: "1402-06-01"
+
+# One symbol per sector.
+#   sector_index: the sector name as specified for this project.
+#   sector_index_tse: the exact industry-index name in algotik-tse / TSETMC
+#                     (list_industry_indices). Left null -> use sector_index as is;
+#                     if that fails, fetch_data.py searches and reports candidates.
+symbols:
+  - symbol: "فولاد"
+    code: "foolad"
+    sector_index: "فلزات اساسی"
+    sector_index_tse: null
+  - symbol: "فملی"
+    code: "fameli"
+    sector_index: "فلزات اساسی"
+    sector_index_tse: null
+  - symbol: "شپنا"
+    code: "shepna"
+    sector_index: "فرآورده‌های نفتی"
+    sector_index_tse: null
+  - symbol: "خودرو"
+    code: "khodro"
+    sector_index: "خودرو و ساخت قطعات"
+    sector_index_tse: null
+  - symbol: "وبملت"
+    code: "vbmellat"
+    sector_index: "بانک‌ها و موسسات اعتباری"
+    sector_index_tse: null
+  - symbol: "اخابر"
+    code: "akhaber"
+    sector_index: "مخابرات"
+    sector_index_tse: null
+  - symbol: "شستا"
+    code: "shasta"
+    sector_index: "سرمایه‌گذاری‌ها"
+    sector_index_tse: null
+  - symbol: "تیپیکو"
+    code: "tipico"
+    sector_index: "مواد و محصولات دارویی"
+    sector_index_tse: null
+
+benchmarks:
+  - name: "شاخص کل"
+    code: "index_total"
+    required: true
+  - name: "شاخص کل (هم وزن)"
+    code: "index_equal_weight"
+    required: false
+
+cpi:
+  source: "Statistical Centre of Iran (amar.org.ir)"
+  base: "1400=100"
+  first_month: "1402-06"
+  last_month: "1405-06"
+  file: "data/external/cpi_iran_sci.csv"
+  known_values:
+    "1402-06": 201.7
+    "1403-06": 264.7
+    "1404-06": 384.6
+    "1405-05": 700.1
+    "1405-06": 729.8
+
+fetch:
+  max_retries: 5
+  backoff_base_seconds: 2
+  rate_limit_delay_seconds: 0.5
+  timeout_seconds: 20
+
+quality:
+  suspicious_daily_return: 0.10
+  max_unexplained_jump: 0.50
+  adjustment_ratio_tolerance: 0.003
+  # Source-data errors found by src/data_quality.py (see reports/data_quality.md).
+  # They are NOT fixed in data/raw (raw stays unchanged); tests accept exactly these.
+  # Repair/mask them in the cleaning step.
+  known_issues:
+    - file: "data/raw/stock_shasta_adjusted.csv"
+      column: "Open"
+      dates: ["1402-07-17"]
+      issue: "Open = 0 in the TSETMC history (other prices normal)"
+    - file: "data/raw/stock_shasta_unadjusted.csv"
+      column: "Open"
+      dates: ["1402-07-17"]
+      issue: "Open = 0 in the TSETMC history (other prices normal)"
+    - file: "data/raw/sector_of_shepna.csv"
+      column: "Close"
+      dates: ["1404-03-19", "1404-03-28", "1404-04-01", "1404-04-03", "1404-04-07"]
+      issue: "decimal shift: High/Low/Close are 1/10 of the surrounding days"
+    - file: "data/raw/index_equal_weight.csv"
+      column: "Open"
+      dates: ["1404-09-19", "1404-11-12"]
+      issue: "decimal shift: Open and Low are 10x the surrounding days (Close fine)"
