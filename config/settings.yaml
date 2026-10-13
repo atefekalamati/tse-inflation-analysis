@@ -97,3 +97,18 @@ quality:
       column: "Open"
       dates: ["1404-09-19", "1404-11-12"]
       issue: "decimal shift: Open and Low are 10x the surrounding days (Close fine)"
+
+processing:
+  # Month-level flag: a stock is "long suspended" in a month if it did not trade on at
+  # least this many open-market days of that month.
+  long_suspension_days: 5
+  # Adjustment events with |factor - 1| below this are treated as rounding/price
+  # corrections, not corporate actions (see reports/data_quality.md).
+  min_adjustment_event: 0.01
+  # Corrections applied in src/process_data.py (data/raw is never modified).
+  corrections:
+    - file: "data/raw/sector_of_shepna.csv"
+      dates: ["1404-03-19", "1404-03-28", "1404-04-01", "1404-04-03", "1404-04-07"]
+      columns: ["Open", "High", "Low", "Close"]   # those present in the file
+      multiply_by: 10
+      reason: "decimal shift in TSETMC source: value is 1/10 of the surrounding days"
