@@ -176,17 +176,17 @@ def series_metrics(s: pd.DataFrame) -> dict:
     return {
         "code": s["code"].iloc[0], "series": s["label"].iloc[0], "type": s["type"].iloc[0],
         "months": n,
-        "cum_nominal_growth": g_nom / 100 - 1, "cum_real_growth": g_real / 100 - 1,
-        "cagr_nominal": cagr(100, g_nom, n), "cagr_real": real_cagr,
-        "vol_real_annual": vol,
-        "max_drawdown_real": dd["max_drawdown"], "dd_peak": dd["peak"], "dd_trough": dd["trough"],
+        "nominal_cum_3y": g_nom / 100 - 1, "real_cum_3y": g_real / 100 - 1,
+        "nominal_cagr": cagr(100, g_nom, n), "real_cagr": real_cagr,
+        "real_vol_per_year": vol,
+        "real_max_drawdown_peak_to_trough": dd["max_drawdown"], "dd_peak": dd["peak"], "dd_trough": dd["trough"],
         "dd_recovery": dd["recovery"],
         "pct_months_beat_inflation": np.nan if is_cpi else float((r["return_real"] > 0).mean()),
-        "worst_real_month": np.nan if is_cpi else float(worst["return_real"]),
+        "real_worst_month_per_month": np.nan if is_cpi else float(worst["return_real"]),
         "worst_month": None if is_cpi else worst["month_jalali"],
-        "best_real_month": np.nan if is_cpi else float(best["return_real"]),
+        "real_best_month_per_month": np.nan if is_cpi else float(best["return_real"]),
         "best_month": None if is_cpi else best["month_jalali"],
-        "real_return_per_unit_risk": np.nan if is_cpi or vol == 0 else real_cagr / vol,
+        "real_cagr_per_unit_vol": np.nan if is_cpi or vol == 0 else real_cagr / vol,
         "flagged_months": int(r["data_flag"].sum()),
     }
 
@@ -212,11 +212,11 @@ def yearly_table(m: pd.DataFrame, port: pd.DataFrame) -> tuple[pd.DataFrame, pd.
         infl = block_returns(s["inflation_monthly"])
         for b in real.index:
             rows.append({"code": c, "series": s["label"].iloc[0], "type": s["type"].iloc[0],
-                         "block": b, "real_return": real[b], "nominal_return": nom[b],
-                         "inflation": infl[b]})
+                         "block": b, "real_return_per_year": real[b], "nominal_return_per_year": nom[b],
+                         "inflation_per_year": infl[b]})
     y = pd.DataFrame(rows)
     st = y[y["code"].isin(STOCK_CODES)].copy()
-    st["rank_among_stocks"] = st.groupby("block")["real_return"].rank(ascending=False).astype(int)
+    st["rank_among_stocks"] = st.groupby("block")["real_return_per_year"].rank(ascending=False).astype(int)
     y = y.merge(st[["code", "block", "rank_among_stocks"]], on=["code", "block"], how="left")
     y["rank_among_stocks"] = y["rank_among_stocks"].astype("Int64")
     ranks = st.pivot(index="series", columns="block", values="rank_among_stocks")
@@ -237,7 +237,46 @@ def rank_stability(ranks: pd.DataFrame) -> pd.DataFrame:
 # --------------------------------------------------------------------------- #
 # 3. Market closure
 # --------------------------------------------------------------------------- #
+def jalali_days_in_month(month: str) -> int:
+    from persiantools.jdatetime import JalaliDate
+    y, mo = map(int, month.split("-"))
+    for day in (31, 30, 29):
+        try:
+            JalaliDate(y, mo, day)
+            return day
+        except ValueError:
+            continue
+    raise ValueError(month)
+
+
+def prev_month(month: str) -> str:
+    y, mo = map(int, month.split("-"))
+    return f"{y - 1}-12" if mo == 1 else f"{y}-{mo - 1:02d}"
+
+
+def cpi_at_date(date_jalali: str, cpi: pd.Series) -> float:
+    """CPI level on a calendar day, by geometric interpolation within the month.
+
+    Convention (same as the monthly panel, where CPI_t is paired with the month-end
+    close): the monthly CPI value is the level at the END of that month. On day d of
+    month M with D days:  CPI(d) = CPI(M-1) * (CPI(M) / CPI(M-1)) ** (d / D).
+    `cpi` is indexed by 'YYYY-MM'.
+    """
+    month, day = date_jalali[:7], int(date_jalali[8:10])
+    D = jalali_days_in_month(month)
+    if not 1 <= day <= D:
+        raise ValueError(f"invalid date {date_jalali}")
+    lo, hi = float(cpi[prev_month(month)]), float(cpi[month])
+    return lo * (hi / lo) ** (day / D)
+
+
 def closure_analysis(d: pd.DataFrame, m: pd.DataFrame) -> dict:
+    """Real change across the closure.
+
+    Primary: CPI pro-rated to the exact dates (cpi_at_date). Sensitivity: whole months,
+    CPI from end of 1404-11 to end of the month of the later date (at least 1405-02).
+    All changes are cumulative over the window, not annualized.
+    """
     a, b = CLOSURE
     cal = d.drop_duplicates("date_jalali")[["date_jalali", "market_closed"]].sort_values("date_jalali")
     closed = cal[(cal["date_jalali"] >= a) & (cal["date_jalali"] <= b)]
@@ -245,13 +284,14 @@ def closure_analysis(d: pd.DataFrame, m: pd.DataFrame) -> dict:
     open_after = cal[(cal["date_jalali"] > b) & ~cal["market_closed"]]["date_jalali"]
     reopen = open_after.iloc[0]
     cpi = m[m["code"] == "cpi"].set_index("month_jalali")["cpi_index"]
-    cpi_from, cpi_to = "1404-11", "1405-02"   # CPI months bracketing the closure
+    cpi_from, cpi_to = "1404-11", "1405-02"   # whole CPI months bracketing the closure
 
-    def cpi_growth_to(day: str) -> float:
-        """CPI growth from 1404-11 to the month of `day` (at least 1405-02)."""
+    def cpi_monthly(day: str) -> float:
         return float(cpi[max(day[:7], cpi_to)] / cpi[cpi_from] - 1)
 
-    cpi_growth = cpi_growth_to(reopen)
+    def cpi_prorated(day0: str, day1: str) -> float:
+        return cpi_at_date(day1, cpi) / cpi_at_date(day0, cpi) - 1
+
     rows = []
     for c in MARKET_CODES + STOCK_CODES:
         s = d[(d["code"] == c) & d["close_adj"].notna() & ~d["market_closed"]].set_index("date_jalali")["close_adj"]
@@ -262,24 +302,27 @@ def closure_analysis(d: pd.DataFrame, m: pd.DataFrame) -> dict:
         chg1 = after.iloc[0] / s[before_day] - 1
         chg20 = after.loc[d20] / s[before_day] - 1
         comparable = before_day == open_before and day1 == reopen
+        p1, p20 = cpi_prorated(before_day, day1), cpi_prorated(before_day, d20)
+        m1, m20 = cpi_monthly(day1), cpi_monthly(d20)
+        rr = (lambda n, i: pdx.real_return(n, i) if comparable else np.nan)
         rows.append({
             "code": c, "series": LABELS[c], "type": "market_index" if c in MARKET_CODES else "stock",
-            "last_close_before": before_day, "first_close_after": day1,
-            "comparable": comparable,
-            "nominal_change_first_day": chg1,
-            "cpi_growth_first_day": cpi_growth_to(day1),
-            "real_change_first_day": pdx.real_return(chg1, cpi_growth_to(day1)) if comparable else np.nan,
+            "last_close_before": before_day, "first_close_after": day1, "comparable": comparable,
+            "nominal_change_reopen": chg1,
+            "cpi_change_reopen_prorated": p1, "real_change_reopen_prorated": rr(chg1, p1),
+            "cpi_change_reopen_monthly": m1, "real_change_reopen_monthly": rr(chg1, m1),
             "close_after_20_trading_days": d20,
             "nominal_change_20d": chg20,
-            "cpi_growth_20d": cpi_growth_to(d20),
-            "real_change_20d": pdx.real_return(chg20, cpi_growth_to(d20)) if comparable else np.nan,
+            "cpi_change_20d_prorated": p20, "real_change_20d_prorated": rr(chg20, p20),
+            "cpi_change_20d_monthly": m20, "real_change_20d_monthly": rr(chg20, m20),
             "note": "" if comparable else
             f"symbol not trading at the closure edges ({before_day} / {day1}); not comparable",
         })
     return {"closed_days": len(closed), "first_closed": closed["date_jalali"].iloc[0],
             "last_closed": closed["date_jalali"].iloc[-1],
             "last_open_before": open_before, "reopen": reopen,
-            "cpi_from": cpi_from, "cpi_to": cpi_to, "cpi_growth": cpi_growth,
+            "cpi_change_prorated": cpi_prorated(open_before, reopen),
+            "cpi_from": cpi_from, "cpi_to": cpi_to, "cpi_change_monthly": cpi_monthly(reopen),
             "table": pd.DataFrame(rows)}
 
 
@@ -453,24 +496,24 @@ def fig_cumulative_real(m, path):
 
 def fig_real_vs_nominal(rt, path):
     import matplotlib.pyplot as plt
-    t = rt.sort_values("cagr_real").reset_index(drop=True)
+    t = rt.sort_values("real_cagr").reset_index(drop=True)
     fig, ax = plt.subplots(figsize=(10, 6.6))
     y = np.arange(len(t))
     h = 0.38
-    ax.barh(y + h / 2 + 0.01, t["cagr_nominal"], height=h, color=C_NOMINAL, label="Nominal CAGR")
-    ax.barh(y - h / 2 - 0.01, t["cagr_real"], height=h, color=C_REAL, label="Real CAGR (after inflation)")
+    ax.barh(y + h / 2 + 0.01, t["nominal_cagr"], height=h, color=C_NOMINAL, label="Nominal CAGR")
+    ax.barh(y - h / 2 - 0.01, t["real_cagr"], height=h, color=C_REAL, label="Real CAGR (after inflation)")
     for i, r in t.iterrows():
-        v = r["cagr_real"]
+        v = r["real_cagr"]
         ax.text(v + (0.015 if v >= 0 else -0.015), i - h / 2, f"{v:+.1%}", va="center",
                 ha="left" if v >= 0 else "right", fontsize=8, color=INK2)
     ax.axvline(0, color=AXIS, lw=1)
-    ax.set_xlim(min(t["cagr_real"].min(), 0) - 0.12, t["cagr_nominal"].max() * 1.05)
+    ax.set_xlim(min(t["real_cagr"].min(), 0) - 0.12, t["nominal_cagr"].max() * 1.05)
     ax.set_yticks(y)
     ax.set_yticklabels(t["series"])
     ax.grid(axis="y", visible=False)
     _pct(ax, "x")
     ax.legend(loc="lower right")
-    cpi_n = rt.loc[rt.code == "cpi", "cagr_nominal"].iloc[0]
+    cpi_n = rt.loc[rt.code == "cpi", "nominal_cagr"].iloc[0]
     ax.set_title("Annualized return, nominal vs real (1402-07 to 1405-06)")
     _subtitle(ax, f"CAGR over 36 months. Real = after SCI CPI inflation ({cpi_n:.1%} a year). "
                   "The 8-stock portfolio is hindsight-selected.")
@@ -487,23 +530,23 @@ LABEL_OFFSETS = {PORTFOLIO_CODE: (-8, 7, "right"), "index_total": (-9, -12, "rig
 def fig_risk_return(rt, path):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(9.5, 6.4))
-    cash_real = cagr(100, 100 / (1 + rt.loc[rt.code == "cpi", "cum_nominal_growth"].iloc[0]), 36)
+    cash_real = cagr(100, 100 / (1 + rt.loc[rt.code == "cpi", "nominal_cum_3y"].iloc[0]), 36)
     for _, r in rt.iterrows():
         if r["code"] == "cpi":
             continue
         colr = {"index_total": C_INDEX, "index_equal_weight": C_EW, PORTFOLIO_CODE: C_PORT}.get(r["code"], C_STOCK)
         big = r["code"] in (MARKET_CODES + [PORTFOLIO_CODE])
-        ax.scatter(r["vol_real_annual"], r["cagr_real"], s=90 if big else 60, color=colr,
+        ax.scatter(r["real_vol_per_year"], r["real_cagr"], s=90 if big else 60, color=colr,
                    edgecolor=SURFACE, linewidth=2, zorder=3)
         dx, dy, ha = LABEL_OFFSETS.get(r["code"], (7, 4, "left"))
-        ax.annotate(r["series"], (r["vol_real_annual"], r["cagr_real"]), xytext=(dx, dy),
+        ax.annotate(r["series"], (r["real_vol_per_year"], r["real_cagr"]), xytext=(dx, dy),
                     textcoords="offset points", fontsize=8.5, ha=ha, color=INK if big else INK2)
     ax.scatter(0, cash_real, s=60, color=INK2, marker="s", zorder=3)
     ax.annotate(f"Rial cash at 0% interest ({cash_real:.0%} a year)", (0, cash_real),
                 xytext=(7, 4), textcoords="offset points", fontsize=8.5, color=INK2)
     ax.axhline(0, color=INK2, lw=1.2, ls="--")
     ax.text(0.005, 0.008, "kept pace with inflation", color=INK2, fontsize=8, va="bottom")
-    ax.set_xlim(-0.02, rt["vol_real_annual"].max() * 1.25)
+    ax.set_xlim(-0.02, rt["real_vol_per_year"].max() * 1.25)
     _pct(ax, "y")
     _pct(ax, "x")
     ax.set_xlabel("Volatility of monthly real returns (annualized)")
@@ -555,7 +598,7 @@ def fig_yearly_heatmap(yearly, path):
     from matplotlib.colors import TwoSlopeNorm
     order = STOCK_CODES + MARKET_CODES + [PORTFOLIO_CODE]
     t = yearly[yearly["code"].isin(order)].pivot(index="code", columns="block",
-                                                  values="real_return").loc[order]
+                                                  values="real_return_per_year").loc[order]
     fig, ax = plt.subplots(figsize=(8.5, 6.6))
     lim = 1.0
     im = ax.imshow(t.values.clip(-lim, lim), cmap=_diverging_cmap(),
@@ -653,27 +696,24 @@ def fig_closure(d, m, clo, path):
         ax1.plot([pos[x] for x in s.index], s.values, color=colr, lw=2.2,
                  label=LABELS[c] + " (nominal)")
     cpi = m[m["code"] == "cpi"].set_index("month_jalali")["cpi_index"]
-    xs, ys = [], []
-    for mo in ["1404-11", "1404-12", "1405-01", "1405-02", "1405-03"]:
-        in_m = [pos[x] for x in days if x[:7] == mo]
-        if in_m:
-            xs += [min(in_m) - 0.5, max(in_m) + 0.5]
-            ys += [cpi[mo] / cpi["1404-11"] * 100] * 2
-    ax1.plot(xs, ys, color=INK2, lw=1.4, ls="--", label="CPI (1404-11 = 100, monthly)")
+    base_cpi = cpi_at_date(clo["last_open_before"], cpi)
+    ax1.plot(range(len(days)), [cpi_at_date(x, cpi) / base_cpi * 100 for x in days], color=INK2,
+             lw=1.4, ls="--", label="CPI, interpolated daily (pro-rated)")
     ticks = [i for i, x in enumerate(days) if x[:7] != days[i - 1][:7] or i == 0]
     ax1.set_xticks(ticks)
     ax1.set_xticklabels([days[i] for i in ticks], fontsize=8.5)
     ax1.set_ylabel(f"Level, last close before closure ({clo['last_open_before']}) = 100")
     ax1.legend(loc="upper left", fontsize=8.5)
     ax1.set_title("Market closure: prices frozen, CPI kept rising")
-    _subtitle(ax1, "Daily index levels (nominal) vs monthly CPI.")
+    _subtitle(ax1, "Daily index levels (nominal) vs CPI interpolated by calendar day.")
 
     t = clo["table"].set_index("code").loc[MARKET_CODES]
-    groups = ["Index change\non reopening", f"CPI growth\n{clo['cpi_from']} to {clo['cpi_to']}",
+    groups = ["Index change\non reopening", "CPI change\n(pro-rated to dates)",
               "REAL change\non reopening"]
     w = 0.38
     for k, (c, colr) in enumerate((("index_total", C_INDEX), ("index_equal_weight", C_EW))):
-        vals = [t.loc[c, "nominal_change_first_day"], clo["cpi_growth"], t.loc[c, "real_change_first_day"]]
+        vals = [t.loc[c, "nominal_change_reopen"], t.loc[c, "cpi_change_reopen_prorated"],
+                t.loc[c, "real_change_reopen_prorated"]]
         xx = np.arange(3) + (k - 0.5) * (w + 0.02)
         ax2.bar(xx, vals, width=w, color=colr, label=LABELS[c])
         for x_, v in zip(xx, vals):
@@ -687,7 +727,8 @@ def fig_closure(d, m, clo, path):
     ax2.set_ylim(-0.3, 0.3)
     ax2.legend(loc="lower left", fontsize=8)
     ax2.set_title("Real loss while trading was impossible")
-    _subtitle(ax2, f"Last close {clo['last_open_before']} to first close {clo['reopen']}.")
+    _subtitle(ax2, f"Cumulative, {clo['last_open_before']} to {clo['reopen']}. "
+                   "CPI interpolated to the exact dates.")
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
@@ -746,16 +787,21 @@ def export_powerbi(m, port, rt, yearly, corr) -> dict[str, str]:
             ["trend only: unknown whether dividends are included; do not compare with stocks",
              "hindsight-selected portfolio, not an investable strategy",
              "individual stock: dispersion, not the market"], ""),
-        "nominal_return": allm["return_nominal"], "real_return": allm["return_real"],
-        "cum_nominal": allm["growth_nominal"], "cum_real": allm["growth_real"],
-        "inflation": allm["inflation_monthly"], "is_base_month": allm["is_base_month"],
+        "nominal_return_per_month": allm["return_nominal"],
+        "real_return_per_month": allm["return_real"],
+        "inflation_per_month": allm["inflation_monthly"],
+        "nominal_index_1402_06_eq_100": allm["growth_nominal"],
+        "real_index_1402_06_eq_100": allm["growth_real"],
+        "nominal_cum_since_1402_06": allm["growth_nominal"] / 100 - 1,
+        "real_cum_since_1402_06": allm["growth_real"] / 100 - 1,
+        "is_base_month": allm["is_base_month"],
         "flag_any": allm["data_flag"].astype(bool),
         "flag_market_closure": allm["market_closure_in_month"].astype(bool),
         "flag_long_suspension": allm["long_suspension"].astype(bool),
         "flag_no_trade": allm["no_trade_in_month"].astype(bool),
     })
-    cl = corr.stack().rename("correlation").reset_index()
-    cl.columns = ["series_a", "series_b", "correlation"]
+    cl = corr.stack().rename("corr_real_return_per_month").reset_index()
+    cl.columns = ["series_a", "series_b", "corr_real_return_per_month"]
     out = {}
     for name, df in (("monthly_long", ml), ("risk_summary", rt), ("yearly_real", yearly),
                      ("correlation_long", cl)):
@@ -769,63 +815,73 @@ def export_powerbi(m, port, rt, yearly, corr) -> dict[str, str]:
 # Key findings (every number comes from the computed results)
 # --------------------------------------------------------------------------- #
 def key_findings(res: dict) -> list[str]:
+    """Five findings. Every return states its unit: per year, or cumulative over 3 years
+    (or, for the closure, cumulative over the stated window)."""
     rt = res["risk"].set_index("code")
     yr = res["yearly"]
     clo, rf = res["closure"], res["risk_free"]
-    cpi_cum = rt.loc["cpi", "cum_nominal_growth"]
+    cpi_cum = rt.loc["cpi", "nominal_cum_3y"]
     cash_loss = 1 / (1 + cpi_cum) - 1
-    tot, ew = rt.loc["index_total"], rt.loc["index_equal_weight"]
+    tot, ew, pf = rt.loc["index_total"], rt.loc["index_equal_weight"], rt.loc[PORTFOLIO_CODE]
     st = rt.loc[STOCK_CODES]
-    winners = st[st["cum_real_growth"] > 0].sort_values("cum_real_growth", ascending=False)
-    winners_txt = ", ".join(f"{LABELS[c]} {winners.loc[c, 'cum_real_growth']:+.0%}"
-                            for c in winners.index)
-    b = yr[yr["code"] == "index_total"].set_index("block")["real_return"]
+    winners = st[st["real_cum_3y"] > 0].sort_values("real_cum_3y", ascending=False)
+    winners_txt = ", ".join(f"{LABELS[c]} {winners.loc[c, 'real_cum_3y']:+.0%}" for c in winners.index)
+    b = yr[yr["code"] == "index_total"].set_index("block")["real_return_per_year"]
     rs = res["rank_stability"]["spearman_rank_corr"]
-    ct = clo["table"].set_index("code")
+    ct = clo["table"].set_index("code").loc["index_total"]
     f = [
         f"**1. The market did not beat inflation, but it beat cash by a wide margin.** CPI rose "
-        f"{cpi_cum:.0%} over 36 months ({rt.loc['cpi', 'cagr_nominal']:.1%} a year). The overall "
-        f"index lost {-tot['cum_real_growth']:.1%} in real terms ({tot['cagr_real']:+.1%} a year) "
-        f"and the equal-weight index lost {-ew['cum_real_growth']:.1%} ({ew['cagr_real']:+.1%} a "
-        f"year), while rial cash at 0% lost {-cash_loss:.0%} of its purchasing power. "
+        f"{cpi_cum:.0%} cumulative over 3 years ({rt.loc['cpi', 'nominal_cagr']:.1%} per year). "
+        f"In real terms the overall index lost {-tot['real_cum_3y']:.1%} cumulative over 3 years "
+        f"({tot['real_cagr']:+.1%} per year) and the equal-weight index lost "
+        f"{-ew['real_cum_3y']:.1%} cumulative over 3 years ({ew['real_cagr']:+.1%} per year). "
+        f"Rial cash at 0% lost {-cash_loss:.0%} of its purchasing power, cumulative over 3 years. "
         f"*Implication:* idle rial cash was by far the costliest place to hold money; a broad "
-        f"index nearly preserved value, at the price of {tot['vol_real_annual']:.0%} annual "
-        f"real volatility.",
+        f"index nearly preserved value, at the price of {tot['real_vol_per_year']:.0%} real "
+        f"volatility per year.",
 
-        f"**2. Single stocks are bets, not inflation hedges.** {len(winners)} of the 8 stocks "
-        f"beat inflation ({winners_txt}). Real CAGRs ranged from {st['cagr_real'].min():+.1%} a "
-        f"year ({LABELS[st['cagr_real'].idxmin()]}) to {st['cagr_real'].max():+.1%} "
-        f"({LABELS[st['cagr_real'].idxmax()]}). Even this hindsight-selected set, equally "
-        f"weighted, reached only {rt.loc[PORTFOLIO_CODE, 'cum_real_growth']:+.1%} real over three "
-        f"years. *Implication:* the spread between stocks dwarfs the gap between the market and "
+        f"**2. Single stocks are bets, not inflation hedges.** {len(winners)} of the 8 stocks beat "
+        f"inflation ({winners_txt} real, cumulative over 3 years). Real CAGRs ranged from "
+        f"{st['real_cagr'].min():+.1%} per year ({LABELS[st['real_cagr'].idxmin()]}) to "
+        f"{st['real_cagr'].max():+.1%} per year ({LABELS[st['real_cagr'].idxmax()]}). Even this "
+        f"hindsight-selected set, held in equal weights and rebalanced monthly, made only "
+        f"{pf['real_cum_3y']:+.1%} real cumulative over 3 years, which is {pf['real_cagr']:+.1%} "
+        f"per year. *Implication:* the spread between stocks dwarfs the gap between the market and "
         f"inflation; protection against inflation needs diversification, not a favourite ticker.",
 
         f"**3. All of the real gain came in the last 12 months, and leadership kept changing.** "
-        f"The overall index returned {b.iloc[0]:+.1%}, {b.iloc[1]:+.1%} and {b.iloc[2]:+.1%} real "
-        f"in the three 12-month blocks. The rank correlation of the 8 stocks between consecutive "
-        f"years was only {rs.iloc[0]:.2f} and {rs.iloc[1]:.2f}. *Implication:* beating inflation "
-        f"with equities needed a multi-year horizon and the stomach for two losing years; last "
-        f"year's winner was a weak guide to next year's.",
+        f"The overall index returned {b.iloc[0]:+.1%}, {b.iloc[1]:+.1%} and {b.iloc[2]:+.1%} "
+        f"real per year in the three 12-month blocks. The rank correlation of the 8 stocks "
+        f"between consecutive years was only {rs.iloc[0]:.2f} and {rs.iloc[1]:.2f}. "
+        f"*Implication:* beating inflation with equities needed a multi-year horizon and the "
+        f"stomach for two losing years; last year's winner was a weak guide to next year's.",
 
         f"**4. Liquidity risk is real: the {clo['closed_days']}-trading-day market closure cost "
-        f"{-ct.loc['index_total', 'real_change_first_day']:.1%} in real terms on reopening.** The "
-        f"overall index reopened {ct.loc['index_total', 'nominal_change_first_day']:+.1%} nominal "
-        f"while CPI rose {clo['cpi_growth']:.1%} ({clo['cpi_from']} to {clo['cpi_to']}). Twenty "
-        f"trading days later it stood {ct.loc['index_total', 'nominal_change_20d']:+.1%} nominal, "
-        f"{ct.loc['index_total', 'real_change_20d']:+.1%} real (CPI to 1405-03). *Implication:* "
-        f"listed equities can be locked for months; a treasury must keep its operating runway in "
-        f"instruments it can actually withdraw.",
+        f"{-ct['real_change_reopen_prorated']:.1%} in real terms by reopening.** From the last close "
+        f"({clo['last_open_before']}) to the first close after the closure ({clo['reopen']}) the "
+        f"overall index changed {ct['nominal_change_reopen']:+.1%} nominal while CPI, pro-rated "
+        f"to those dates, rose {ct['cpi_change_reopen_prorated']:.1%}; all three figures are "
+        f"cumulative over the closure. Using whole CPI months ({clo['cpi_from']} to "
+        f"{clo['cpi_to']}) instead gives {ct['real_change_reopen_monthly']:+.1%}. Twenty trading "
+        f"days after reopening the index was {ct['nominal_change_20d']:+.1%} nominal and "
+        f"{ct['real_change_20d_prorated']:+.1%} real, cumulative from the last close before the "
+        f"closure ({ct['real_change_20d_monthly']:+.1%} with whole CPI months). *Implication:* "
+        f"listed equities can be locked for months; a treasury must keep its operating runway "
+        f"in instruments it can actually withdraw.",
     ]
     if rf:
         f.append(
-            f"**5. The 'safe' asset was negative in real terms too.** Government Murabaha bonds "
-            f"(اراد, {rf['n_bonds']} issues traded in the last 30 days) had a median YTM of "
-            f"{rf['ytm_median']:.1%} (IFB snapshot {rf['snapshot_jalali']}), against 12-month average "
-            f"inflation of {rf['inflation_12m_average']:.1%} and point-to-point inflation of "
-            f"{rf['inflation_point_to_point']:.1%} ({rf['cpi_month']}): a real yield of "
-            f"{rf['real_ytm_vs_avg12']:+.1%} to {rf['real_ytm_vs_p2p']:+.1%}. *Implication:* fixed "
-            f"rial income only slows the loss; size rial holdings to near-term rial costs and "
-            f"treat the rest as capital to protect, not to park.")
+            f"**5. The 'safe' asset is negative in real terms too.** If inflation stays at last "
+            f"year's level, today's government bond yield implies a real return of about "
+            f"{rf['real_ytm_vs_avg12']:.0%} per year ({rf['real_ytm_vs_p2p']:.0%} per year against "
+            f"point-to-point inflation). The median yield to maturity of government Murabaha bonds "
+            f"(اراد, {rf['n_bonds']} issues traded in the 30 days before the snapshot) was "
+            f"{rf['ytm_median']:.1%} per year (IFB snapshot {rf['snapshot_jalali']}, {rf['source']}); "
+            f"this yield is forward-looking. Last year's inflation is trailing: "
+            f"{rf['inflation_12m_average']:.1%} per year as a 12-month average and "
+            f"{rf['inflation_point_to_point']:.1%} point-to-point (12 months to {rf['cpi_month']}). "
+            f"*Implication:* fixed rial income only slows the loss; size rial holdings to near-term "
+            f"rial costs and treat the rest as capital to protect, not to park.")
     return f
 
 

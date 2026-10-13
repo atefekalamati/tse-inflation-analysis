@@ -32,7 +32,12 @@ real return = (1 + nominal) / (1 + inflation) - 1.
 * Stocks are **not compared with sector indices**. It is unknown whether TSETMC sector indices
   include dividends, while the adjusted stock prices do. Sector indices appear only as trend
   lines in the Power BI export, labelled "trend only".
-* All code lives in `src/analysis.py`; this notebook only calls it. Tests: `tests/test_analysis.py`."""),
+* All code lives in `src/analysis.py`; this notebook only calls it. Tests: `tests/test_analysis.py`.
+
+**Units.** Every return carries its unit in its name or label:
+`per month` (one monthly return), `per year` (CAGR, or one 12-month block),
+`cum_3y` / "cumulative over 3 years" (1402-06 to 1405-06, not annualized). Closure figures are
+cumulative over the stated window."""),
     code("""import sys
 from pathlib import Path
 ROOT = Path.cwd().parent if Path.cwd().name == "notebooks" else Path.cwd()
@@ -55,24 +60,27 @@ def pct(df, cols, digits=1):
 
     md("""## 1. Return and risk
 
-Annualized figures are CAGR over the 36 months. Volatility is the standard deviation of
-monthly **real** returns times √12. Maximum drawdown is measured on the **real** cumulative
-index. "Real return per unit of risk" is real CAGR divided by real volatility. It is *not* a
-Sharpe ratio, because there is no risk-free rate in it.
+* `nominal_cagr`, `real_cagr`: per year (CAGR over the 36 months).
+* `real_cum_3y`: real return, cumulative over 3 years (1402-06 to 1405-06).
+* `real_vol_per_year`: standard deviation of monthly real returns × √12, per year.
+* `real_max_drawdown_peak_to_trough`: largest fall of the real cumulative index from a peak.
+* `real_worst_month_per_month`, `real_best_month_per_month`: single-month real returns.
+* `real_cagr_per_unit_vol` ("real return per unit of risk"): real CAGR per year divided by real
+  volatility per year. It is *not* a Sharpe ratio, because there is no risk-free rate in it.
 
 `flagged months` counts months with a market closure, a long suspension (5 or more
 open-market days) or no trade. Returns in those months are less reliable."""),
     code("""rt = res["risk"]
-show = rt[["series", "type", "cagr_nominal", "cagr_real", "cum_real_growth", "vol_real_annual",
-           "max_drawdown_real", "dd_peak", "dd_trough", "dd_recovery",
-           "pct_months_beat_inflation", "worst_real_month", "worst_month", "best_real_month",
-           "best_month", "real_return_per_unit_risk", "flagged_months"]]
-show = pct(show, ["cagr_nominal", "cagr_real", "cum_real_growth", "max_drawdown_real",
-                  "worst_real_month", "best_real_month"])
-show["vol_real_annual"] = rt["vol_real_annual"].map(lambda v: f"{v:.1%}")
+show = rt[["series", "type", "nominal_cagr", "real_cagr", "real_cum_3y", "real_vol_per_year",
+           "real_max_drawdown_peak_to_trough", "dd_peak", "dd_trough", "dd_recovery",
+           "pct_months_beat_inflation", "real_worst_month_per_month", "worst_month", "real_best_month_per_month",
+           "best_month", "real_cagr_per_unit_vol", "flagged_months"]]
+show = pct(show, ["nominal_cagr", "real_cagr", "real_cum_3y", "real_max_drawdown_peak_to_trough",
+                  "real_worst_month_per_month", "real_best_month_per_month"])
+show["real_vol_per_year"] = rt["real_vol_per_year"].map(lambda v: f"{v:.1%}")
 show["pct_months_beat_inflation"] = rt["pct_months_beat_inflation"].map(
     lambda v: "" if pd.isna(v) else f"{v:.0%}")
-show["real_return_per_unit_risk"] = rt["real_return_per_unit_risk"].map(
+show["real_cagr_per_unit_vol"] = rt["real_cagr_per_unit_vol"].map(
     lambda v: "" if pd.isna(v) else f"{v:+.2f}")
 show.fillna("")"""),
     code("""display(Image(FIG / "02_real_vs_nominal_bar.png"))
@@ -82,12 +90,15 @@ display(Image(FIG / "04_drawdowns.png"))"""),
 so the average listed company did worse than the large caps. Rial cash at 0% sits far below
 everything. The individual stocks spread out widely in both risk and return."""),
 
-    md("""## 2. Period breakdown: real return per 12-month block"""),
+    md("""## 2. Period breakdown: real return per 12-month block (per year)
+
+Each value is the compounded real return over one 12-month block, so it is a return per year."""),
     code("""y = res["yearly"]
-blocks = y.pivot(index="series", columns="block", values="real_return")
+blocks = y.pivot(index="series", columns="block", values="real_return_per_year")
 order = [an.LABELS[c] for c in an.STOCK_CODES + an.MARKET_CODES + [an.PORTFOLIO_CODE, "cpi"]]
 blocks = blocks.loc[order]
 display(blocks.map(lambda v: f"{v:+.1%}"))
+print("Real return per year, by 12-month block (above)")
 print("Rank among the 8 stocks (1 = best real return in the block):")
 display(res["ranks"])
 print("Rank stability (Spearman correlation of stock ranks):")
@@ -101,22 +112,30 @@ block, and all but Vbmellat lost again in the second. The whole real gain of the
     md("""## 3. Market closure (1404-12-09 to 1405-02-28)
 
 The overall index was flat and at zero volume on 50 index days. Nothing could be bought or
-sold. CPI is monthly, so closure-period inflation is measured from CPI 1404-11 to CPI 1405-02,
-the three months the closure spans. The 20-trading-day comparison uses CPI through the month in
-which that window ends (1405-03)."""),
+sold. All figures in this section are **cumulative over the stated window**, not annualized.
+
+* **Primary (pro-rated):** CPI is interpolated geometrically by calendar day within each month
+  (the monthly CPI is taken as the end-of-month level), giving CPI on the exact date of the last
+  close before the closure (1404-12-06) and of the first close after it (1405-02-29). The
+  20-trading-day row uses CPI on that 20th trading day.
+* **Sensitivity (whole months):** CPI from the end of 1404-11 to the end of 1405-02, three full
+  months although the closure lasted about 2.6. The 20-trading-day row uses CPI to the end of
+  1405-03."""),
     code("""c = res["closure"]
 print(f"Closed index days: {c['closed_days']}  ({c['first_closed']} to {c['last_closed']})")
 print(f"Last close before: {c['last_open_before']}   first close after: {c['reopen']}")
-print(f"CPI growth {c['cpi_from']} -> {c['cpi_to']}: {c['cpi_growth']:.1%}")
+print(f"CPI change, pro-rated {c['last_open_before']} to {c['reopen']}: {c['cpi_change_prorated']:+.1%} (cumulative)")
+print(f"CPI change, whole months {c['cpi_from']} to {c['cpi_to']}: {c['cpi_change_monthly']:+.1%} (cumulative)")
+cols = ["nominal_change_reopen", "cpi_change_reopen_prorated", "real_change_reopen_prorated",
+        "cpi_change_reopen_monthly", "real_change_reopen_monthly",
+        "nominal_change_20d", "cpi_change_20d_prorated", "real_change_20d_prorated",
+        "cpi_change_20d_monthly", "real_change_20d_monthly"]
 t = c["table"][["series", "type", "last_close_before", "first_close_after",
-                "nominal_change_first_day", "real_change_first_day",
-                "close_after_20_trading_days", "nominal_change_20d", "cpi_growth_20d",
-                "real_change_20d", "note"]]
-pct(t, ["nominal_change_first_day", "real_change_first_day", "nominal_change_20d",
-        "cpi_growth_20d", "real_change_20d"]).fillna("")"""),
+                "close_after_20_trading_days"] + cols + ["note"]]
+pct(t, cols).fillna("")"""),
     code("""display(Image(FIG / "08_closure_period.png"))"""),
     md("""**Reading:** on reopening, both market indices were where they had been 50 trading days
-earlier, while prices in the economy had risen about a fifth. That is the real loss investors
+earlier, while consumer prices had kept rising (table above). That is the real loss investors
 carried while they could not trade. The market then caught up over the following weeks. That
 gradual pace is consistent with TSE daily price limits, although this data cannot prove the cause. Foolad stayed suspended until 1405-05-17, so its row is
 not comparable."""),
@@ -127,9 +146,10 @@ Equal weights, rebalanced monthly: each month's return is the average of the 8 s
 **The 8 stocks were chosen after the period, so this is not an investable strategy and not
 evidence about the market.** It only shows what diversifying across these sectors would have
 done."""),
+    md("""`real_cagr` is per year; `real_cum_3y` is cumulative over 3 years."""),
     code("""p = res["risk"].set_index("code").loc[[an.PORTFOLIO_CODE, "index_total", "index_equal_weight"]]
-pct(p[["series", "cagr_nominal", "cagr_real", "cum_real_growth", "max_drawdown_real"]],
-    ["cagr_nominal", "cagr_real", "cum_real_growth", "max_drawdown_real"])"""),
+pct(p[["series", "nominal_cagr", "real_cagr", "real_cum_3y", "real_max_drawdown_peak_to_trough"]],
+    ["nominal_cagr", "real_cagr", "real_cum_3y", "real_max_drawdown_peak_to_trough"])"""),
     code("""display(Image(FIG / "09_hindsight_portfolio.png"))
 display(Image(FIG / "01_cumulative_real_growth.png"))"""),
 
@@ -140,7 +160,9 @@ display(Image(FIG / "06_correlation_heatmap.png"))"""),
 index is 0.70 to 0.95, which limits how much diversifying across these 8 names reduces risk.
 Foolad and Tipico are the least correlated pair."""),
 
-    md("""## 6. Rolling 12-month real return of the market indices"""),
+    md("""## 6. Rolling 12-month real return of the market indices
+
+Each value is the real return over the 12 months ending that month, so it is a return per year."""),
     code("""display(res["rolling"].map(lambda v: f"{v:+.1%}").T)
 display(Image(FIG / "07_rolling_12m_real.png"))"""),
 
@@ -148,12 +170,22 @@ display(Image(FIG / "07_rolling_12m_real.png"))"""),
 
 TSETMC treasury bills (اخزا) are **not listed** on the IFB YTM page that algotik-tse reads.
 The closest government instrument there is **government Murabaha bonds (اراد)**, so those are
-used instead. The yield is a snapshot taken when the data was fetched (early 1405-07). It is
-compared with SCI inflation for the 12 months to 1405-06."""),
+used instead. The yield to maturity is a forward-looking snapshot; the inflation figures are
+trailing (the 12 months to 1405-06). The comparison therefore asks what the yield implies *if*
+inflation stays at last year's level."""),
     code("""rf = res["risk_free"]
 if rf is None:
     print("No IFB snapshot found: item skipped.")
 else:
+    display(Markdown(
+        f"If inflation stays at last year's level, today's government bond yield implies a real "
+        f"return of about {rf['real_ytm_vs_avg12']:.0%} per year "
+        f"({rf['real_ytm_vs_p2p']:.0%} per year against point-to-point inflation).\\n\\n"
+        f"Median YTM of اراد bonds: {rf['ytm_median']:.1%} per year ({rf['n_bonds']} issues traded "
+        f"in the 30 days before the snapshot). Source: {rf['source']}, snapshot "
+        f"{rf['snapshot_jalali']} (`{rf['file']}`). Trailing inflation, 12 months to "
+        f"{rf['cpi_month']}: {rf['inflation_12m_average']:.1%} per year (12-month average), "
+        f"{rf['inflation_point_to_point']:.1%} point-to-point."))
     display(pd.Series(rf))"""),
 
     md("""## Data caveats

@@ -1,4 +1,4 @@
-code,series,type,block,real_return,nominal_return,inflation,rank_among_stocks
+code,series,type,block,real_return_per_year,nominal_return_per_year,inflation_per_year,rank_among_stocks
 foolad,Foolad,stock,1402-07..1403-06,-0.16759356367111233,0.09235668789808926,0.31228765207011633,2
 foolad,Foolad,stock,1403-07..1404-06,-0.43469458718413934,-0.17881438289601548,0.45264064077071353,7
 foolad,Foolad,stock,1404-07..1405-06,0.01640527244923118,0.9289940828402363,0.8978591858264771,7

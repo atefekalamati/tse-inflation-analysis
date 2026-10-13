@@ -1,4 +1,4 @@
-series_a,series_b,correlation
+series_a,series_b,corr_real_return_per_month
 Foolad,Foolad,1.0
 Foolad,Fameli,0.6386678751107946
 Foolad,Shepna,0.45533222074641183

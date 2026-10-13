@@ -106,14 +106,14 @@ def test_risk_table_series_and_definitions(res):
     m = res["monthly"]
     for c in an.STOCK_CODES + an.MARKET_CODES:
         s = m[(m["code"] == c) & (m["month_jalali"] > an.BASE)]
-        assert rt.loc[c, "cagr_real"] == pytest.approx(an.cagr_from_returns(s["return_real"]))
-        assert rt.loc[c, "vol_real_annual"] == pytest.approx(s["return_real"].std() * np.sqrt(12))
+        assert rt.loc[c, "real_cagr"] == pytest.approx(an.cagr_from_returns(s["return_real"]))
+        assert rt.loc[c, "real_vol_per_year"] == pytest.approx(s["return_real"].std() * np.sqrt(12))
         assert rt.loc[c, "pct_months_beat_inflation"] == pytest.approx(
             (s["return_nominal"] > s["inflation_monthly"]).mean())
-        assert rt.loc[c, "real_return_per_unit_risk"] == pytest.approx(
-            rt.loc[c, "cagr_real"] / rt.loc[c, "vol_real_annual"])
-    assert rt.loc["cpi", "cagr_real"] == pytest.approx(0, abs=1e-12)
-    assert rt.loc["cpi", "cum_nominal_growth"] == pytest.approx(729.8394 / 201.7326 - 1, rel=1e-6)
+        assert rt.loc[c, "real_cagr_per_unit_vol"] == pytest.approx(
+            rt.loc[c, "real_cagr"] / rt.loc[c, "real_vol_per_year"])
+    assert rt.loc["cpi", "real_cagr"] == pytest.approx(0, abs=1e-12)
+    assert rt.loc["cpi", "nominal_cum_3y"] == pytest.approx(729.8394 / 201.7326 - 1, rel=1e-6)
 
 
 def test_yearly_blocks_chain_to_total(res):
@@ -121,7 +121,7 @@ def test_yearly_blocks_chain_to_total(res):
     rt = res["risk"].set_index("code")
     for c, g in y.groupby("code"):
         assert len(g) == 3
-        assert np.prod(1 + g["real_return"]) - 1 == pytest.approx(rt.loc[c, "cum_real_growth"], rel=1e-9)
+        assert np.prod(1 + g["real_return_per_year"]) - 1 == pytest.approx(rt.loc[c, "real_cum_3y"], rel=1e-9)
 
 
 def test_portfolio_is_hindsight_labeled_and_consistent(res):
@@ -138,9 +138,46 @@ def test_closure_uses_market_days(res):
     c = res["closure"]
     assert c["closed_days"] == 50
     assert (c["last_open_before"], c["reopen"]) == ("1404-12-06", "1405-02-29")
-    t = c["table"].set_index("code")
-    expect = (1 + t.loc["index_total", "nominal_change_first_day"]) / (1 + c["cpi_growth"]) - 1
-    assert t.loc["index_total", "real_change_first_day"] == pytest.approx(expect)
+    t = c["table"].set_index("code").loc["index_total"]
+    for kind in ("prorated", "monthly"):
+        expect = (1 + t["nominal_change_reopen"]) / (1 + t[f"cpi_change_reopen_{kind}"]) - 1
+        assert t[f"real_change_reopen_{kind}"] == pytest.approx(expect)
+        expect20 = (1 + t["nominal_change_20d"]) / (1 + t[f"cpi_change_20d_{kind}"]) - 1
+        assert t[f"real_change_20d_{kind}"] == pytest.approx(expect20)
+    # pro-rated window (about 2.6 months) is shorter than the 3 whole CPI months
+    assert t["cpi_change_reopen_prorated"] < t["cpi_change_reopen_monthly"]
+    cpi = res["monthly"].query("code == 'cpi'").set_index("month_jalali")["cpi_index"]
+    expect_cpi = an.cpi_at_date("1405-02-29", cpi) / an.cpi_at_date("1404-12-06", cpi) - 1
+    assert c["cpi_change_prorated"] == pytest.approx(expect_cpi)
+
+
+# ------------------------- CPI interpolation ----------------------------- #
+def test_jalali_month_lengths():
+    assert an.jalali_days_in_month("1404-07") == 30      # Mehr
+    assert an.jalali_days_in_month("1405-02") == 31      # Ordibehesht
+    assert an.jalali_days_in_month("1403-12") == 30      # Esfand of leap year 1403
+    assert an.jalali_days_in_month("1404-12") == 29      # Esfand of common year 1404
+    assert an.prev_month("1405-01") == "1404-12" and an.prev_month("1404-08") == "1404-07"
+
+
+def test_cpi_at_date_hand_example():
+    # monthly CPI = end-of-month level; Mehr has 30 days; CPI quadruples during Mehr
+    cpi = pd.Series({"1404-06": 100.0, "1404-07": 400.0, "1404-08": 400.0})
+    assert an.cpi_at_date("1404-07-15", cpi) == pytest.approx(200.0)          # 100 * 4**(15/30)
+    assert an.cpi_at_date("1404-07-10", cpi) == pytest.approx(100 * 4 ** (1 / 3))
+    assert an.cpi_at_date("1404-07-30", cpi) == pytest.approx(400.0)          # month end = CPI(M)
+    assert an.cpi_at_date("1404-08-01", cpi) == pytest.approx(400.0)          # flat next month
+    with pytest.raises(ValueError):
+        an.cpi_at_date("1404-07-31", cpi)                                     # Mehr has 30 days
+
+
+def test_cpi_at_date_is_geometric_and_chains():
+    cpi = pd.Series({"1405-01": 100.0, "1405-02": 131.0})
+    # equal day steps give equal growth factors (geometric, not linear)
+    f1 = an.cpi_at_date("1405-02-11", cpi) / an.cpi_at_date("1405-02-01", cpi)
+    f2 = an.cpi_at_date("1405-02-21", cpi) / an.cpi_at_date("1405-02-11", cpi)
+    assert f1 == pytest.approx(f2)
+    assert an.cpi_at_date("1405-02-31", cpi) == pytest.approx(131.0)
 
 
 def test_findings_have_numbers(res):
