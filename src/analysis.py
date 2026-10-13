@@ -1,0 +1,864 @@
+"""Return, risk and inflation analysis on the monthly panel (36 months, 1402-07..1405-06).
+
+Rules this module follows:
+  * Conclusions about "the market" use only شاخص کل (overall index) and the
+    equal-weight index. The 8 stocks illustrate dispersion across sectors.
+  * Stocks are never compared with sector indices: it is unknown whether TSETMC sector
+    indices include dividends. Sector indices appear only as labelled trend lines in the
+    Power BI export.
+
+Usage:
+    import analysis as an
+    res = an.run_all()            # computes every table, writes figures and Power BI CSVs
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import data_quality as dq  # noqa: E402
+import process_data as pdx  # noqa: E402
+
+ROOT = dq.ROOT
+FIG = ROOT / "reports" / "figures"
+PBI = ROOT / "data" / "processed" / "powerbi"
+BASE = pdx.BASE_MONTH
+CLOSURE = ("1404-12-09", "1405-02-28")
+BLOCKS = [("1402-07", "1403-06"), ("1403-07", "1404-06"), ("1404-07", "1405-06")]
+
+STOCK_CODES = ["foolad", "fameli", "shepna", "khodro", "vbmellat", "akhaber", "shasta", "tipico"]
+MARKET_CODES = ["index_total", "index_equal_weight"]
+PORTFOLIO_CODE = "ew_portfolio_8"
+LABELS = {
+    "foolad": "Foolad", "fameli": "Fameli", "shepna": "Shepna", "khodro": "Khodro",
+    "vbmellat": "Vbmellat", "akhaber": "Akhaber", "shasta": "Shasta", "tipico": "Tipico",
+    "index_total": "Overall index (TEDPIX)", "index_equal_weight": "Equal-weight index",
+    "cpi": "CPI", PORTFOLIO_CODE: "8-stock EW portfolio (hindsight)",
+}
+
+
+# --------------------------------------------------------------------------- #
+# Pure math (tested in tests/test_analysis.py)
+# --------------------------------------------------------------------------- #
+def cagr(start_value: float, end_value: float, months: int) -> float:
+    """Compound annual growth rate over `months` months."""
+    return (end_value / start_value) ** (12.0 / months) - 1
+
+
+def cagr_from_returns(returns) -> float:
+    r = pd.Series(returns, dtype=float)
+    return float((1 + r).prod() ** (12.0 / len(r)) - 1)
+
+
+def compound(returns) -> float:
+    """Total return of a sequence of periodic returns."""
+    return float((1 + pd.Series(returns, dtype=float)).prod() - 1)
+
+
+def max_drawdown(levels: pd.Series) -> dict:
+    """Maximum drawdown of a level series (index = period labels).
+
+    Returns {'max_drawdown': negative fraction or 0, 'peak': label, 'trough': label,
+             'recovery': label or None (first period back at/above the peak)}.
+    """
+    lv = pd.Series(levels, dtype=float)
+    running_max = lv.cummax()
+    dd = lv / running_max - 1
+    trough_pos = int(np.argmin(dd.values))
+    mdd = float(dd.iloc[trough_pos])
+    if mdd == 0:
+        return {"max_drawdown": 0.0, "peak": None, "trough": None, "recovery": None}
+    peak_pos = int(np.argmax(lv.values[: trough_pos + 1]))
+    peak_level = lv.iloc[peak_pos]
+    after = lv.iloc[trough_pos + 1:]
+    rec = after[after >= peak_level]
+    return {"max_drawdown": mdd, "peak": lv.index[peak_pos], "trough": lv.index[trough_pos],
+            "recovery": rec.index[0] if len(rec) else None}
+
+
+def drawdown_series(levels: pd.Series) -> pd.Series:
+    lv = pd.Series(levels, dtype=float)
+    return lv / lv.cummax() - 1
+
+
+def block_returns(returns: pd.Series, blocks=BLOCKS) -> pd.Series:
+    """Compound return within each (first_month, last_month) block. Index = 'first..last'.
+    Raises if a block is incomplete (missing months)."""
+    out = {}
+    for a, b in blocks:
+        r = returns[(returns.index >= a) & (returns.index <= b)]
+        expected = month_range(a, b)
+        if list(r.index) != expected or r.isna().any():
+            raise ValueError(f"block {a}..{b} incomplete: have {len(r.dropna())} of {len(expected)}")
+        out[f"{a}..{b}"] = compound(r)
+    return pd.Series(out)
+
+
+def rolling_compound(returns: pd.Series, window: int = 12) -> pd.Series:
+    return (1 + returns).rolling(window).apply(np.prod, raw=True) - 1
+
+
+def month_range(first: str, last: str) -> list[str]:
+    y, m = map(int, first.split("-"))
+    out = []
+    while f"{y}-{m:02d}" <= last:
+        out.append(f"{y}-{m:02d}")
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return out
+
+
+def ew_rebalanced_returns(nominal_wide: pd.DataFrame) -> pd.Series:
+    """Equal-weight, monthly rebalanced portfolio return = mean of member returns."""
+    if nominal_wide.isna().any().any():
+        raise ValueError("member returns contain NaN")
+    return nominal_wide.mean(axis=1)
+
+
+# --------------------------------------------------------------------------- #
+# Data
+# --------------------------------------------------------------------------- #
+def load_monthly() -> pd.DataFrame:
+    m = pd.read_parquet(pdx.MONTHLY)
+    m["label"] = m["code"].map(LABELS).fillna(m["symbol"])
+    return m
+
+
+def load_daily() -> pd.DataFrame:
+    return pd.read_parquet(pdx.DAILY)
+
+
+def wide(m: pd.DataFrame, col: str, codes: list[str], with_base=False) -> pd.DataFrame:
+    sub = m[m["code"].isin(codes)]
+    if not with_base:
+        sub = sub[sub["month_jalali"] > BASE]
+    return sub.pivot(index="month_jalali", columns="code", values=col)[codes]
+
+
+def portfolio_frame(m: pd.DataFrame) -> pd.DataFrame:
+    """Monthly rows for the hindsight 8-stock equal-weight portfolio, same columns as m."""
+    nom = ew_rebalanced_returns(wide(m, "return_nominal", STOCK_CODES))
+    cpi = m[m["code"] == "cpi"].set_index("month_jalali")
+    months = [BASE] + list(nom.index)
+    p = pd.DataFrame({"month_jalali": months})
+    p["return_nominal"] = [np.nan] + list(nom.values)
+    p["inflation_monthly"] = p["month_jalali"].map(cpi["inflation_monthly"])
+    p["cpi_index"] = p["month_jalali"].map(cpi["cpi_index"])
+    p["return_real"] = pdx.real_return(p["return_nominal"], p["inflation_monthly"])
+    p["growth_nominal"] = 100 * (1 + p["return_nominal"].fillna(0)).cumprod()
+    p["growth_real"] = 100 * (1 + p["return_real"].fillna(0)).cumprod()
+    flags = m[m["code"].isin(STOCK_CODES)].groupby("month_jalali")
+    p["data_flag"] = p["month_jalali"].map(flags["data_flag"].any()).fillna(False).astype(bool)
+    p["market_closure_in_month"] = p["month_jalali"].map(flags["market_closure_in_month"].any())
+    p["long_suspension"] = p["month_jalali"].map(flags["long_suspension"].any())
+    p["no_trade_in_month"] = p["month_jalali"].map(flags["no_trade_in_month"].any())
+    p = p.assign(code=PORTFOLIO_CODE, symbol=LABELS[PORTFOLIO_CODE], label=LABELS[PORTFOLIO_CODE],
+                 type="portfolio_hindsight", sector=None, is_base_month=p["month_jalali"] == BASE)
+    return p
+
+
+# --------------------------------------------------------------------------- #
+# 1. Return and risk table
+# --------------------------------------------------------------------------- #
+def series_metrics(s: pd.DataFrame) -> dict:
+    s = s.sort_values("month_jalali")
+    r = s[s["month_jalali"] > BASE]
+    n = len(r)
+    g_nom, g_real = s["growth_nominal"].iloc[-1], s["growth_real"].iloc[-1]
+    vol = float(r["return_real"].std(ddof=1) * np.sqrt(12))
+    real_cagr = cagr(100, g_real, n)
+    dd = max_drawdown(s.set_index("month_jalali")["growth_real"])
+    is_cpi = s["code"].iloc[0] == "cpi"
+    worst, best = r.loc[r["return_real"].idxmin()], r.loc[r["return_real"].idxmax()]
+    return {
+        "code": s["code"].iloc[0], "series": s["label"].iloc[0], "type": s["type"].iloc[0],
+        "months": n,
+        "cum_nominal_growth": g_nom / 100 - 1, "cum_real_growth": g_real / 100 - 1,
+        "cagr_nominal": cagr(100, g_nom, n), "cagr_real": real_cagr,
+        "vol_real_annual": vol,
+        "max_drawdown_real": dd["max_drawdown"], "dd_peak": dd["peak"], "dd_trough": dd["trough"],
+        "dd_recovery": dd["recovery"],
+        "pct_months_beat_inflation": np.nan if is_cpi else float((r["return_real"] > 0).mean()),
+        "worst_real_month": np.nan if is_cpi else float(worst["return_real"]),
+        "worst_month": None if is_cpi else worst["month_jalali"],
+        "best_real_month": np.nan if is_cpi else float(best["return_real"]),
+        "best_month": None if is_cpi else best["month_jalali"],
+        "real_return_per_unit_risk": np.nan if is_cpi or vol == 0 else real_cagr / vol,
+        "flagged_months": int(r["data_flag"].sum()),
+    }
+
+
+def risk_table(m: pd.DataFrame, port: pd.DataFrame) -> pd.DataFrame:
+    rows = [series_metrics(m[m["code"] == c]) for c in STOCK_CODES + MARKET_CODES + ["cpi"]]
+    rows.append(series_metrics(port))
+    return pd.DataFrame(rows)
+
+
+# --------------------------------------------------------------------------- #
+# 2. Period breakdown
+# --------------------------------------------------------------------------- #
+def yearly_table(m: pd.DataFrame, port: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Returns (long table, stock rank table). Long: code, series, type, block,
+    real_return, nominal_return, inflation, rank_among_stocks."""
+    allm = pd.concat([m, port], ignore_index=True)
+    rows = []
+    for c in STOCK_CODES + MARKET_CODES + ["cpi", PORTFOLIO_CODE]:
+        s = allm[allm["code"] == c].set_index("month_jalali").sort_index()
+        real = block_returns(s["return_real"])
+        nom = block_returns(s["return_nominal"])
+        infl = block_returns(s["inflation_monthly"])
+        for b in real.index:
+            rows.append({"code": c, "series": s["label"].iloc[0], "type": s["type"].iloc[0],
+                         "block": b, "real_return": real[b], "nominal_return": nom[b],
+                         "inflation": infl[b]})
+    y = pd.DataFrame(rows)
+    st = y[y["code"].isin(STOCK_CODES)].copy()
+    st["rank_among_stocks"] = st.groupby("block")["real_return"].rank(ascending=False).astype(int)
+    y = y.merge(st[["code", "block", "rank_among_stocks"]], on=["code", "block"], how="left")
+    y["rank_among_stocks"] = y["rank_among_stocks"].astype("Int64")
+    ranks = st.pivot(index="series", columns="block", values="rank_among_stocks")
+    return y, ranks
+
+
+def rank_stability(ranks: pd.DataFrame) -> pd.DataFrame:
+    """Spearman correlation of stock ranks between consecutive blocks."""
+    cols = list(ranks.columns)
+    out = []
+    for a, b in zip(cols, cols[1:]):
+        out.append({"from": a, "to": b, "spearman_rank_corr": ranks[a].rank().corr(ranks[b].rank())})
+    out.append({"from": cols[0], "to": cols[-1],
+                "spearman_rank_corr": ranks[cols[0]].rank().corr(ranks[cols[-1]].rank())})
+    return pd.DataFrame(out)
+
+
+# --------------------------------------------------------------------------- #
+# 3. Market closure
+# --------------------------------------------------------------------------- #
+def closure_analysis(d: pd.DataFrame, m: pd.DataFrame) -> dict:
+    a, b = CLOSURE
+    cal = d.drop_duplicates("date_jalali")[["date_jalali", "market_closed"]].sort_values("date_jalali")
+    closed = cal[(cal["date_jalali"] >= a) & (cal["date_jalali"] <= b)]
+    open_before = cal[(cal["date_jalali"] < a) & ~cal["market_closed"]]["date_jalali"].iloc[-1]
+    open_after = cal[(cal["date_jalali"] > b) & ~cal["market_closed"]]["date_jalali"]
+    reopen = open_after.iloc[0]
+    cpi = m[m["code"] == "cpi"].set_index("month_jalali")["cpi_index"]
+    cpi_from, cpi_to = "1404-11", "1405-02"   # CPI months bracketing the closure
+
+    def cpi_growth_to(day: str) -> float:
+        """CPI growth from 1404-11 to the month of `day` (at least 1405-02)."""
+        return float(cpi[max(day[:7], cpi_to)] / cpi[cpi_from] - 1)
+
+    cpi_growth = cpi_growth_to(reopen)
+    rows = []
+    for c in MARKET_CODES + STOCK_CODES:
+        s = d[(d["code"] == c) & d["close_adj"].notna() & ~d["market_closed"]].set_index("date_jalali")["close_adj"]
+        before_day = s[s.index < a].index[-1]
+        after = s[s.index > b]
+        day1 = after.index[0]
+        d20 = after.index[min(19, len(after) - 1)]   # 20th trading day after the closure
+        chg1 = after.iloc[0] / s[before_day] - 1
+        chg20 = after.loc[d20] / s[before_day] - 1
+        comparable = before_day == open_before and day1 == reopen
+        rows.append({
+            "code": c, "series": LABELS[c], "type": "market_index" if c in MARKET_CODES else "stock",
+            "last_close_before": before_day, "first_close_after": day1,
+            "comparable": comparable,
+            "nominal_change_first_day": chg1,
+            "cpi_growth_first_day": cpi_growth_to(day1),
+            "real_change_first_day": pdx.real_return(chg1, cpi_growth_to(day1)) if comparable else np.nan,
+            "close_after_20_trading_days": d20,
+            "nominal_change_20d": chg20,
+            "cpi_growth_20d": cpi_growth_to(d20),
+            "real_change_20d": pdx.real_return(chg20, cpi_growth_to(d20)) if comparable else np.nan,
+            "note": "" if comparable else
+            f"symbol not trading at the closure edges ({before_day} / {day1}); not comparable",
+        })
+    return {"closed_days": len(closed), "first_closed": closed["date_jalali"].iloc[0],
+            "last_closed": closed["date_jalali"].iloc[-1],
+            "last_open_before": open_before, "reopen": reopen,
+            "cpi_from": cpi_from, "cpi_to": cpi_to, "cpi_growth": cpi_growth,
+            "table": pd.DataFrame(rows)}
+
+
+# --------------------------------------------------------------------------- #
+# 5-6. Correlation and rolling
+# --------------------------------------------------------------------------- #
+def correlation(m: pd.DataFrame) -> pd.DataFrame:
+    w = wide(m, "return_real", STOCK_CODES + ["index_total"])
+    c = w.corr()
+    c.index = c.columns = [LABELS[x] for x in c.columns]
+    return c
+
+
+def rolling_real(m: pd.DataFrame, window=12) -> pd.DataFrame:
+    w = wide(m, "return_real", MARKET_CODES)
+    return w.apply(rolling_compound, window=window).dropna()
+
+
+# --------------------------------------------------------------------------- #
+# 7. Risk-free context
+# --------------------------------------------------------------------------- #
+def risk_free_context(m: pd.DataFrame, recent_days: int = 30) -> dict | None:
+    files = sorted((ROOT / "data" / "external").glob("ifb_debt_yields_*.csv"))
+    if not files:
+        return None
+    f = files[-1]
+    y = pd.read_csv(f, encoding="utf-8")
+    fetched = pd.Timestamp(y["fetched_at"].iloc[0])
+    y["LastTradeDate"] = pd.to_datetime(y["LastTradeDate"])
+    gov = y[(y["DebtType"] == "erad") & y["ReferenceYTM"].notna()]
+    recent = gov[gov["LastTradeDate"] >= (fetched.tz_localize(None) - pd.Timedelta(days=recent_days))]
+    cpi = m[m["code"] == "cpi"].set_index("month_jalali")["cpi_index"]
+    last = cpi.index.max()
+    months = list(cpi.index)
+    i = months.index(last)
+    p2p = cpi[last] / cpi[months[i - 12]] - 1
+    avg12 = cpi.iloc[i - 11:i + 1].mean() / cpi.iloc[i - 23:i - 11].mean() - 1
+    ytm = float(recent["ReferenceYTM"].median())
+    return {
+        "file": f.relative_to(ROOT).as_posix(), "source": y["reference_url"].iloc[0],
+        "fetched_at": str(fetched),
+        "snapshot_jalali": f.stem.rsplit("_", 1)[-1][:4] + "-" + f.stem.rsplit("_", 1)[-1][4:6] + "-" + f.stem.rsplit("_", 1)[-1][6:],
+        "instrument": "government Murabaha bonds (اراد)",
+        "n_bonds": int(len(recent)), "ytm_median": ytm,
+        "ytm_min": float(recent["ReferenceYTM"].min()), "ytm_max": float(recent["ReferenceYTM"].max()),
+        "cpi_month": last, "inflation_point_to_point": float(p2p),
+        "inflation_12m_average": float(avg12),
+        "real_ytm_vs_p2p": float(pdx.real_return(ytm, p2p)),
+        "real_ytm_vs_avg12": float(pdx.real_return(ytm, avg12)),
+    }
+
+
+# --------------------------------------------------------------------------- #
+# Figures
+# --------------------------------------------------------------------------- #
+# Reference palette (dataviz skill): categorical slots in fixed order, chart chrome inks.
+SURFACE, INK, INK2, MUTED = "#fcfcfb", "#0b0b0b", "#52514e", "#898781"
+GRID, AXIS = "#e1e0d9", "#c3c2b7"
+C_INDEX, C_EW, C_PORT = "#2a78d6", "#eb6834", "#1baf7a"   # slots 1, 2, 3
+C_STOCK = "#a9a79f"                                        # thin context lines (identity via labels)
+C_NOMINAL, C_REAL = "#86b6ef", "#1c5cab"                   # blue ramp steps 250 / 550
+DIV_NEG, DIV_MID, DIV_POS = "#e34948", "#f0efec", "#2a78d6"
+
+
+def _style():
+    import matplotlib as mpl
+    mpl.use("Agg")
+    mpl.rcParams.update({
+        "figure.facecolor": SURFACE, "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
+        "font.family": ["Segoe UI", "DejaVu Sans", "sans-serif"], "font.size": 10,
+        "text.color": INK, "axes.labelcolor": INK2, "axes.edgecolor": AXIS,
+        "xtick.color": INK2, "ytick.color": INK2, "axes.titlesize": 13,
+        "axes.titleweight": "bold", "axes.titlelocation": "left", "axes.titlepad": 24,
+        "axes.spines.top": False, "axes.spines.right": False,
+        "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.6,
+        "lines.linewidth": 2, "legend.frameon": False, "figure.dpi": 150,
+    })
+
+
+def _subtitle(ax, text):
+    ax.text(0, 1.02, text, transform=ax.transAxes, color=INK2, fontsize=9.5, va="bottom")
+
+
+def _month_axis(ax, months, every=3, right_pad=4):
+    pos = list(range(len(months)))
+    ax.set_xticks(pos[::every])
+    ax.set_xticklabels(months[::every], rotation=0, fontsize=8.5)
+    ax.set_xlim(-0.5, len(months) - 0.5 + right_pad)
+
+
+def _maybe_log(ax, values) -> bool:
+    import matplotlib.ticker as mt
+    v = np.asarray(values, dtype=float)
+    v = v[np.isfinite(v) & (v > 0)]
+    if v.max() / v.min() > 5:
+        ax.set_yscale("log")
+        cands = [10, 15, 20, 25, 35, 50, 70, 100, 150, 200, 300, 500, 700, 1000]
+        lo, hi = v.min() * 0.9, v.max() * 1.1
+        ax.yaxis.set_major_locator(mt.FixedLocator([c for c in cands if lo <= c <= hi]))
+        ax.yaxis.set_major_formatter(mt.FuncFormatter(lambda x, _: f"{x:g}"))
+        ax.yaxis.set_minor_formatter(mt.NullFormatter())
+        return True
+    return False
+
+
+def _pct(ax, axis="y"):
+    import matplotlib.ticker as mt
+    f = mt.PercentFormatter(1.0, decimals=0)
+    (ax.yaxis if axis == "y" else ax.xaxis).set_major_formatter(f)
+
+
+def _end_labels(ax, items, x, min_gap_frac=0.035, log=False):
+    """Direct labels at line ends, nudged apart vertically. items: [(y, text, color)]."""
+    if not items:
+        return
+    tr = (lambda y: np.log10(y)) if log else (lambda y: y)
+    inv = (lambda t: 10 ** t) if log else (lambda t: t)
+    lo, hi = ax.get_ylim()
+    gap = (tr(hi) - tr(lo)) * min_gap_frac
+    pts = sorted([(tr(y), t, c) for y, t, c in items])
+    placed = []
+    for y, t, c in pts:
+        if placed and y - placed[-1][0] < gap:
+            y = placed[-1][0] + gap
+        placed.append([y, t, c])
+    # second pass from the top: keep labels inside the axes
+    top = tr(hi) - gap / 2
+    for k in range(len(placed) - 1, -1, -1):
+        limit = top if k == len(placed) - 1 else placed[k + 1][0] - gap
+        if placed[k][0] > limit:
+            placed[k][0] = limit
+    for y, t, c in placed:
+        ax.text(x, inv(y), t, color=c if c != C_STOCK else INK2, fontsize=8.5, va="center",
+                bbox=dict(facecolor=SURFACE, edgecolor="none", pad=0.5), zorder=5)
+
+
+def _plot_growth_lines(ax, m, col="growth_real"):
+    labels, vals = [], []
+    for c in STOCK_CODES:
+        s = m[m["code"] == c].sort_values("month_jalali")
+        ax.plot(range(len(s)), s[col], color=C_STOCK, lw=1, zorder=1)
+        vals += list(s[col])
+        labels.append((s[col].iloc[-1], LABELS[c], INK2))
+    for c, colr in (("index_total", C_INDEX), ("index_equal_weight", C_EW)):
+        s = m[m["code"] == c].sort_values("month_jalali")
+        ax.plot(range(len(s)), s[col], color=colr, lw=2.6, zorder=3)
+        vals += list(s[col])
+        labels.append((s[col].iloc[-1], LABELS[c], colr))
+    return labels, vals
+
+
+def fig_cumulative_real(m, path):
+    import matplotlib.pyplot as plt
+    months = sorted(m["month_jalali"].unique())
+    fig, ax = plt.subplots(figsize=(11, 6.2))
+    labels, vals = _plot_growth_lines(ax, m)
+    ax.axhline(100, color=INK2, lw=1.2, ls="--", zorder=2)
+    log = _maybe_log(ax, vals + [100])
+    _month_axis(ax, months)
+    ax.text(0.2, 103, " CPI = 100: kept pace with inflation", color=INK2, fontsize=8.5,
+            va="bottom", bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1))
+    _end_labels(ax, labels, len(months) - 0.3, log=log)
+    ax.set_ylabel("Real growth index (1402-06 = 100" + (", log scale)" if log else ")"))
+    ax.set_title("Real (inflation-adjusted) growth of 100 invested at the end of 1402-06")
+    _subtitle(ax, "Adjusted month-end closes deflated by SCI CPI. Coloured = market indices; "
+                  "thin grey = 8 individual stocks (dispersion, not the market).")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def fig_real_vs_nominal(rt, path):
+    import matplotlib.pyplot as plt
+    t = rt.sort_values("cagr_real").reset_index(drop=True)
+    fig, ax = plt.subplots(figsize=(10, 6.6))
+    y = np.arange(len(t))
+    h = 0.38
+    ax.barh(y + h / 2 + 0.01, t["cagr_nominal"], height=h, color=C_NOMINAL, label="Nominal CAGR")
+    ax.barh(y - h / 2 - 0.01, t["cagr_real"], height=h, color=C_REAL, label="Real CAGR (after inflation)")
+    for i, r in t.iterrows():
+        v = r["cagr_real"]
+        ax.text(v + (0.015 if v >= 0 else -0.015), i - h / 2, f"{v:+.1%}", va="center",
+                ha="left" if v >= 0 else "right", fontsize=8, color=INK2)
+    ax.axvline(0, color=AXIS, lw=1)
+    ax.set_xlim(min(t["cagr_real"].min(), 0) - 0.12, t["cagr_nominal"].max() * 1.05)
+    ax.set_yticks(y)
+    ax.set_yticklabels(t["series"])
+    ax.grid(axis="y", visible=False)
+    _pct(ax, "x")
+    ax.legend(loc="lower right")
+    cpi_n = rt.loc[rt.code == "cpi", "cagr_nominal"].iloc[0]
+    ax.set_title("Annualized return, nominal vs real (1402-07 to 1405-06)")
+    _subtitle(ax, f"CAGR over 36 months. Real = after SCI CPI inflation ({cpi_n:.1%} a year). "
+                  "The 8-stock portfolio is hindsight-selected.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+# label offsets (points) for the scatter, to keep labels clear of neighbours
+LABEL_OFFSETS = {PORTFOLIO_CODE: (-8, 7, "right"), "index_total": (-9, -12, "right"),
+                 "vbmellat": (6, -12, "left"), "tipico": (7, 5, "left")}
+
+
+def fig_risk_return(rt, path):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(9.5, 6.4))
+    cash_real = cagr(100, 100 / (1 + rt.loc[rt.code == "cpi", "cum_nominal_growth"].iloc[0]), 36)
+    for _, r in rt.iterrows():
+        if r["code"] == "cpi":
+            continue
+        colr = {"index_total": C_INDEX, "index_equal_weight": C_EW, PORTFOLIO_CODE: C_PORT}.get(r["code"], C_STOCK)
+        big = r["code"] in (MARKET_CODES + [PORTFOLIO_CODE])
+        ax.scatter(r["vol_real_annual"], r["cagr_real"], s=90 if big else 60, color=colr,
+                   edgecolor=SURFACE, linewidth=2, zorder=3)
+        dx, dy, ha = LABEL_OFFSETS.get(r["code"], (7, 4, "left"))
+        ax.annotate(r["series"], (r["vol_real_annual"], r["cagr_real"]), xytext=(dx, dy),
+                    textcoords="offset points", fontsize=8.5, ha=ha, color=INK if big else INK2)
+    ax.scatter(0, cash_real, s=60, color=INK2, marker="s", zorder=3)
+    ax.annotate(f"Rial cash at 0% interest ({cash_real:.0%} a year)", (0, cash_real),
+                xytext=(7, 4), textcoords="offset points", fontsize=8.5, color=INK2)
+    ax.axhline(0, color=INK2, lw=1.2, ls="--")
+    ax.text(0.005, 0.008, "kept pace with inflation", color=INK2, fontsize=8, va="bottom")
+    ax.set_xlim(-0.02, rt["vol_real_annual"].max() * 1.25)
+    _pct(ax, "y")
+    _pct(ax, "x")
+    ax.set_xlabel("Volatility of monthly real returns (annualized)")
+    ax.set_ylabel("Real CAGR")
+    ax.set_title("Risk vs real return, 1402-07 to 1405-06")
+    _subtitle(ax, "Blue / orange = market indices; grey = individual stocks; green = "
+                  "hindsight portfolio.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def fig_drawdowns(m, path):
+    import matplotlib.pyplot as plt
+    months = sorted(m["month_jalali"].unique())
+    fig, ax = plt.subplots(figsize=(11, 5.8))
+    labels = []
+    for c in STOCK_CODES:
+        s = m[m["code"] == c].sort_values("month_jalali")
+        dd = drawdown_series(s["growth_real"])
+        ax.plot(range(len(s)), dd, color=C_STOCK, lw=1, zorder=1)
+        labels.append((dd.iloc[-1], LABELS[c], INK2))
+    for c, colr in (("index_total", C_INDEX), ("index_equal_weight", C_EW)):
+        s = m[m["code"] == c].sort_values("month_jalali")
+        dd = drawdown_series(s["growth_real"])
+        ax.plot(range(len(s)), dd, color=colr, lw=2.6, zorder=3)
+        labels.append((dd.iloc[-1], LABELS[c], colr))
+    _month_axis(ax, months)
+    _pct(ax)
+    ax.set_ylim(top=0.03)
+    _end_labels(ax, labels, len(months) - 0.3)
+    ax.set_ylabel("Drawdown from previous real peak")
+    ax.set_title("Drawdowns of the REAL (inflation-adjusted) growth index")
+    _subtitle(ax, "0% = at a new inflation-adjusted high. Coloured = market indices; thin grey = "
+                  "individual stocks.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def _diverging_cmap():
+    from matplotlib.colors import LinearSegmentedColormap
+    return LinearSegmentedColormap.from_list("div", [DIV_NEG, DIV_MID, DIV_POS])
+
+
+def fig_yearly_heatmap(yearly, path):
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as mt
+    from matplotlib.colors import TwoSlopeNorm
+    order = STOCK_CODES + MARKET_CODES + [PORTFOLIO_CODE]
+    t = yearly[yearly["code"].isin(order)].pivot(index="code", columns="block",
+                                                  values="real_return").loc[order]
+    fig, ax = plt.subplots(figsize=(8.5, 6.6))
+    lim = 1.0
+    im = ax.imshow(t.values.clip(-lim, lim), cmap=_diverging_cmap(),
+                   norm=TwoSlopeNorm(vmin=-lim, vcenter=0, vmax=lim), aspect="auto")
+    for i in range(t.shape[0]):
+        for j in range(t.shape[1]):
+            v = t.values[i, j]
+            ax.text(j, i, f"{v:+.0%}", ha="center", va="center", fontsize=9,
+                    color="white" if abs(v) > 0.55 else INK)
+    ax.set_xticks(range(t.shape[1]))
+    ax.set_xticklabels([b.replace("..", " to ") for b in t.columns])
+    ax.set_yticks(range(t.shape[0]))
+    ax.set_yticklabels([LABELS[c] for c in t.index])
+    ax.axhline(len(STOCK_CODES) - 0.5, color=SURFACE, lw=4)
+    ax.grid(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.02)
+    cb.ax.yaxis.set_major_formatter(mt.PercentFormatter(1.0))
+    cb.outline.set_visible(False)
+    ax.set_title("REAL return per 12-month block")
+    _subtitle(ax, "Compounded monthly real returns. Colour capped at ±100%; labels show "
+                  "actual values.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def fig_correlation(corr, path):
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list("seq", ["#cde2fb", "#3987e5", "#0d366b"])
+    fig, ax = plt.subplots(figsize=(8.6, 7.4))
+    im = ax.imshow(corr.values, cmap=cmap, vmin=0, vmax=1)
+    n = len(corr)
+    for i in range(n):
+        for j in range(n):
+            v = corr.values[i, j]
+            ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=8.5,
+                    color="white" if v > 0.6 else INK)
+    ax.set_xticks(range(n))
+    ax.set_xticklabels([c.replace(" (TEDPIX)", "") for c in corr.columns], rotation=35, ha="right")
+    ax.set_yticks(range(n))
+    ax.set_yticklabels(corr.index)
+    ax.grid(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.02)
+    cb.outline.set_visible(False)
+    ax.set_title("Correlation of monthly REAL returns")
+    _subtitle(ax, "Pearson correlation, 36 months (1402-07 to 1405-06).")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def fig_rolling(roll, path):
+    import matplotlib.pyplot as plt
+    months = list(roll.index)
+    fig, ax = plt.subplots(figsize=(11, 5.4))
+    labels = []
+    for c, colr in (("index_total", C_INDEX), ("index_equal_weight", C_EW)):
+        ax.plot(range(len(months)), roll[c], color=colr, lw=2.4)
+        labels.append((roll[c].iloc[-1], LABELS[c], colr))
+    ax.axhline(0, color=INK2, lw=1.2, ls="--")
+    _month_axis(ax, months, every=2, right_pad=5)
+    _pct(ax)
+    _end_labels(ax, labels, len(months) - 0.3)
+    ax.set_ylabel("Real return over the trailing 12 months")
+    ax.set_title("Rolling 12-month REAL return of the market indices")
+    _subtitle(ax, "Each point: compounded real return over the 12 months ending that month. "
+                  "Below 0 = lost to inflation.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def fig_closure(d, m, clo, path):
+    import matplotlib.pyplot as plt
+    a, b = CLOSURE
+    lo, hi = "1404-11-01", "1405-03-31"
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.8), gridspec_kw={"width_ratios": [2.2, 1]})
+    cal = d[(d["code"] == "index_total") & (d["date_jalali"] >= lo) & (d["date_jalali"] <= hi)]
+    days = list(cal["date_jalali"])
+    pos = {x: i for i, x in enumerate(days)}
+    closed_pos = [pos[x] for x in days if a <= x <= b]
+    ax1.axvspan(min(closed_pos) - 0.5, max(closed_pos) + 0.5, color="#ecebe6", zorder=0)
+    ax1.text((min(closed_pos) + max(closed_pos)) / 2, 0.97,
+             f"market closed\n{a} to {b}\n({clo['closed_days']} index days)",
+             transform=ax1.get_xaxis_transform(), ha="center", va="top", fontsize=8.5, color=INK2)
+    for c, colr in (("index_total", C_INDEX), ("index_equal_weight", C_EW)):
+        s = d[(d["code"] == c)].set_index("date_jalali")["close_adj"]
+        base = s[clo["last_open_before"]]
+        s = s.loc[lo:hi] / base * 100
+        ax1.plot([pos[x] for x in s.index], s.values, color=colr, lw=2.2,
+                 label=LABELS[c] + " (nominal)")
+    cpi = m[m["code"] == "cpi"].set_index("month_jalali")["cpi_index"]
+    xs, ys = [], []
+    for mo in ["1404-11", "1404-12", "1405-01", "1405-02", "1405-03"]:
+        in_m = [pos[x] for x in days if x[:7] == mo]
+        if in_m:
+            xs += [min(in_m) - 0.5, max(in_m) + 0.5]
+            ys += [cpi[mo] / cpi["1404-11"] * 100] * 2
+    ax1.plot(xs, ys, color=INK2, lw=1.4, ls="--", label="CPI (1404-11 = 100, monthly)")
+    ticks = [i for i, x in enumerate(days) if x[:7] != days[i - 1][:7] or i == 0]
+    ax1.set_xticks(ticks)
+    ax1.set_xticklabels([days[i] for i in ticks], fontsize=8.5)
+    ax1.set_ylabel(f"Level, last close before closure ({clo['last_open_before']}) = 100")
+    ax1.legend(loc="upper left", fontsize=8.5)
+    ax1.set_title("Market closure: prices frozen, CPI kept rising")
+    _subtitle(ax1, "Daily index levels (nominal) vs monthly CPI.")
+
+    t = clo["table"].set_index("code").loc[MARKET_CODES]
+    groups = ["Index change\non reopening", f"CPI growth\n{clo['cpi_from']} to {clo['cpi_to']}",
+              "REAL change\non reopening"]
+    w = 0.38
+    for k, (c, colr) in enumerate((("index_total", C_INDEX), ("index_equal_weight", C_EW))):
+        vals = [t.loc[c, "nominal_change_first_day"], clo["cpi_growth"], t.loc[c, "real_change_first_day"]]
+        xx = np.arange(3) + (k - 0.5) * (w + 0.02)
+        ax2.bar(xx, vals, width=w, color=colr, label=LABELS[c])
+        for x_, v in zip(xx, vals):
+            ax2.text(x_, v + (0.01 if v >= 0 else -0.01), f"{v:+.1%}", ha="center",
+                     va="bottom" if v >= 0 else "top", fontsize=8, color=INK2)
+    ax2.axhline(0, color=AXIS, lw=1)
+    ax2.set_xticks(range(3))
+    ax2.set_xticklabels(groups, fontsize=8.5)
+    ax2.grid(axis="x", visible=False)
+    _pct(ax2)
+    ax2.set_ylim(-0.3, 0.3)
+    ax2.legend(loc="lower left", fontsize=8)
+    ax2.set_title("Real loss while trading was impossible")
+    _subtitle(ax2, f"Last close {clo['last_open_before']} to first close {clo['reopen']}.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def fig_portfolio(m, port, path):
+    import matplotlib.pyplot as plt
+    months = sorted(m["month_jalali"].unique())
+    fig, ax = plt.subplots(figsize=(11, 5.8))
+    labels = []
+    for c, colr, s in (("index_total", C_INDEX, m[m["code"] == "index_total"]),
+                       ("index_equal_weight", C_EW, m[m["code"] == "index_equal_weight"]),
+                       (PORTFOLIO_CODE, C_PORT, port)):
+        s = s.sort_values("month_jalali")
+        ax.plot(range(len(s)), s["growth_real"], color=colr, lw=2.4,
+                ls="-" if c != PORTFOLIO_CODE else (0, (5, 2)))
+        labels.append((s["growth_real"].iloc[-1], LABELS[c], colr))
+    ax.axhline(100, color=INK2, lw=1.2, ls="--")
+    ax.text(0.2, 100, " CPI = 100", color=INK2, fontsize=8.5, va="bottom")
+    _month_axis(ax, months, right_pad=7)
+    _end_labels(ax, labels, len(months) - 0.3)
+    ax.set_ylabel("Real growth index (1402-06 = 100)")
+    ax.set_title("HINDSIGHT-SELECTED 8-stock portfolio vs the market, real terms")
+    _subtitle(ax, "Equal weights, rebalanced monthly. The 8 stocks were picked after the fact, "
+                  "so this is not a test of an investable strategy.")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+# --------------------------------------------------------------------------- #
+# Power BI exports
+# --------------------------------------------------------------------------- #
+def month_end_gregorian(month: str) -> str:
+    from persiantools.jdatetime import JalaliDate
+    y, mo = map(int, month.split("-"))
+    for day in (31, 30, 29):
+        try:
+            return JalaliDate(y, mo, day).to_gregorian().isoformat()
+        except ValueError:
+            continue
+    raise ValueError(month)
+
+
+def export_powerbi(m, port, rt, yearly, corr) -> dict[str, str]:
+    PBI.mkdir(parents=True, exist_ok=True)
+    allm = pd.concat([m, port], ignore_index=True)
+    ml = pd.DataFrame({
+        "month": allm["month_jalali"],
+        "month_end_gregorian": allm["month_jalali"].map(month_end_gregorian),
+        "series": allm["label"], "series_fa": allm["symbol"], "series_code": allm["code"],
+        "type": allm["type"], "sector": allm["sector"],
+        "usage_note": np.select(
+            [allm["type"] == "sector_index", allm["type"] == "portfolio_hindsight",
+             allm["type"] == "stock"],
+            ["trend only: unknown whether dividends are included; do not compare with stocks",
+             "hindsight-selected portfolio, not an investable strategy",
+             "individual stock: dispersion, not the market"], ""),
+        "nominal_return": allm["return_nominal"], "real_return": allm["return_real"],
+        "cum_nominal": allm["growth_nominal"], "cum_real": allm["growth_real"],
+        "inflation": allm["inflation_monthly"], "is_base_month": allm["is_base_month"],
+        "flag_any": allm["data_flag"].astype(bool),
+        "flag_market_closure": allm["market_closure_in_month"].astype(bool),
+        "flag_long_suspension": allm["long_suspension"].astype(bool),
+        "flag_no_trade": allm["no_trade_in_month"].astype(bool),
+    })
+    cl = corr.stack().rename("correlation").reset_index()
+    cl.columns = ["series_a", "series_b", "correlation"]
+    out = {}
+    for name, df in (("monthly_long", ml), ("risk_summary", rt), ("yearly_real", yearly),
+                     ("correlation_long", cl)):
+        p = PBI / f"{name}.csv"
+        df.to_csv(p, index=False, encoding="utf-8")
+        out[name] = p.relative_to(ROOT).as_posix()
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# Key findings (every number comes from the computed results)
+# --------------------------------------------------------------------------- #
+def key_findings(res: dict) -> list[str]:
+    rt = res["risk"].set_index("code")
+    yr = res["yearly"]
+    clo, rf = res["closure"], res["risk_free"]
+    cpi_cum = rt.loc["cpi", "cum_nominal_growth"]
+    cash_loss = 1 / (1 + cpi_cum) - 1
+    tot, ew = rt.loc["index_total"], rt.loc["index_equal_weight"]
+    st = rt.loc[STOCK_CODES]
+    winners = st[st["cum_real_growth"] > 0].sort_values("cum_real_growth", ascending=False)
+    winners_txt = ", ".join(f"{LABELS[c]} {winners.loc[c, 'cum_real_growth']:+.0%}"
+                            for c in winners.index)
+    b = yr[yr["code"] == "index_total"].set_index("block")["real_return"]
+    rs = res["rank_stability"]["spearman_rank_corr"]
+    ct = clo["table"].set_index("code")
+    f = [
+        f"**1. The market did not beat inflation, but it beat cash by a wide margin.** CPI rose "
+        f"{cpi_cum:.0%} over 36 months ({rt.loc['cpi', 'cagr_nominal']:.1%} a year). The overall "
+        f"index lost {-tot['cum_real_growth']:.1%} in real terms ({tot['cagr_real']:+.1%} a year) "
+        f"and the equal-weight index lost {-ew['cum_real_growth']:.1%} ({ew['cagr_real']:+.1%} a "
+        f"year), while rial cash at 0% lost {-cash_loss:.0%} of its purchasing power. "
+        f"*Implication:* idle rial cash was by far the costliest place to hold money; a broad "
+        f"index nearly preserved value, at the price of {tot['vol_real_annual']:.0%} annual "
+        f"real volatility.",
+
+        f"**2. Single stocks are bets, not inflation hedges.** {len(winners)} of the 8 stocks "
+        f"beat inflation ({winners_txt}). Real CAGRs ranged from {st['cagr_real'].min():+.1%} a "
+        f"year ({LABELS[st['cagr_real'].idxmin()]}) to {st['cagr_real'].max():+.1%} "
+        f"({LABELS[st['cagr_real'].idxmax()]}). Even this hindsight-selected set, equally "
+        f"weighted, reached only {rt.loc[PORTFOLIO_CODE, 'cum_real_growth']:+.1%} real over three "
+        f"years. *Implication:* the spread between stocks dwarfs the gap between the market and "
+        f"inflation; protection against inflation needs diversification, not a favourite ticker.",
+
+        f"**3. All of the real gain came in the last 12 months, and leadership kept changing.** "
+        f"The overall index returned {b.iloc[0]:+.1%}, {b.iloc[1]:+.1%} and {b.iloc[2]:+.1%} real "
+        f"in the three 12-month blocks. The rank correlation of the 8 stocks between consecutive "
+        f"years was only {rs.iloc[0]:.2f} and {rs.iloc[1]:.2f}. *Implication:* beating inflation "
+        f"with equities needed a multi-year horizon and the stomach for two losing years; last "
+        f"year's winner was a weak guide to next year's.",
+
+        f"**4. Liquidity risk is real: the {clo['closed_days']}-trading-day market closure cost "
+        f"{-ct.loc['index_total', 'real_change_first_day']:.1%} in real terms on reopening.** The "
+        f"overall index reopened {ct.loc['index_total', 'nominal_change_first_day']:+.1%} nominal "
+        f"while CPI rose {clo['cpi_growth']:.1%} ({clo['cpi_from']} to {clo['cpi_to']}). Twenty "
+        f"trading days later it stood {ct.loc['index_total', 'nominal_change_20d']:+.1%} nominal, "
+        f"{ct.loc['index_total', 'real_change_20d']:+.1%} real (CPI to 1405-03). *Implication:* "
+        f"listed equities can be locked for months; a treasury must keep its operating runway in "
+        f"instruments it can actually withdraw.",
+    ]
+    if rf:
+        f.append(
+            f"**5. The 'safe' asset was negative in real terms too.** Government Murabaha bonds "
+            f"(اراد, {rf['n_bonds']} issues traded in the last 30 days) had a median YTM of "
+            f"{rf['ytm_median']:.1%} (IFB snapshot {rf['snapshot_jalali']}), against 12-month average "
+            f"inflation of {rf['inflation_12m_average']:.1%} and point-to-point inflation of "
+            f"{rf['inflation_point_to_point']:.1%} ({rf['cpi_month']}): a real yield of "
+            f"{rf['real_ytm_vs_avg12']:+.1%} to {rf['real_ytm_vs_p2p']:+.1%}. *Implication:* fixed "
+            f"rial income only slows the loss; size rial holdings to near-term rial costs and "
+            f"treat the rest as capital to protect, not to park.")
+    return f
+
+
+# --------------------------------------------------------------------------- #
+def run_all(write: bool = True) -> dict:
+    m, d = load_monthly(), load_daily()
+    port = portfolio_frame(m)
+    res = {"monthly": m, "portfolio": port}
+    res["risk"] = risk_table(m, port)
+    res["yearly"], res["ranks"] = yearly_table(m, port)
+    res["rank_stability"] = rank_stability(res["ranks"])
+    res["closure"] = closure_analysis(d, m)
+    res["corr"] = correlation(m)
+    res["rolling"] = rolling_real(m)
+    res["risk_free"] = risk_free_context(m)
+    res["findings"] = key_findings(res)
+    if write:
+        _style()
+        FIG.mkdir(parents=True, exist_ok=True)
+        fig_cumulative_real(m, FIG / "01_cumulative_real_growth.png")
+        fig_real_vs_nominal(res["risk"], FIG / "02_real_vs_nominal_bar.png")
+        fig_risk_return(res["risk"], FIG / "03_risk_return_scatter.png")
+        fig_drawdowns(m, FIG / "04_drawdowns.png")
+        fig_yearly_heatmap(res["yearly"], FIG / "05_yearly_real_returns_heatmap.png")
+        fig_correlation(res["corr"], FIG / "06_correlation_heatmap.png")
+        fig_rolling(res["rolling"], FIG / "07_rolling_12m_real.png")
+        fig_closure(d, m, res["closure"], FIG / "08_closure_period.png")
+        fig_portfolio(m, port, FIG / "09_hindsight_portfolio.png")
+        res["powerbi"] = export_powerbi(m, port, res["risk"], res["yearly"], res["corr"])
+    return res
+
+
+if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")
+    r = run_all()
+    print("\n\n".join(r["findings"]))
