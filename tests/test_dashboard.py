@@ -52,14 +52,19 @@ REPORT_JSON = sorted(p for p in REPORT.rglob("*.json")
 
 
 PAGE_NAMES = ["نمای کلی: بورس در برابر تورم", "پراکندگی: ۸ سهم نمونه، نه کل بازار",
-              "تعطیلی بازار و دارایی «امن»", "زمان ورود"]
+              "تعطیلی بازار و دارایی امن", "زمان ورود"]
+RLM = "\u200f"
+
+
+def plain(text: str) -> str:
+    return text.replace(RLM, "")
 
 
 def test_report_has_four_pages_in_order():
     pages = json.loads((REPORT / "definition" / "pages" / "pages.json").read_text(encoding="utf-8"))
     names = [json.loads((REPORT / "definition" / "pages" / p / "page.json").read_text(encoding="utf-8"))["displayName"]
              for p in pages["pageOrder"]]
-    assert names == PAGE_NAMES
+    assert [plain(n) for n in names] == PAGE_NAMES
     assert len(REPORT_JSON) > 40
 
 
@@ -109,7 +114,7 @@ def test_sector_indices_never_shown():
 
 
 def test_page1_has_the_five_headline_cards():
-    page1 = next(v for p, v in _pages() if p["displayName"] == "نمای کلی: بورس در برابر تورم")
+    page1 = next(v for p, v in _pages() if plain(p["displayName"]) == "نمای کلی: بورس در برابر تورم")
     cards = [x["visual"]["query"]["queryState"]["Data"]["projections"][0]["field"]["Measure"]["Property"]
              for x in sorted(page1, key=lambda v: v["position"]["x"])
              if x["visual"]["visualType"] == "cardVisual"]
@@ -187,7 +192,7 @@ def test_m_added_columns_match_python_equivalents():
         df = bd.table_frame(table)
         for name, expr, _ in cols:
             for label in re.findall(r'then "([^"]+)"', expr) + re.findall(r'else "([^"]+)"', expr):
-                assert label in set(df[name].astype(str)), (table, name, label)
+                assert label.replace("#(200F)", RLM) in set(df[name].astype(str)), (table, name, label)
 
 
 # ---------------------- Power BI Desktop's own tools ---------------------- #
@@ -242,7 +247,7 @@ def test_engine_headline_measures(engine):
         r = engine[q].iloc[0]
         assert num(r["cpi_growth_x"]) == pytest.approx(1 + rs.loc["cpi", "nominal_cum_3y"])
         assert num(r["index_real_cum_3y"]) == pytest.approx(rs.loc["index_total", "real_cum_3y"])
-        assert r["stocks_beating"] == "3 از 8"
+        assert r["stocks_beating"] == "3 / 8"
         assert num(r["closure_loss_prorated"]) == pytest.approx(cl.loc[("index_total", "on_reopening"), "real_prorated"])
     r = engine[1].iloc[0]
     assert num(r["ew_real_cum_3y"]) == pytest.approx(rs.loc["index_equal_weight", "real_cum_3y"])
@@ -253,7 +258,7 @@ def test_engine_selected_series(engine):
     rs = pd.read_csv(PBI / "risk_summary.csv").set_index("code")
     for q, code, name in ((3, "index_total", "شاخص کل"), (4, "fameli", "فملی")):
         r = engine[q].iloc[0]
-        assert r["code"] == code and r["name"] == name
+        assert r["code"] == code and r["name"] == RLM + name + RLM
         assert num(r["cagr"]) == pytest.approx(rs.loc[code, "real_cagr"])
         assert num(r["vol"]) == pytest.approx(rs.loc[code, "real_vol_per_year"])
         assert num(r["mdd"]) == pytest.approx(rs.loc[code, "real_max_drawdown_peak_to_trough"])
@@ -310,45 +315,138 @@ def _texts(visuals):
     for v in visuals:
         if v["visual"]["visualType"] == "textbox":
             for para in v["visual"]["objects"]["general"][0]["properties"]["paragraphs"]:
-                out.append("".join(r["value"] for r in para["textRuns"]))
+                out.append(plain("".join(r["value"] for r in para["textRuns"])))
     return out
 
 
 def _page(name):
-    return next(v for p, v in _pages() if p["displayName"] == name)
+    return next(v for p, v in _pages() if plain(p["displayName"]) == name)
 
 
 def test_every_page_has_subtitle_and_footer():
     for name in PAGE_NAMES:
         visuals = _page(name)
-        texts = _texts(visuals)
-        assert bd.FOOTER in texts, name
-        sub = next(v for v in visuals if v["name"] == bd.hid("visual", bd.hid("page", {
-            PAGE_NAMES[0]: "overview", PAGE_NAMES[1]: "dispersion",
-            PAGE_NAMES[2]: "closure", PAGE_NAMES[3]: "timing"}[name]), "subtitle"))
+        assert bd.FOOTER in _texts(visuals), name
+        key = {PAGE_NAMES[0]: "overview", PAGE_NAMES[1]: "dispersion",
+               PAGE_NAMES[2]: "closure", PAGE_NAMES[3]: "timing"}[name]
+        sub = next(v for v in visuals if v["name"] == bd.hid("visual", bd.hid("page", key), "subtitle"))
         line = _texts([sub])[0]
-        assert "\n" not in line and len(line) < 160 and any(c in line for c in "۰۱۲۳۴۵۶۷۸۹"), name
-        foot = next(v for v in visuals if _texts([v]) == [bd.FOOTER]) if bd.FOOTER in texts else None
-        assert foot["position"]["y"] + foot["position"]["height"] <= 720
+        assert "\n" not in line and len(line) < 170 and any(c in line for c in "۰۱۲۳۴۵۶۷۸۹"), name
+        foot = next(v for v in visuals if _texts([v]) == [bd.FOOTER])
+        p = foot["position"]
+        assert p["height"] >= 28 and p["y"] + p["height"] <= 720 - 8, name   # fits, with margin
     assert bd.FOOTER == "منبع: TSETMC و شاخص قیمت مصرف‌کننده مرکز آمار ایران (۱۴۰۰=۱۰۰)"
 
 
-def test_no_visual_overlaps_footer_or_page_edge():
+def _overlap(a, b):
+    return (a["x"] < b["x"] + b["width"] and b["x"] < a["x"] + a["width"] and
+            a["y"] < b["y"] + b["height"] and b["y"] < a["y"] + a["height"])
+
+
+def test_no_overlaps_and_everything_inside_the_canvas():
+    for name in PAGE_NAMES:
+        visuals = _page(name)
+        for v in visuals:
+            p = v["position"]
+            assert p["x"] >= 0 and p["y"] >= 0, (name, v["name"])
+            assert p["x"] + p["width"] <= 1280 and p["y"] + p["height"] <= 720, (name, v["name"])
+            assert all(isinstance(p[k], int) for k in ("x", "y", "width", "height"))
+        for i, a in enumerate(visuals):
+            for b in visuals[i + 1:]:
+                assert not _overlap(a["position"], b["position"]), (name, a["name"], b["name"])
+
+
+def test_persian_text_has_rlm_marks():
+    """Every Persian string in the report ends with RLM; one starting with a digit, Latin
+    letter or bracket also starts with RLM."""
+    persian = re.compile(r"[\u0600-\u06FF]")
+
+    def strings(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                yield from strings(v)
+        elif isinstance(o, list):
+            for v in o:
+                yield from strings(v)
+        elif isinstance(o, str):
+            yield o[1:-1] if len(o) > 1 and o[0] == o[-1] == "'" else o
+
+    n = 0
+    for f in REPORT_JSON:
+        for t in strings(json.loads(f.read_text(encoding="utf-8"))):
+            if persian.search(t):
+                n += 1
+                assert t.endswith(RLM), (f.name, t)
+                first = t.lstrip(RLM)[0]
+                if first.isdigit() or (first.isascii() and first.isalpha()) or first in "([{«<":
+                    assert t.startswith(RLM), (f.name, t)
+    assert n > 80
+
+
+def test_visual_titles_without_parentheses_or_latin():
     for name in PAGE_NAMES:
         for v in _page(name):
-            pos = v["position"]
-            assert pos["x"] >= 0 and pos["x"] + pos["width"] <= 1280 + 0.5, (name, v["name"])
-            if _texts([v]) != [bd.FOOTER]:
-                assert pos["y"] + pos["height"] <= 690, (name, v["name"])
+            for t in v["visual"].get("visualContainerObjects", {}).get("title", []):
+                text = plain(t["properties"]["text"]["expr"]["Literal"]["Value"].strip("'"))
+                assert not re.search(r"[()A-Za-z]", text), (name, text)
+            for role in v["visual"].get("query", {}).get("queryState", {}).values():
+                for pr in role["projections"]:
+                    if "displayName" in pr:
+                        assert not re.search(r"[()A-Za-z]", plain(pr["displayName"])), (name, pr["displayName"])
 
 
-def test_page1_real_bars_sign_coloured_and_hindsight_note():
+def test_cards_fonts_and_padding():
+    n = 0
+    for name in PAGE_NAMES:
+        for v in _page(name):
+            if v["visual"]["visualType"] != "cardVisual":
+                continue
+            n += 1
+            o = v["visual"]["objects"]
+            assert o["value"][0]["properties"]["fontSize"]["expr"]["Literal"]["Value"] == "20D"
+            assert o["label"][0]["properties"]["fontSize"]["expr"]["Literal"]["Value"] == "9D"
+            pad = v["visual"]["visualContainerObjects"]["padding"][0]["properties"]
+            assert all(pad[k]["expr"]["Literal"]["Value"] == "4D" for k in ("top", "bottom", "left", "right"))
+            assert v["position"]["height"] >= 90
+            label = plain(v["visual"]["query"]["queryState"]["Data"]["projections"][0]["displayName"])
+            assert len(label) <= 34 and "(" not in label, label
+    assert n == 15
+
+
+def test_text_boxes_right_aligned():
+    for name in PAGE_NAMES:
+        for v in _page(name):
+            if v["visual"]["visualType"] == "textbox":
+                for para in v["visual"]["objects"]["general"][0]["properties"]["paragraphs"]:
+                    assert para["horizontalTextAlignment"] == "right"
+
+
+def test_parallel_loading_disabled():
+    ed = json.loads((DASH / "tse_inflation.SemanticModel" / ".pbi" / "editorSettings.json").read_text(encoding="utf-8"))
+    assert ed["parallelQueryLoading"] is False
+    assert "parallelQueryLoading" in (DASH / "BUILD_GUIDE.md").read_text(encoding="utf-8")
+    assert "0x800705AF" in (DASH / "BUILD_GUIDE.md").read_text(encoding="utf-8")
+
+
+def test_page1_layout_and_hindsight_note():
     visuals = _page(PAGE_NAMES[0])
     assert bd.HINDSIGHT_NOTE in _texts(visuals)
     assert bd.HINDSIGHT_NOTE == "۸ سهم با نگاه به گذشته انتخاب شده‌اند و نمایندهٔ کل بازار نیستند."
+    assert sum(v["visual"]["visualType"] == "lineChart" for v in visuals) == 1      # rolling chart removed
     bar = next(v for v in visuals if v["visual"]["visualType"] == "clusteredBarChart")
-    dp = bar["visual"]["objects"]["dataPoint"]
-    real = next(d for d in dp if d["selector"].get("metadata") == "_Measures.Real CAGR")
+    title = bar["visual"]["visualContainerObjects"]["title"][0]["properties"]["text"]["expr"]["Literal"]["Value"]
+    assert plain(title.strip("'")) == "رشد سالانه: اسمی در برابر واقعی"
+    fills = [d["properties"]["fill"]["solid"]["color"]["expr"] for d in bar["visual"]["objects"]["dataPoint"]]
+    assert all("Literal" in f for f in fills)                                       # colour by series
+    line = next(v for v in visuals if v["visual"]["visualType"] == "lineChart")
+    bp, lp = bar["position"], line["position"]
+    assert bp["y"] == lp["y"] and bp["y"] + bp["height"] == lp["y"] + lp["height"]  # fills the right column
+    assert bp["x"] + bp["width"] == 1256
+
+
+def test_page2_real_bars_sign_coloured():
+    bar = next(v for v in _page(PAGE_NAMES[1]) if v["visual"]["visualType"] == "clusteredBarChart")
+    real = next(d for d in bar["visual"]["objects"]["dataPoint"] if d["selector"].get("metadata") == "_Measures.Real CAGR")
     assert real["properties"]["fill"]["solid"]["color"]["expr"]["Measure"]["Property"] == "Real CAGR color"
     dax = next(m for m in bd.MEASURES if m["name"] == "Real CAGR color")["dax"]
     assert any('"#2E7D32"' in x for x in dax) and any('"#C62828"' in x for x in dax)
@@ -359,7 +457,8 @@ def test_page2_block_matrix_diverging_on_zero():
     qs = m["visual"]["query"]["queryState"]
     assert qs["Rows"]["projections"][0]["field"]["Column"]["Property"] == "series_fa"
     assert qs["Columns"]["projections"][0]["field"]["Column"]["Property"] == "block_fa"
-    rule = m["visual"]["objects"]["values"][0]["properties"]["backColor"]["solid"]["color"]["expr"]["FillRule"]
+    rule = next(e for e in m["visual"]["objects"]["values"] if "backColor" in e["properties"])
+    rule = rule["properties"]["backColor"]["solid"]["color"]["expr"]["FillRule"]
     g = rule["FillRule"]["linearGradient3"]
     assert g["min"]["color"]["Literal"]["Value"] == "'#C62828'"
     assert g["mid"]["color"]["Literal"]["Value"] == "'#FFFFFF'" and g["mid"]["value"]["Literal"]["Value"] == "0D"
@@ -374,7 +473,8 @@ def test_page4_rolling_with_zero_line_and_correlation_heatmap():
     assert ref["value"]["expr"]["Literal"]["Value"] == "0D"
     assert _filter_values(line["filterConfig"]["filters"][0]) == ["market_index"]
     heat = next(v for v in visuals if v["visual"]["visualType"] == "pivotTable")
-    assert "FillRule" in heat["visual"]["objects"]["values"][0]["properties"]["backColor"]["solid"]["color"]["expr"]
+    bg = next(e for e in heat["visual"]["objects"]["values"] if "backColor" in e["properties"])
+    assert "FillRule" in bg["properties"]["backColor"]["solid"]["color"]["expr"]
     corr = pd.read_csv(PBI / "correlation_long.csv")
     assert len(corr) == 100 and corr["series_a_code"].nunique() == 10
     assert {"index_total", "index_equal_weight"} <= set(corr["series_a_code"])

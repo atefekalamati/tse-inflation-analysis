@@ -3,9 +3,9 @@
   "name": "585138225f7981ad6c3e",
   "position": {
     "x": 800,
-    "y": 428,
+    "y": 230,
     "z": 11,
-    "height": 208,
+    "height": 444,
     "width": 456,
     "tabOrder": 11
   },
@@ -29,7 +29,7 @@
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
               "active": true,
-              "displayName": "سری"
+              "displayName": "سری‏"
             }
           ]
         },
@@ -48,7 +48,7 @@
               },
               "queryRef": "_Measures.Nominal CAGR",
               "nativeQueryRef": "Nominal CAGR",
-              "displayName": "اسمی (سالانه)"
+              "displayName": "اسمی سالانه‏"
             },
             {
               "field": {
@@ -63,7 +63,7 @@
               },
               "queryRef": "_Measures.Real CAGR",
               "nativeQueryRef": "Real CAGR",
-              "displayName": "واقعی (سالانه)"
+              "displayName": "واقعی سالانه‏"
             }
           ]
         }
@@ -77,6 +77,13 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
                 }
               }
             }
@@ -97,6 +104,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Top'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
                 }
               }
             }
@@ -128,13 +142,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Real CAGR color"
+                    "Literal": {
+                      "Value": "'#1F4E79'"
                     }
                   }
                 }
@@ -142,14 +151,47 @@
             }
           },
           "selector": {
-            "data": [
-              {
-                "dataViewWildcard": {
-                  "matchingOption": 1
+            "metadata": "_Measures.Real CAGR"
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
                 }
               }
-            ],
-            "metadata": "_Measures.Real CAGR"
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           }
         }
       ]
@@ -168,7 +210,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'نرخ رشد سالانهٔ اسمی و واقعی (CAGR؛ واقعی: سبز بالای صفر، قرمز زیر صفر)'"
+                  "Value": "'رشد سالانه: اسمی در برابر واقعی‏'"
                 }
               }
             },
@@ -186,7 +228,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -194,6 +243,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

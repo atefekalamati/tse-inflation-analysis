@@ -3,7 +3,7 @@
   "name": "da02c85fdaebbd2c21fb",
   "position": {
     "x": 24,
-    "y": 8,
+    "y": 6,
     "z": 0,
     "height": 36,
     "width": 1232,
@@ -19,11 +19,11 @@
               {
                 "textRuns": [
                   {
-                    "value": "تعطیلی بازار (۹ اسفند ۱۴۰۴ تا ۲۸ اردیبهشت ۱۴۰۵) و بازده اوراق دولتی",
+                    "value": "تعطیلی بازار از ۹ اسفند ۱۴۰۴ تا ۲۸ اردیبهشت ۱۴۰۵ و بازده اوراق دولتی‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "18pt",
                       "color": "#0D366B",
-                      "fontFamily": "Segoe UI",
                       "fontWeight": "bold"
                     }
                   }
@@ -31,6 +31,42 @@
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

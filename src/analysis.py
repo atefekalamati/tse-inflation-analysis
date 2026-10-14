@@ -778,7 +778,7 @@ FA_MONTHS = ["فروردین", "اردیبهشت", "خرداد", "تیر", "مر
 FA_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
 SERIES_FA = {"index_total": "شاخص کل", "index_equal_weight": "شاخص کل (هم‌وزن)",
              "cpi": "شاخص قیمت مصرف‌کننده (تورم)",
-             PORTFOLIO_CODE: "سبد هم‌وزن ۸ سهم (انتخاب با نگاه به گذشته)"}
+             PORTFOLIO_CODE: "سبد هم‌وزن ۸ سهم با نگاه به گذشته"}
 TYPE_DIM = {"stock": "stock", "market_index": "market_index", "sector_index": "sector_index",
             "portfolio_hindsight": "portfolio", "cpi": "cpi"}
 USAGE_NOTE = {

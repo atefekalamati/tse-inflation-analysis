@@ -3,7 +3,7 @@
   "name": "4759b606d0c224f6bbc2",
   "position": {
     "x": 24,
-    "y": 8,
+    "y": 6,
     "z": 0,
     "height": 36,
     "width": 1232,
@@ -19,11 +19,11 @@
               {
                 "textRuns": [
                   {
-                    "value": "آیا بورس تهران از تورم جلو زد؟ مهر ۱۴۰۲ تا شهریور ۱۴۰۵",
+                    "value": "آیا بورس تهران از تورم جلو زد؟ مهر ۱۴۰۲ تا شهریور ۱۴۰۵‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "18pt",
                       "color": "#0D366B",
-                      "fontFamily": "Segoe UI",
                       "fontWeight": "bold"
                     }
                   }
@@ -31,6 +31,42 @@
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

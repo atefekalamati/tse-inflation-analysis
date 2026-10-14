@@ -37,7 +37,7 @@ table _Measures
 		displayFolder: 1 Headline
 		lineageTag: 8867690c-6a57-5c47-b871-bf181137b20a
 
-	/// How many of the 8 sample stocks had a positive real return, cumulative over 3 years. Text.
+	/// How many of the 8 sample stocks had a positive real return, cumulative over 3 years, as '3 / 8'.
 	measure 'Stocks beating inflation' =
 			VAR Stocks =
 			    CALCULATETABLE (
@@ -48,7 +48,7 @@ table _Measures
 			VAR Winners = COUNTROWS ( FILTER ( Stocks, risk_summary[real_cum_3y] > 0 ) )
 			VAR Total = COUNTROWS ( Stocks )
 			RETURN
-			    FORMAT ( Winners, "0" ) & " از " & FORMAT ( Total, "0" )
+			    FORMAT ( Winners, "0" ) & " / " & FORMAT ( Total, "0" )
 		displayFolder: 1 Headline
 		lineageTag: 3dc04092-52a7-5367-b04a-4ddf8fb81def
 
@@ -164,36 +164,31 @@ table _Measures
 		lineageTag: cc35ad71-9a1d-593d-a0aa-9f06b5371b75
 
 	/// Real growth of 100 invested at the end of 1402-06 (CPI = 100).
-	measure 'Real growth index' =
-			AVERAGE ( monthly_long[real_index_1402_06_eq_100] )
+	measure 'Real growth index' = AVERAGE ( monthly_long[real_index_1402_06_eq_100] )
 		formatString: 0.0
 		displayFolder: 3 Series values
 		lineageTag: 8e8f1b39-0844-51a5-b87e-912c83da4623
 
 	/// Nominal growth of 100 invested at the end of 1402-06.
-	measure 'Nominal growth index' =
-			AVERAGE ( monthly_long[nominal_index_1402_06_eq_100] )
+	measure 'Nominal growth index' = AVERAGE ( monthly_long[nominal_index_1402_06_eq_100] )
 		formatString: 0.0
 		displayFolder: 3 Series values
 		lineageTag: 65e17c3b-8646-5fa9-9510-96386f897dc3
 
 	/// Real return over the 12 months ending in the month (per year).
-	measure 'Real return rolling 12m' =
-			AVERAGE ( monthly_long[real_return_rolling_12m] )
+	measure 'Real return rolling 12m' = AVERAGE ( monthly_long[real_return_rolling_12m] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: 963ebcba-4765-5751-9878-41b02ff56e86
 
 	/// Real return of one month.
-	measure 'Real return per month' =
-			AVERAGE ( monthly_long[real_return_per_month] )
+	measure 'Real return per month' = AVERAGE ( monthly_long[real_return_per_month] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: fb9d9b53-638d-5831-bc3a-3673647ae137
 
 	/// Real CAGR over 36 months, per year.
-	measure 'Real CAGR' =
-			AVERAGE ( risk_summary[real_cagr] )
+	measure 'Real CAGR' = AVERAGE ( risk_summary[real_cagr] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: b7e549b4-207a-555d-ae68-2cc32f6e6994
@@ -213,127 +208,109 @@ table _Measures
 		lineageTag: c57bdbc0-2c8e-5759-b6aa-babd25a66d37
 
 	/// Correlation of monthly real returns between two series (correlation_long, 36 months).
-	measure 'Correlation (real, monthly)' =
-			AVERAGE ( correlation_long[corr_real_return_per_month] )
+	measure 'Correlation (real, monthly)' = AVERAGE ( correlation_long[corr_real_return_per_month] )
 		formatString: 0.00
 		displayFolder: 3 Series values
 		lineageTag: 45fa076d-6a8f-5884-a6f8-a828a451ca2b
 
 	/// Nominal CAGR over 36 months, per year.
-	measure 'Nominal CAGR' =
-			AVERAGE ( risk_summary[nominal_cagr] )
+	measure 'Nominal CAGR' = AVERAGE ( risk_summary[nominal_cagr] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: 736e3445-8033-5007-8277-3f341d256998
 
 	/// Real return, cumulative over 3 years.
-	measure 'Real cum 3y' =
-			AVERAGE ( risk_summary[real_cum_3y] )
+	measure 'Real cum 3y' = AVERAGE ( risk_summary[real_cum_3y] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: 4ffa4764-1be5-593b-96c4-3767daeed427
 
 	/// Volatility of monthly real returns, annualized.
-	measure 'Real vol per year' =
-			AVERAGE ( risk_summary[real_vol_per_year] )
+	measure 'Real vol per year' = AVERAGE ( risk_summary[real_vol_per_year] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: a4fab2c5-8266-56bd-9866-b7a9527e30e6
 
 	/// Largest peak-to-trough fall of the real cumulative index.
-	measure 'Real max drawdown' =
-			AVERAGE ( risk_summary[real_max_drawdown_peak_to_trough] )
+	measure 'Real max drawdown' = AVERAGE ( risk_summary[real_max_drawdown_peak_to_trough] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: 9198d4a7-fe6a-53e3-811e-04c88b02eaf3
 
 	/// Share of months beating that month's inflation.
-	measure 'Months beating inflation' =
-			AVERAGE ( risk_summary[pct_months_beat_inflation] )
+	measure 'Months beating inflation' = AVERAGE ( risk_summary[pct_months_beat_inflation] )
 		formatString: 0%
 		displayFolder: 3 Series values
 		lineageTag: 2c5dc80d-1d88-53cc-88da-d52e663c34bd
 
 	/// Real return of one 12-month block (per year).
-	measure 'Real return per year (block)' =
-			AVERAGE ( yearly_real[real_return_per_year] )
+	measure 'Real return per year (block)' = AVERAGE ( yearly_real[real_return_per_year] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 3 Series values
 		lineageTag: 9f5f7cea-94c4-541a-8cee-7313b4b15436
 
 	/// Nominal change over the window (cumulative).
-	measure 'Closure nominal' =
-			AVERAGE ( closure_summary[nominal] )
+	measure 'Closure nominal' = AVERAGE ( closure_summary[nominal] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 4 Closure
 		lineageTag: 4a42904a-11f2-5d7a-a31e-1ed6251fc3da
 
 	/// CPI change over the window, pro-rated to the dates.
-	measure 'Closure CPI (pro-rated)' =
-			AVERAGE ( closure_summary[cpi_prorated] )
+	measure 'Closure CPI (pro-rated)' = AVERAGE ( closure_summary[cpi_prorated] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 4 Closure
 		lineageTag: 19ee134d-cea2-59e6-baef-dadeca6e775b
 
 	/// Real change over the window, CPI pro-rated (primary).
-	measure 'Closure real (pro-rated)' =
-			AVERAGE ( closure_summary[real_prorated] )
+	measure 'Closure real (pro-rated)' = AVERAGE ( closure_summary[real_prorated] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 4 Closure
 		lineageTag: 19fafdb3-0b41-5734-8031-ca0d9104d991
 
 	/// CPI change over whole calendar months (sensitivity).
-	measure 'Closure CPI (whole months)' =
-			AVERAGE ( closure_summary[cpi_whole_months] )
+	measure 'Closure CPI (whole months)' = AVERAGE ( closure_summary[cpi_whole_months] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 4 Closure
 		lineageTag: 1a5e8635-5515-5203-a5a3-6c5e1a9cf44e
 
 	/// Real change with whole-month CPI (sensitivity).
-	measure 'Closure real (whole months)' =
-			AVERAGE ( closure_summary[real_whole_months] )
+	measure 'Closure real (whole months)' = AVERAGE ( closure_summary[real_whole_months] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 4 Closure
 		lineageTag: 7d052b5f-a422-56d2-8470-7efd83efd357
 
 	/// Median yield to maturity of government Murabaha bonds (اراد), per year. Forward-looking snapshot.
-	measure 'Bond YTM' =
-			MAX ( context[bond_ytm] )
+	measure 'Bond YTM' = MAX ( context[bond_ytm] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 5 Context
 		lineageTag: 02b9b64a-68ef-5525-9836-af04011ee6bd
 
 	/// Trailing inflation, 12-month average, per year.
-	measure 'Inflation 12m avg' =
-			MAX ( context[inflation_12m_avg] )
+	measure 'Inflation 12m avg' = MAX ( context[inflation_12m_avg] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 5 Context
 		lineageTag: 2ec2a6cd-4ab1-5d4f-8b92-7cfa588f78ec
 
 	/// Trailing inflation, point to point over 12 months.
-	measure 'Inflation point-to-point' =
-			MAX ( context[inflation_point_to_point] )
+	measure 'Inflation point-to-point' = MAX ( context[inflation_point_to_point] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 5 Context
 		lineageTag: 4024294b-54ea-57a2-93be-6aa6aef94fc3
 
 	/// Implied real yield per year if inflation stays at last year's 12-month average.
-	measure 'Bond real yield (avg)' =
-			MAX ( context[real_yield_avg] )
+	measure 'Bond real yield (avg)' = MAX ( context[real_yield_avg] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 5 Context
 		lineageTag: 19178baa-9491-5f4a-adef-bf4fc378d87f
 
 	/// Implied real yield per year if inflation stays at last year's point-to-point rate.
-	measure 'Bond real yield (p2p)' =
-			MAX ( context[real_yield_p2p] )
+	measure 'Bond real yield (p2p)' = MAX ( context[real_yield_p2p] )
 		formatString: 0.0%;-0.0%;0.0%
 		displayFolder: 5 Context
 		lineageTag: bd936172-f962-5ad7-b3b9-e7aa2de90052
 
 	/// Source and snapshot date of the bond yield. Text.
-	measure 'Bond source note' =
-			"منبع: " & MAX ( context[source_url] ) & "  |  تاریخ داده: " & MAX ( context[snapshot_date] )
+	measure 'Bond source note' = "منبع: " & MAX ( context[source_url] ) & "  |  تاریخ داده: " & MAX ( context[snapshot_date] ) & UNICHAR ( 8207 )
 		displayFolder: 5 Context
 		lineageTag: fe3d8ac2-0aaa-52a1-9b4e-94ca549fd753
 
@@ -342,6 +319,7 @@ table _Measures
 			"اگر تورم در سطح سال گذشته بماند، بازده امروز اوراق دولتی به معنای بازده واقعی حدود "
 			    & FORMAT ( [Bond real yield (avg)], "0%" ) & " در سال است ("
 			    & FORMAT ( [Bond real yield (p2p)], "0%" ) & " در برابر تورم نقطه به نقطه)."
+			    & UNICHAR ( 8207 )
 		displayFolder: 5 Context
 		lineageTag: 9be44e82-94f3-56b6-8815-ee0c18b4619f
 

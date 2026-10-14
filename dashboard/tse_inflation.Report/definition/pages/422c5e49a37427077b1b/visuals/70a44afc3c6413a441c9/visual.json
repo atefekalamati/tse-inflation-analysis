@@ -3,9 +3,9 @@
   "name": "70a44afc3c6413a441c9",
   "position": {
     "x": 640,
-    "y": 196,
+    "y": 204,
     "z": 8,
-    "height": 84,
+    "height": 92,
     "width": 302,
     "tabOrder": 8
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "_Measures.Bond real yield (avg)",
               "nativeQueryRef": "Bond real yield (avg)",
-              "displayName": "بازده واقعی ضمنی (میانگین تورم)"
+              "displayName": "بازده واقعی با تورم میانگین‏"
             }
           ]
         }
@@ -41,13 +41,65 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "18D"
+                  "Value": "20D"
                 }
               }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "label": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
           }
         }
       ]

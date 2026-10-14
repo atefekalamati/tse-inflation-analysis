@@ -3,7 +3,7 @@
   "name": "1b9a02c0e6efc5649f0d",
   "position": {
     "x": 24,
-    "y": 44,
+    "y": 42,
     "z": 1,
     "height": 28,
     "width": 1232,
@@ -19,18 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "فقط ۳ سهم از ۸ سهم نمونه از تورم جلو زدند؛ بازده واقعی سالانه از −۲۱٫۸٪ تا +۳۵٫۲٪ پراکنده است.",
+                    "value": "فقط ۳ سهم از ۸ سهم نمونه از تورم جلو زدند؛ بازده واقعی سالانه از −۲۱٫۸٪ تا +۳۵٫۲٪ پراکنده است.‏",
                     "textStyle": {
-                      "fontSize": "12pt",
-                      "color": "#1F4E79",
                       "fontFamily": "Segoe UI",
-                      "fontWeight": "bold"
+                      "fontSize": "11pt",
+                      "color": "#1F4E79"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

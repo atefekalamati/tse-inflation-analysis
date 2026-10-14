@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "0b451fd144a6eed5a363",
   "position": {
-    "x": 772.8,
-    "y": 104,
+    "x": 773,
+    "y": 100,
     "z": 7,
-    "height": 84,
-    "width": 233.6,
+    "height": 92,
+    "width": 234,
     "tabOrder": 7
   },
   "visual": {
@@ -28,7 +28,7 @@
               },
               "queryRef": "_Measures.Stocks beating inflation",
               "nativeQueryRef": "Stocks beating inflation",
-              "displayName": "سهام نمونه جلوتر از تورم (تجمعی ۳ ساله)"
+              "displayName": "سهام نمونهٔ جلوتر از تورم‏"
             }
           ]
         }
@@ -41,13 +41,65 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22D"
+                  "Value": "20D"
                 }
               }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "label": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
           }
         }
       ]

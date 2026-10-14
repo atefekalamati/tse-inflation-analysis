@@ -5,7 +5,7 @@
     "x": 24,
     "y": 412,
     "z": 11,
-    "height": 272,
+    "height": 262,
     "width": 1232,
     "tabOrder": 11
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
-              "displayName": "سری"
+              "displayName": "سری‏"
             },
             {
               "field": {
@@ -43,7 +43,7 @@
               },
               "queryRef": "closure_summary.window_fa",
               "nativeQueryRef": "window_fa",
-              "displayName": "بازه"
+              "displayName": "بازه‏"
             },
             {
               "field": {
@@ -58,7 +58,7 @@
               },
               "queryRef": "closure_summary.window_start",
               "nativeQueryRef": "window_start",
-              "displayName": "از"
+              "displayName": "از‏"
             },
             {
               "field": {
@@ -73,7 +73,7 @@
               },
               "queryRef": "closure_summary.window_end",
               "nativeQueryRef": "window_end",
-              "displayName": "تا"
+              "displayName": "تا‏"
             },
             {
               "field": {
@@ -88,7 +88,7 @@
               },
               "queryRef": "closure_summary.nominal",
               "nativeQueryRef": "nominal",
-              "displayName": "تغییر اسمی"
+              "displayName": "تغییر اسمی‏"
             },
             {
               "field": {
@@ -103,7 +103,7 @@
               },
               "queryRef": "closure_summary.cpi_prorated",
               "nativeQueryRef": "cpi_prorated",
-              "displayName": "تورم (روزشمار)"
+              "displayName": "تورم روزشمار‏"
             },
             {
               "field": {
@@ -118,7 +118,7 @@
               },
               "queryRef": "closure_summary.real_prorated",
               "nativeQueryRef": "real_prorated",
-              "displayName": "واقعی (روزشمار، اصلی)"
+              "displayName": "واقعی روزشمار، اصلی‏"
             },
             {
               "field": {
@@ -133,7 +133,7 @@
               },
               "queryRef": "closure_summary.cpi_whole_months",
               "nativeQueryRef": "cpi_whole_months",
-              "displayName": "تورم (ماه کامل)"
+              "displayName": "تورم ماه کامل‏"
             },
             {
               "field": {
@@ -148,7 +148,7 @@
               },
               "queryRef": "closure_summary.real_whole_months",
               "nativeQueryRef": "real_whole_months",
-              "displayName": "واقعی (ماه کامل، حساسیت)"
+              "displayName": "واقعی ماه کامل، حساسیت‏"
             },
             {
               "field": {
@@ -163,11 +163,46 @@
               },
               "queryRef": "closure_summary.comparable",
               "nativeQueryRef": "comparable",
-              "displayName": "قابل مقایسه"
+              "displayName": "قابل مقایسه‏"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -183,7 +218,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'تعطیلی بازار: شاخص‌ها و ۸ سهم نمونه (تجمعی در هر بازه؛ فولاد تا ۱۷ مرداد ۱۴۰۵ متوقف بود و قابل مقایسه نیست)'"
+                  "Value": "'تعطیلی بازار: شاخص‌ها و ۸ سهم نمونه، تجمعی در هر بازه‏'"
                 }
               }
             },
@@ -201,7 +236,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -209,6 +251,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

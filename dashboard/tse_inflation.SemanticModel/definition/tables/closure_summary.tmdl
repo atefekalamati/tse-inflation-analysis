@@ -116,8 +116,8 @@ table closure_summary
 
 	column window_order
 		dataType: int64
-		formatString: 0
 		isHidden
+		formatString: 0
 		lineageTag: 151f93e9-250f-53f6-8551-309888951b67
 		summarizeBy: none
 		sourceColumn: window_order
@@ -131,7 +131,7 @@ table closure_summary
 				    Source = Csv.Document(File.Contents(DataFolder & "closure_summary.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"window", type text}, {"window_start", type text}, {"window_end", type text}, {"nominal", type number}, {"cpi_prorated", type number}, {"real_prorated", type number}, {"cpi_whole_months", type number}, {"real_whole_months", type number}, {"comparable", type logical}}, "en-US"),
-				    Added1 = Table.AddColumn(Typed, "window_fa", each if [window] = "on_reopening" then "تا بازگشایی" else "۲۰ روز معاملاتی پس از بازگشایی", type text),
+				    Added1 = Table.AddColumn(Typed, "window_fa", each if [window] = "on_reopening" then "تا بازگشایی#(200F)" else "#(200F)۲۰ روز معاملاتی پس از بازگشایی#(200F)", type text),
 				    Added2 = Table.AddColumn(Added1, "window_order", each if [window] = "on_reopening" then 1 else 2, Int64.Type)
 				in
 				    Added2

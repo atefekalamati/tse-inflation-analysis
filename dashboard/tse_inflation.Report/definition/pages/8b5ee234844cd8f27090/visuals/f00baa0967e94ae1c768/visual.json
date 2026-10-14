@@ -3,9 +3,9 @@
   "name": "f00baa0967e94ae1c768",
   "position": {
     "x": 856,
-    "y": 200,
+    "y": 204,
     "z": 13,
-    "height": 484,
+    "height": 470,
     "width": 400,
     "tabOrder": 13
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
-              "displayName": "سری"
+              "displayName": "سری‏"
             },
             {
               "field": {
@@ -43,7 +43,7 @@
               },
               "queryRef": "_Measures.Nominal CAGR",
               "nativeQueryRef": "Nominal CAGR",
-              "displayName": "اسمی سالانه"
+              "displayName": "اسمی سالانه‏"
             },
             {
               "field": {
@@ -58,7 +58,7 @@
               },
               "queryRef": "_Measures.Real CAGR",
               "nativeQueryRef": "Real CAGR",
-              "displayName": "واقعی سالانه"
+              "displayName": "واقعی سالانه‏"
             },
             {
               "field": {
@@ -73,7 +73,7 @@
               },
               "queryRef": "_Measures.Real cum 3y",
               "nativeQueryRef": "Real cum 3y",
-              "displayName": "واقعی تجمعی ۳ ساله"
+              "displayName": "واقعی ۳ ساله‏"
             },
             {
               "field": {
@@ -88,7 +88,7 @@
               },
               "queryRef": "_Measures.Real vol per year",
               "nativeQueryRef": "Real vol per year",
-              "displayName": "نوسان سالانه"
+              "displayName": "نوسان سالانه‏"
             },
             {
               "field": {
@@ -103,7 +103,7 @@
               },
               "queryRef": "_Measures.Real max drawdown",
               "nativeQueryRef": "Real max drawdown",
-              "displayName": "بیشترین افت"
+              "displayName": "بیشترین افت‏"
             },
             {
               "field": {
@@ -118,7 +118,7 @@
               },
               "queryRef": "_Measures.Months beating inflation",
               "nativeQueryRef": "Months beating inflation",
-              "displayName": "ماه‌های برنده"
+              "displayName": "ماه‌های برنده‏"
             }
           ]
         }
@@ -141,6 +141,41 @@
         ]
       }
     },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -155,7 +190,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'جدول بازده و ریسک'"
+                  "Value": "'جدول بازده و ریسک‏'"
                 }
               }
             },
@@ -173,7 +208,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -181,6 +223,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

@@ -3,9 +3,9 @@
   "name": "79c07acf465ebcde82ee",
   "position": {
     "x": 24,
-    "y": 104,
+    "y": 100,
     "z": 4,
-    "height": 84,
+    "height": 92,
     "width": 240,
     "tabOrder": 4
   },
@@ -29,7 +29,7 @@
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
               "active": true,
-              "displayName": "انتخاب سری"
+              "displayName": "انتخاب سری‏"
             }
           ]
         }
@@ -75,7 +75,63 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'انتخاب سری'"
+                  "Value": "'انتخاب سری‏'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "items": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
                 }
               }
             }

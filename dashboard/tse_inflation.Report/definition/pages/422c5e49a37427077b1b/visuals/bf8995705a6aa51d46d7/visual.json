@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "bf8995705a6aa51d46d7",
   "position": {
-    "x": 1059.0,
-    "y": 104,
+    "x": 1059,
+    "y": 100,
     "z": 7,
-    "height": 84,
+    "height": 92,
     "width": 197,
     "tabOrder": 7
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "_Measures.Inflation point-to-point",
               "nativeQueryRef": "Inflation point-to-point",
-              "displayName": "تورم نقطه به نقطه"
+              "displayName": "تورم نقطه به نقطه‏"
             }
           ]
         }
@@ -41,13 +41,65 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "18D"
+                  "Value": "20D"
                 }
               }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "label": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
           }
         }
       ]

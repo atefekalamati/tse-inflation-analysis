@@ -3,66 +3,83 @@
   "name": "6a942ebb7507ef3f0596",
   "position": {
     "x": 640,
-    "y": 288,
+    "y": 308,
     "z": 10,
-    "height": 112,
+    "height": 92,
     "width": 616,
     "tabOrder": 10
   },
   "visual": {
-    "visualType": "cardVisual",
-    "query": {
-      "queryState": {
-        "Data": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Bond conditional statement"
-                }
-              },
-              "queryRef": "_Measures.Bond conditional statement",
-              "nativeQueryRef": "Bond conditional statement",
-              "displayName": "اوراق دولتی در برابر تورم"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Bond source note"
-                }
-              },
-              "queryRef": "_Measures.Bond source note",
-              "nativeQueryRef": "Bond source note",
-              "displayName": "منبع و تاریخ"
-            }
-          ]
-        }
-      }
-    },
+    "visualType": "textbox",
     "objects": {
-      "value": [
+      "general": [
         {
           "properties": {
-            "fontSize": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "اگر تورم در سطح سال گذشته بماند، بازده امروز اوراق دولتی به معنای بازده واقعی حدود −۱۹٪ در سال است و در برابر تورم نقطه به نقطه حدود −۲۶٪.‏",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "11pt",
+                      "color": "#1F4E79",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "بازده تا سررسید ۴۰٫۴٪ در سال، میانهٔ ۱۰۳ ورقهٔ اراد معامله‌شده در ۳۰ روز پیش از ۱۴۰۵-۰۷-۲۲؛ منبع: فرابورس ایران، ifb.ir‏",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9pt",
+                      "color": "#52514E"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
                 }
               }
             }
-          },
-          "selector": {
-            "id": "default"
           }
         }
       ]

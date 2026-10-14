@@ -21,3 +21,5 @@ ref table closure_summary
 ref table correlation_long
 ref table context
 ref table _Measures
+
+ref cultureInfo en-US

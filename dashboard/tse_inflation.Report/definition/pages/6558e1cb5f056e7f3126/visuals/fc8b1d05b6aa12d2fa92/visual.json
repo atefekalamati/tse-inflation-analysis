@@ -3,7 +3,7 @@
   "name": "fc8b1d05b6aa12d2fa92",
   "position": {
     "x": 24,
-    "y": 72,
+    "y": 70,
     "z": 2,
     "height": 26,
     "width": 1232,
@@ -19,17 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "هر نقطهٔ نمودار بازده واقعی ۱۲ ماهِ منتهی به آن ماه است (سالانه)؛ زیر خط صفر یعنی عقب‌ماندن از تورم. همبستگی بر پایهٔ بازده واقعی ماهانه در ۳۶ ماه است.",
+                    "value": "هر نقطهٔ نمودار بازده واقعی ۱۲ ماهِ منتهی به آن ماه است؛ زیر خط صفر یعنی عقب‌ماندن از تورم. همبستگی بر پایهٔ بازده واقعی ماهانه در ۳۶ ماه است.‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "9pt",
-                      "color": "#52514E",
-                      "fontFamily": "Segoe UI"
+                      "color": "#52514E"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

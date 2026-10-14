@@ -42,8 +42,8 @@ table dim_month
 
 	column sort_key
 		dataType: int64
-		formatString: 0
 		isHidden
+		formatString: 0
 		lineageTag: 336e15bb-8c88-560c-91ea-8a71498bf75c
 		summarizeBy: none
 		sourceColumn: sort_key
@@ -56,9 +56,10 @@ table dim_month
 				let
 				    Source = Csv.Document(File.Contents(DataFolder & "dim_month.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				    Typed = Table.TransformColumnTypes(Promoted, {{"month", type text}, {"month_label_fa", type text}, {"month_end_gregorian", type date}, {"jalali_year", Int64.Type}, {"sort_key", Int64.Type}}, "en-US")
+				    Typed = Table.TransformColumnTypes(Promoted, {{"month", type text}, {"month_label_fa", type text}, {"month_end_gregorian", type date}, {"jalali_year", Int64.Type}, {"sort_key", Int64.Type}}, "en-US"),
+				    Rtl = Table.TransformColumns(Typed, {{"month_label_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
 				in
-				    Typed
+				    Rtl
 
 	annotation PBI_ResultType = Table
 

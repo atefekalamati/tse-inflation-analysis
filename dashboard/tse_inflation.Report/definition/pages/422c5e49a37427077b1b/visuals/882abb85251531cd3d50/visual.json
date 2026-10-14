@@ -3,7 +3,7 @@
   "name": "882abb85251531cd3d50",
   "position": {
     "x": 24,
-    "y": 72,
+    "y": 70,
     "z": 2,
     "height": 26,
     "width": 1232,
@@ -19,17 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "ارقام تعطیلی تجمعی در همان بازه‌اند. روش اصلی: تورم روزشمار (درون‌یابی هندسی شاخص قیمت تا تاریخ دقیق). ماه‌های کامل فقط برای آزمون حساسیت آمده است.",
+                    "value": "ارقام تعطیلی تجمعی در همان بازه‌اند. روش اصلی تورم روزشمار است و ماه کامل فقط آزمون حساسیت است. فولاد تا ۱۷ مرداد ۱۴۰۵ متوقف بود و قابل مقایسه نیست.‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "9pt",
-                      "color": "#52514E",
-                      "fontFamily": "Segoe UI"
+                      "color": "#52514E"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

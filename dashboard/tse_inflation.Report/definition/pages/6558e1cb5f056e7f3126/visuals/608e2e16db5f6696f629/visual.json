@@ -3,7 +3,7 @@
   "name": "608e2e16db5f6696f629",
   "position": {
     "x": 24,
-    "y": 8,
+    "y": 6,
     "z": 0,
     "height": 36,
     "width": 1232,
@@ -19,11 +19,11 @@
               {
                 "textRuns": [
                   {
-                    "value": "زمان ورود: بازده واقعی ۱۲ ماههٔ غلتان و همبستگی",
+                    "value": "زمان ورود: بازده واقعی ۱۲ ماههٔ غلتان و همبستگی‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "18pt",
                       "color": "#0D366B",
-                      "fontFamily": "Segoe UI",
                       "fontWeight": "bold"
                     }
                   }
@@ -31,6 +31,42 @@
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9efbaf0f3b73aba98dcf",
   "position": {
-    "x": 280.0,
-    "y": 104,
+    "x": 280,
+    "y": 100,
     "z": 5,
-    "height": 84,
-    "width": 185.6,
+    "height": 92,
+    "width": 186,
     "tabOrder": 5
   },
   "visual": {
@@ -28,7 +28,7 @@
               },
               "queryRef": "_Measures.Selected series",
               "nativeQueryRef": "Selected series",
-              "displayName": "سری انتخاب‌شده (پیش‌فرض: شاخص کل)"
+              "displayName": "سری انتخاب‌شده‏"
             }
           ]
         }
@@ -41,13 +41,65 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "18D"
+                  "Value": "20D"
                 }
               }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "label": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
           }
         }
       ]

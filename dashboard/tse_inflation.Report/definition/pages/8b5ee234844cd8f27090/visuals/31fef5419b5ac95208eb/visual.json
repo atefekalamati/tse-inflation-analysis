@@ -3,9 +3,9 @@
   "name": "31fef5419b5ac95208eb",
   "position": {
     "x": 24,
-    "y": 200,
+    "y": 204,
     "z": 10,
-    "height": 484,
+    "height": 470,
     "width": 400,
     "tabOrder": 10
   },
@@ -29,7 +29,7 @@
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
               "active": true,
-              "displayName": "سری"
+              "displayName": "سری‏"
             }
           ]
         },
@@ -48,7 +48,7 @@
               },
               "queryRef": "_Measures.Real CAGR",
               "nativeQueryRef": "Real CAGR",
-              "displayName": "بازده واقعی سالانه"
+              "displayName": "بازده واقعی سالانه‏"
             }
           ]
         }
@@ -81,6 +81,13 @@
                   "Value": "true"
                 }
               }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
             }
           }
         }
@@ -99,6 +106,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Top'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
                 }
               }
             }
@@ -136,6 +150,46 @@
             "metadata": "_Measures.Real CAGR"
           }
         }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -152,7 +206,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'بازده واقعی سالانه (CAGR) هر سری'"
+                  "Value": "'بازده واقعی سالانهٔ هر سری‏'"
                 }
               }
             },
@@ -170,7 +224,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -178,6 +239,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

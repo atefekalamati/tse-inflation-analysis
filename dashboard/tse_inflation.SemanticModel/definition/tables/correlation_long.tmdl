@@ -28,8 +28,8 @@ table correlation_long
 
 	column series_a_order
 		dataType: int64
-		formatString: 0
 		isHidden
+		formatString: 0
 		lineageTag: 54a8e8c8-4c4f-5a30-b213-2ffdf07f4322
 		summarizeBy: none
 		sourceColumn: series_a_order
@@ -63,8 +63,8 @@ table correlation_long
 
 	column series_b_order
 		dataType: int64
-		formatString: 0
 		isHidden
+		formatString: 0
 		lineageTag: 29a3d71d-79fc-546d-8a38-9ba041ef0dc0
 		summarizeBy: none
 		sourceColumn: series_b_order
@@ -86,9 +86,10 @@ table correlation_long
 				let
 				    Source = Csv.Document(File.Contents(DataFolder & "correlation_long.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				    Typed = Table.TransformColumnTypes(Promoted, {{"series_a", type text}, {"series_a_code", type text}, {"series_a_fa", type text}, {"series_a_order", Int64.Type}, {"series_b", type text}, {"series_b_code", type text}, {"series_b_fa", type text}, {"series_b_order", Int64.Type}, {"corr_real_return_per_month", type number}}, "en-US")
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_a", type text}, {"series_a_code", type text}, {"series_a_fa", type text}, {"series_a_order", Int64.Type}, {"series_b", type text}, {"series_b_code", type text}, {"series_b_fa", type text}, {"series_b_order", Int64.Type}, {"corr_real_return_per_month", type number}}, "en-US"),
+				    Rtl = Table.TransformColumns(Typed, {{"series_a_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}, {"series_b_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
 				in
-				    Typed
+				    Rtl
 
 	annotation PBI_ResultType = Table
 

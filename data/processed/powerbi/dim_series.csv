@@ -2,7 +2,7 @@ series_code,series,series_fa,type,sector,usage_note,sort_order
 index_total,Overall index (TEDPIX),شاخص کل,market_index,,the market: conclusions about the market use only these two indices,1
 index_equal_weight,Equal-weight index,شاخص کل (هم‌وزن),market_index,,the market: conclusions about the market use only these two indices,2
 cpi,CPI,شاخص قیمت مصرف‌کننده (تورم),cpi,,"inflation benchmark (SCI CPI, 1400=100)",3
-ew_portfolio_8,8-stock EW portfolio (hindsight),سبد هم‌وزن ۸ سهم (انتخاب با نگاه به گذشته),portfolio,,"hindsight-selected portfolio, not an investable strategy",4
+ew_portfolio_8,8-stock EW portfolio (hindsight),سبد هم‌وزن ۸ سهم با نگاه به گذشته,portfolio,,"hindsight-selected portfolio, not an investable strategy",4
 foolad,Foolad,فولاد,stock,فلزات اساسی,"individual stock: dispersion, not the market",5
 fameli,Fameli,فملی,stock,فلزات اساسی,"individual stock: dispersion, not the market",6
 shepna,Shepna,شپنا,stock,فرآورده‌های نفتی,"individual stock: dispersion, not the market",7

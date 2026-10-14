@@ -3,7 +3,7 @@
   "name": "62d1ea9b4db27d192c68",
   "position": {
     "x": 24,
-    "y": 72,
+    "y": 70,
     "z": 2,
     "height": 26,
     "width": 1232,
@@ -19,17 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "نتیجه‌گیری دربارهٔ «بازار» فقط بر اساس شاخص کل و شاخص کل (هم‌وزن) است. «واقعی» یعنی تعدیل‌شده با شاخص قیمت مصرف‌کنندهٔ مرکز آمار ایران.",
+                    "value": "نتیجه‌گیری دربارهٔ بازار فقط بر اساس شاخص کل و شاخص کل هم‌وزن است. واقعی یعنی تعدیل‌شده با شاخص قیمت مصرف‌کنندهٔ مرکز آمار ایران.‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "9pt",
-                      "color": "#52514E",
-                      "fontFamily": "Segoe UI"
+                      "color": "#52514E"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

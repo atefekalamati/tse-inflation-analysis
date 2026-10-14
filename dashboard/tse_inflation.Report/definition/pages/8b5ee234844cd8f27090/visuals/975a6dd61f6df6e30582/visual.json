@@ -3,7 +3,7 @@
   "name": "975a6dd61f6df6e30582",
   "position": {
     "x": 24,
-    "y": 72,
+    "y": 70,
     "z": 2,
     "height": 26,
     "width": 1232,
@@ -19,17 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "این ۸ سهم پراکندگی میان صنایع را نشان می‌دهند، نه بازار را. سبد هم‌وزن ۸ سهم با نگاه به گذشته انتخاب شده و راهبرد قابل اجرا نیست. شاخص‌های صنایع در این گزارش نمایش داده نمی‌شوند.",
+                    "value": "این ۸ سهم پراکندگی میان صنایع را نشان می‌دهند، نه بازار را. سبد هم‌وزن با نگاه به گذشته انتخاب شده است. سبز یعنی بالای صفر و قرمز یعنی زیر صفر. شاخص‌های صنایع نمایش داده نمی‌شوند.‏",
                     "textStyle": {
+                      "fontFamily": "Segoe UI",
                       "fontSize": "9pt",
-                      "color": "#52514E",
-                      "fontFamily": "Segoe UI"
+                      "color": "#52514E"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

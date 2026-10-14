@@ -18,6 +18,7 @@ Model rules (see the step-4 brief):
 from __future__ import annotations
 
 import hashlib
+import re
 import json
 import shutil
 import sys
@@ -39,6 +40,28 @@ CUSTOM_THEME = "TSE_Inflation.json"
 SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition"
 
 PCT = "0.0%;-0.0%;0.0%"
+
+# Right-to-left mark. Power BI lays out text left-to-right, so Persian strings get a
+# trailing RLM (and a leading one when they start with a digit, a Latin letter or a
+# bracket) to keep punctuation and numbers on the correct side.
+RLM = "\u200f"
+_PERSIAN = re.compile(r"[\u0600-\u06FF]")
+
+
+def rtl(text: str) -> str:
+    """Wrap a Persian string with RLM marks (idempotent); other strings are returned as is."""
+    if not isinstance(text, str) or not _PERSIAN.search(text):
+        return text
+    t = text.strip(RLM)
+    first = t[0]
+    lead = RLM if (first.isdigit() or first.isascii() and first.isalpha()
+                   or first in "([{«<\"'") else ""
+    return lead + t + RLM
+
+
+def m_text(text: str) -> str:
+    """M string literal of rtl(text), with RLM written as the M escape #(200F)."""
+    return '"' + rtl(text).replace('"', '""').replace(RLM, "#(200F)") + '"'
 PCT0 = "0%"
 
 
@@ -64,19 +87,24 @@ FACT_DESCRIPTIVE = {"series", "series_fa", "type", "sector", "usage_note", "seri
 
 # Extra Power Query steps per table: renames and added (computed) columns.
 RENAMES = {"risk_summary": {"code": "series_code"}, "yearly_real": {"code": "series_code"}}
+BLOCK_FA = {"1402-07..1403-06": "سال اول: مهر ۱۴۰۲ تا شهریور ۱۴۰۳",
+            "1403-07..1404-06": "سال دوم: مهر ۱۴۰۳ تا شهریور ۱۴۰۴",
+            "1404-07..1405-06": "سال سوم: مهر ۱۴۰۴ تا شهریور ۱۴۰۵"}
+WINDOW_FA = {"on_reopening": "تا بازگشایی", "after_20_days": "۲۰ روز معاملاتی پس از بازگشایی"}
 ADDED = {  # table -> list of (column, M expression, M type)
     "yearly_real": [
-        ("block_fa", 'each if [block] = "1402-07..1403-06" then "سال اول: مهر ۱۴۰۲ تا شهریور ۱۴۰۳" '
-                     'else if [block] = "1403-07..1404-06" then "سال دوم: مهر ۱۴۰۳ تا شهریور ۱۴۰۴" '
-                     'else if [block] = "1404-07..1405-06" then "سال سوم: مهر ۱۴۰۴ تا شهریور ۱۴۰۵" '
-                     'else [block]', "type text"),
+        ("block_fa", "each " + " else ".join(f'if [block] = "{k}" then {m_text(v)}'
+                                             for k, v in BLOCK_FA.items()) + " else [block]", "type text"),
     ],
     "closure_summary": [
-        ("window_fa", 'each if [window] = "on_reopening" then "تا بازگشایی" '
-                      'else "۲۰ روز معاملاتی پس از بازگشایی"', "type text"),
+        ("window_fa", f'each if [window] = "on_reopening" then {m_text(WINDOW_FA["on_reopening"])} '
+                      f'else {m_text(WINDOW_FA["after_20_days"])}', "type text"),
         ("window_order", 'each if [window] = "on_reopening" then 1 else 2', "Int64.Type"),
     ],
 }
+# Persian text columns shown in visuals: wrapped in RLM marks in Power Query.
+RLM_COLUMNS = {"dim_series": ["series_fa"], "dim_month": ["month_label_fa"],
+               "correlation_long": ["series_a_fa", "series_b_fa"]}
 SORT_BY = {("dim_month", "month_label_fa"): "sort_key", ("dim_month", "month"): "sort_key",
            ("dim_series", "series_fa"): "sort_order", ("dim_series", "series"): "sort_order",
            ("yearly_real", "block_fa"): "block", ("closure_summary", "window_fa"): "window_order",
@@ -150,6 +178,11 @@ def m_query(table: str, cols: list[dict]) -> list[str]:
     types = ", ".join(f'{{"{c["name"]}", {M_TYPE[c["dataType"]]}}}' for c in raw)
     steps.append(f'Typed = Table.TransformColumnTypes({prev}, {{{types}}}, "en-US")')
     prev = "Typed"
+    if table in RLM_COLUMNS:
+        tr = ", ".join(f'{{"{c}", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}}'
+                       for c in RLM_COLUMNS[table])
+        steps.append(f"Rtl = Table.TransformColumns({prev}, {{{tr}}})")
+        prev = "Rtl"
     for i, (name, expr, mtype) in enumerate(ADDED.get(table, []), 1):
         steps.append(f'Added{i} = Table.AddColumn({prev}, "{name}", {expr}, {mtype})')
         prev = f"Added{i}"
@@ -192,7 +225,7 @@ MEASURES = [
       "Equal-weight index: real return, cumulative over 3 years (1402-06 to 1405-06).",
       fixed("risk_summary", "real_cum_3y", "index_equal_weight"), PCT),
     M("Stocks beating inflation", "1 Headline",
-      "How many of the 8 sample stocks had a positive real return, cumulative over 3 years. Text.",
+      "How many of the 8 sample stocks had a positive real return, cumulative over 3 years, as '3 / 8'.",
       """VAR Stocks =
     CALCULATETABLE (
         risk_summary,
@@ -202,7 +235,7 @@ MEASURES = [
 VAR Winners = COUNTROWS ( FILTER ( Stocks, risk_summary[real_cum_3y] > 0 ) )
 VAR Total = COUNTROWS ( Stocks )
 RETURN
-    FORMAT ( Winners, "0" ) & " از " & FORMAT ( Total, "0" )"""),
+    FORMAT ( Winners, "0" ) & " / " & FORMAT ( Total, "0" )"""),
     M("Closure real loss (pro-rated)", "1 Headline",
       "Overall index, real change from the last close before the closure (1404-12-06) to the first "
       "close after it (1405-02-29), CPI pro-rated to those dates. Cumulative over the closure.",
@@ -302,11 +335,13 @@ RETURN
       "Implied real yield per year if inflation stays at last year's point-to-point rate.",
       "MAX ( context[real_yield_p2p] )", PCT),
     M("Bond source note", "5 Context", "Source and snapshot date of the bond yield. Text.",
-      '"منبع: " & MAX ( context[source_url] ) & "  |  تاریخ داده: " & MAX ( context[snapshot_date] )'),
+      '"منبع: " & MAX ( context[source_url] ) & "  |  تاریخ داده: " & MAX ( context[snapshot_date] )'
+      ' & UNICHAR ( 8207 )'),
     M("Bond conditional statement", "5 Context", "The bond comparison as a conditional sentence. Text.",
       '"اگر تورم در سطح سال گذشته بماند، بازده امروز اوراق دولتی به معنای بازده واقعی حدود "\n'
       '    & FORMAT ( [Bond real yield (avg)], "0%" ) & " در سال است ("\n'
-      '    & FORMAT ( [Bond real yield (p2p)], "0%" ) & " در برابر تورم نقطه به نقطه)."'),
+      '    & FORMAT ( [Bond real yield (p2p)], "0%" ) & " در برابر تورم نقطه به نقطه)."\n'
+      '    & UNICHAR ( 8207 )'),
 ]
 
 
@@ -320,10 +355,10 @@ def tmdl_table(table: str) -> str:
     for c in cols:
         L.append(f"\tcolumn {c['name']}")
         L.append(f"\t\tdataType: {c['dataType']}")
-        if c.get("format"):
-            L.append(f"\t\tformatString: {c['format']}")
         if c["hidden"]:
             L.append("\t\tisHidden")
+        if c.get("format"):
+            L.append(f"\t\tformatString: {c['format']}")
         if c["key"]:
             L.append("\t\tisKey")
         L.append(f"\t\tlineageTag: {uid('column', table, c['name'])}")
@@ -344,8 +379,11 @@ def tmdl_measures() -> str:
     L = ["table _Measures", f"\tlineageTag: {uid('table', '_Measures')}", ""]
     for m in MEASURES:
         L.append(f"\t/// {m['desc']}")
-        L.append(f"\tmeasure {q(m['name'])} =")
-        L += ["\t\t\t" + x for x in m["dax"]]
+        if len(m["dax"]) == 1:
+            L.append(f"\tmeasure {q(m['name'])} = {m['dax'][0]}")
+        else:
+            L.append(f"\tmeasure {q(m['name'])} =")
+            L += ["\t\t\t" + x for x in m["dax"]]
         if m["format"]:
             L.append(f"\t\tformatString: {m['format']}")
         L.append(f"\t\tdisplayFolder: {m['folder']}")
@@ -388,6 +426,8 @@ def write_model(data_folder: str) -> None:
              f"annotation PBI_QueryOrder = {query_order}", "",
              'annotation PBI_ProTooling = ["DevMode"]', ""]
     model += [f"ref table {t}" for t in TABLES + ["_Measures"]] + [""]
+    if (d / "cultures" / "en-US.tmdl").exists():   # written by Power BI Desktop on save
+        model += ["ref cultureInfo en-US", ""]
     (d / "model.tmdl").write_text("\n".join(model), encoding="utf-8")
     folder = data_folder.replace('"', '""')
     (d / "expressions.tmdl").write_text(
@@ -412,9 +452,10 @@ def write_model(data_folder: str) -> None:
         "metadata": {"type": "SemanticModel", "displayName": NAME},
         "config": {"version": "2.0", "logicalId": uid("logical", "model")}}, indent=2), encoding="utf-8")
     (SM / ".pbi").mkdir(exist_ok=True)
+    # Parallel loading of tables is OFF: with it on, refresh crashed on a low-memory machine
+    # ("Container unexpectedly exited", 0x800705AF). Same keys Desktop writes.
     (SM / ".pbi" / "editorSettings.json").write_text(json.dumps({
-        "version": "1.0", "autodetectRelationships": False, "parallelQueryLoading": True,
-        "typeDetectionEnabled": False, "relationshipImportEnabled": False,
+        "version": "1.0", "parallelQueryLoading": False,
         "shouldNotifyUserOfNameConflictResolution": True}, indent=2), encoding="utf-8")
 
 
@@ -424,11 +465,41 @@ def write_model(data_folder: str) -> None:
 INK, INK2, NAVY = "#1A1A1A", "#52514E", "#0D366B"
 BLUE_DARK, BLUE, BLUE_LIGHT, BLUE_PALE = "#1F4E79", "#2A78D6", "#6DA7EC", "#A9CCF3"
 GREEN, RED, GREY, WHITE = "#2E7D32", "#C62828", "#8C8C8C", "#FFFFFF"
+# keys are dim_series[series_fa] as loaded (Power Query wraps them in RLM marks)
 SERIES_COLORS = {"شاخص کل": BLUE_DARK, "شاخص کل (هم‌وزن)": BLUE_LIGHT,
                  "شاخص قیمت مصرف‌کننده (تورم)": GREY}
 FOOTER = "منبع: TSETMC و شاخص قیمت مصرف‌کننده مرکز آمار ایران (۱۴۰۰=۱۰۰)"
 HINDSIGHT_NOTE = "۸ سهم با نگاه به گذشته انتخاب شده‌اند و نمایندهٔ کل بازار نیستند."
 WILDCARD = [{"dataViewWildcard": {"matchingOption": 1}}]
+
+# Page geometry (1280 x 720). Content sits between CONTENT_TOP and CONTENT_BOTTOM; the
+# footer box ends 8 px above the canvas edge so its text is never cut off.
+PAGE_W, PAGE_H = 1280, 720
+CONTENT_TOP, CONTENT_BOTTOM = 100, 674
+FOOTER_Y, FOOTER_H = 682, 30
+CARD_H = 92
+
+# Card labels: short, no parentheses (they sit under the value at 9pt).
+CARDS_P1 = [("CPI growth (×)", "رشد قیمت‌ها در ۳ سال، برابر"),
+            ("Index real cum 3y", "بازده واقعی شاخص کل، ۳ ساله"),
+            ("Equal-weight real cum 3y", "بازده واقعی شاخص هم‌وزن، ۳ ساله"),
+            ("Stocks beating inflation", "سهام نمونهٔ جلوتر از تورم"),
+            ("Closure real loss (pro-rated)", "زیان واقعی تعطیلی تا بازگشایی")]
+CARDS_P2 = [("Selected series", "سری انتخاب‌شده"),
+            ("Selected real CAGR", "بازده واقعی سالانه"),
+            ("Selected real vol", "نوسان واقعی سالانه"),
+            ("Selected max drawdown", "بیشترین افت واقعی از اوج"),
+            ("Selected months beating inflation", "ماه‌های جلوتر از تورم")]
+CARDS_P3 = [("Bond YTM", "بازده اوراق دولتی، سالانه"),
+            ("Inflation 12m avg", "تورم ۱۲ ماهه، میانگین"),
+            ("Inflation point-to-point", "تورم نقطه به نقطه"),
+            ("Bond real yield (avg)", "بازده واقعی با تورم میانگین"),
+            ("Bond real yield (p2p)", "بازده واقعی با تورم نقطه به نقطه")]
+
+
+def data_fa(name: str) -> str:
+    """A Persian data value as Power Query loads it (wrapped in RLM marks)."""
+    return RLM + name + RLM
 
 
 def lit(v):
@@ -437,6 +508,10 @@ def lit(v):
 
 def s(text):
     return lit("'" + str(text).replace("'", "''") + "'")
+
+
+def num(v):
+    return lit(f"{v}D")
 
 
 def color(hexv):
@@ -486,14 +561,25 @@ def proj(field, display=None, active=None):
     if active is not None:
         p["active"] = active
     if display:
-        p["displayName"] = display
+        p["displayName"] = rtl(display)
     return p
 
 
-def title_objects(text, size=12):
+def padding(px):
+    return [{"properties": {k: num(px) for k in ("top", "bottom", "left", "right")}}]
+
+
+def title_objects(text, size=11):
     return {"title": [{"properties": {
-        "show": lit("true"), "text": s(text), "fontColor": color(INK), "fontSize": lit(f"{size}D"),
-        "alignment": s("right")}}]}
+        "show": lit("true"), "text": s(rtl(text)), "fontColor": color(INK), "fontSize": num(size),
+        "fontFamily": s("Segoe UI"), "alignment": s("right"), "titleWrap": lit("true")}}],
+        "padding": padding(6)}
+
+
+def axis_objects(font=9):
+    """Readable axes: 9pt labels, no axis titles (the visual title names the measure)."""
+    return {"categoryAxis": [{"properties": {"fontSize": num(font), "showAxisTitle": lit("false")}}],
+            "valueAxis": [{"properties": {"fontSize": num(font), "showAxisTitle": lit("false")}}]}
 
 
 def in_filter(name, entity, prop, values, locked=False):
@@ -513,7 +599,7 @@ class Page:
     def __init__(self, key, display, type_values):
         self.key = key
         self.id = hid("page", key)
-        self.display = display
+        self.display = rtl(display)
         self.type_values = type_values
         self.visuals: list[dict] = []
         self.interactions: list[dict] = []
@@ -522,7 +608,8 @@ class Page:
     def add(self, key, x, y, w, h, visual, filters=None):
         name = hid("visual", self.id, key)
         v = {"$schema": f"{SCHEMA}/visualContainer/2.11.0/schema.json", "name": name,
-             "position": {"x": x, "y": y, "z": self.z, "height": h, "width": w, "tabOrder": self.z},
+             "position": {"x": int(round(x)), "y": int(round(y)), "z": self.z,
+                          "height": int(round(h)), "width": int(round(w)), "tabOrder": self.z},
              "visual": visual}
         if filters:
             v["filterConfig"] = {"filters": filters}
@@ -532,14 +619,15 @@ class Page:
 
     def header(self, title, finding, note):
         """Title, one-line main finding, method note and the source footer."""
-        self.add("title", 24, 8, 1232, 36, textbox([(title, 18, True, NAVY)]))
-        self.add("subtitle", 24, 44, 1232, 28, textbox([(finding, 12, True, BLUE_DARK)]))
-        self.add("note", 24, 72, 1232, 26, textbox([(note, 9, False, INK2)]))
-        self.add("footer", 24, 692, 1232, 24, textbox([(FOOTER, 8, False, INK2)]))
+        self.add("title", 24, 6, 1232, 36, textbox([(title, 18, True, NAVY)]))
+        self.add("subtitle", 24, 42, 1232, 28, textbox([(finding, 11, False, BLUE_DARK)]))
+        self.add("note", 24, 70, 1232, 26, textbox([(note, 9, False, INK2)]))
+        self.add("footer", 24, FOOTER_Y, 1232, FOOTER_H, textbox([(FOOTER, 9, False, INK2)]))
 
     def page_json(self):
         p = {"$schema": f"{SCHEMA}/page/2.1.0/schema.json", "name": self.id,
-             "displayName": self.display, "displayOption": "FitToPage", "height": 720, "width": 1280,
+             "displayName": self.display, "displayOption": "FitToPage",
+             "height": PAGE_H, "width": PAGE_W,
              "filterConfig": {"filters": [in_filter(hid("pf", self.id), "dim_series", "type",
                                                     self.type_values, locked=True)]}}
         if self.interactions:
@@ -548,21 +636,26 @@ class Page:
 
 
 def textbox(paragraphs):
+    """Right-aligned text box; every Persian run is wrapped in RLM marks."""
     paras = []
     for text, size, bold, col in paragraphs:
-        style = {"fontSize": f"{size}pt", "color": col, "fontFamily": "Segoe UI"}
+        style = {"fontFamily": "Segoe UI", "fontSize": f"{size}pt", "color": col}
         if bold:
             style["fontWeight"] = "bold"
-        paras.append({"textRuns": [{"value": text, "textStyle": style}],
+        paras.append({"textRuns": [{"value": rtl(text), "textStyle": style}],
                       "horizontalTextAlignment": "right"})
     return {"visualType": "textbox", "objects": {"general": [{"properties": {"paragraphs": paras}}]},
+            "visualContainerObjects": {"padding": padding(0)},
             "drillFilterOtherVisuals": True}
 
 
-def card(measure, label, size=22):
+def card(measure, label, value_pt=20, label_pt=9):
+    """Card: value 20pt, label 9pt under it, minimal padding."""
     return {"visualType": "cardVisual",
             "query": {"queryState": {"Data": {"projections": [proj(meas_field(measure), label)]}}},
-            "objects": {"value": [{"properties": {"fontSize": lit(f"{size}D")}, "selector": {"id": "default"}}]},
+            "objects": {"value": [{"properties": {"fontSize": num(value_pt)}, "selector": {"id": "default"}}],
+                        "label": [{"properties": {"fontSize": num(label_pt)}, "selector": {"id": "default"}}]},
+            "visualContainerObjects": {"padding": padding(4)},
             "drillFilterOtherVisuals": True}
 
 
@@ -572,7 +665,7 @@ def series_color_objects():
         out.append({"properties": {"fill": color(c)},
                     "selector": {"data": [{"scopeId": {"Comparison": {
                         "ComparisonKind": 0, "Left": col_field("dim_series", "series_fa"),
-                        "Right": {"Literal": {"Value": "'" + name + "'"}}}}}]}})
+                        "Right": {"Literal": {"Value": "'" + data_fa(name) + "'"}}}}}]}})
     return out
 
 
@@ -584,14 +677,15 @@ def line_chart(measure, label, title, zero_line=False):
              "Series": {"projections": [proj(col_field("dim_series", "series_fa"), "سری")]}},
              "sortDefinition": {"sort": [{"field": col_field("dim_month", "month_label_fa"),
                                           "direction": "Ascending"}]}},
-         "objects": {"lineStyles": [{"properties": {"strokeWidth": lit("2D")}}],
-                     "legend": [{"properties": {"show": lit("true"), "position": s("Top")}}],
-                     "dataPoint": series_color_objects()},
+         "objects": {"lineStyles": [{"properties": {"strokeWidth": num(2)}}],
+                     "legend": [{"properties": {"show": lit("true"), "position": s("Top"),
+                                                "fontSize": num(9)}}],
+                     "dataPoint": series_color_objects(), **axis_objects()},
          "visualContainerObjects": title_objects(title),
          "drillFilterOtherVisuals": True}
     if zero_line:
         v["objects"]["y1AxisReferenceLine"] = [{"properties": {
-            "show": lit("true"), "displayName": s("صفر: هم‌پای تورم"), "value": lit("0D"),
+            "show": lit("true"), "displayName": s(rtl("صفر: هم‌پای تورم")), "value": lit("0D"),
             "lineColor": color(INK2), "transparency": lit("0D"), "style": s("dashed"),
             "position": s("front"), "dataLabelShow": lit("true")}, "selector": {"id": "1"}}]
     return v
@@ -604,10 +698,10 @@ def bar_chart(measures, title, sort_measure=None, colors=None, sign_colored=None
          "query": {"queryState": {
              "Category": {"projections": [proj(col_field("dim_series", "series_fa"), "سری", True)]},
              "Y": {"projections": [proj(meas_field(m), lab) for m, lab in measures]}}},
-         "objects": {"labels": [{"properties": {"show": lit("true")}}],
+         "objects": {"labels": [{"properties": {"show": lit("true"), "fontSize": num(8)}}],
                      "legend": [{"properties": {"show": lit("true" if len(measures) > 1 else "false"),
-                                                "position": s("Top")}}],
-                     "dataPoint": []},
+                                                "position": s("Top"), "fontSize": num(9)}}],
+                     "dataPoint": [], **axis_objects()},
          "visualContainerObjects": title_objects(title),
          "drillFilterOtherVisuals": True}
     if sort_measure:
@@ -621,6 +715,12 @@ def bar_chart(measures, title, sort_measure=None, colors=None, sign_colored=None
             v["objects"]["dataPoint"].append({"properties": {"fill": color(colors[m])},
                                               "selector": {"metadata": f"_Measures.{m}"}})
     return v
+
+
+def matrix_text_objects(font=9):
+    return {"columnHeaders": [{"properties": {"fontSize": num(font), "wordWrap": lit("true")}}],
+            "rowHeaders": [{"properties": {"fontSize": num(font), "wordWrap": lit("true")}}],
+            "values": [{"properties": {"fontSize": num(font)}}]}
 
 
 def fa(x: float, fmt: str) -> str:
@@ -645,7 +745,7 @@ def findings() -> dict[str, str]:
         "overview": (f"قیمت‌ها در ۳ سال {fa(1 + rs.loc['cpi', 'nominal_cum_3y'], '.2f')} برابر شد؛ "
                      f"شاخص کل {fa(-rs.loc['index_total', 'real_cum_3y'] * 100, '.1f')}٪ و شاخص هم‌وزن "
                      f"{fa(-rs.loc['index_equal_weight', 'real_cum_3y'] * 100, '.1f')}٪ از قدرت خرید را "
-                     f"از دست دادند (تجمعی ۳ ساله)."),
+                     f"در این ۳ سال از دست دادند."),
         "dispersion": (f"فقط {fa((st['real_cum_3y'] > 0).sum(), 'd')} سهم از {fa(len(st), 'd')} سهم نمونه از "
                        f"تورم جلو زدند؛ بازده واقعی سالانه از {fa(st['real_cagr'].min() * 100, '.1f')}٪ تا "
                        f"+{fa(st['real_cagr'].max() * 100, '.1f')}٪ پراکنده است."),
@@ -653,135 +753,138 @@ def findings() -> dict[str, str]:
                     f"اگر تورم در سطح سال گذشته بماند، اوراق دولتی هم بازده واقعی حدود "
                     f"{fa(ctx['real_yield_avg'] * 100, '.0f')}٪ در سال دارند."),
         "timing": (f"بازده واقعی ۱۲ ماههٔ شاخص کل فقط در {fa((roll > 0).sum(), 'd')} ماه از "
-                   f"{fa(len(roll), 'd')} ماه مثبت بود؛ همبستگی ماهانهٔ سهام با شاخص کل بالاست "
-                   f"({fa(ci.min(), '.2f')} تا {fa(ci.max(), '.2f')})؛ بیشتر سهام همراه بازار بالا و پایین رفتند."),
+                   f"{fa(len(roll), 'd')} ماه مثبت بود؛ همبستگی ماهانهٔ سهام با شاخص کل "
+                   f"{fa(ci.min(), '.2f')} تا {fa(ci.max(), '.2f')} است و بیشتر سهام همراه بازار بالا و پایین رفتند."),
     }
+
+
+def bond_statement() -> tuple[str, str]:
+    """Static text for page 3 (the bond figures are a dated snapshot)."""
+    ctx = pd.read_csv(DATA / "context.csv").iloc[0]
+    line1 = (f"اگر تورم در سطح سال گذشته بماند، بازده امروز اوراق دولتی به معنای بازده واقعی حدود "
+             f"{fa(ctx['real_yield_avg'] * 100, '.0f')}٪ در سال است و در برابر تورم نقطه به نقطه حدود "
+             f"{fa(ctx['real_yield_p2p'] * 100, '.0f')}٪.")
+    line2 = (f"بازده تا سررسید {fa(ctx['bond_ytm'] * 100, '.1f')}٪ در سال، میانهٔ "
+             f"{fa(int(ctx['n_bonds']), 'd')} ورقهٔ اراد معامله‌شده در ۳۰ روز پیش از "
+             f"{ctx['snapshot_date'].translate(str.maketrans('0123456789', '۰۱۲۳۴۵۶۷۸۹'))}؛ "
+             f"منبع: فرابورس ایران، ifb.ir")
+    return line1, line2
 
 
 def build_report() -> list[Page]:
     F = findings()
     stock_pf = ["stock", "market_index", "portfolio"]
-    TOP, BOTTOM = 104, 684
+    TOP, BOTTOM = CONTENT_TOP, CONTENT_BOTTOM
 
     # ---------------- page 1 ----------------
     p1 = Page("overview", "نمای کلی: بورس در برابر تورم", ["market_index", "cpi"])
     p1.header("آیا بورس تهران از تورم جلو زد؟ مهر ۱۴۰۲ تا شهریور ۱۴۰۵", F["overview"],
-              "نتیجه‌گیری دربارهٔ «بازار» فقط بر اساس شاخص کل و شاخص کل (هم‌وزن) است. «واقعی» یعنی "
+              "نتیجه‌گیری دربارهٔ بازار فقط بر اساس شاخص کل و شاخص کل هم‌وزن است. واقعی یعنی "
               "تعدیل‌شده با شاخص قیمت مصرف‌کنندهٔ مرکز آمار ایران.")
-    cards = [("CPI growth (×)", "رشد شاخص قیمت مصرف‌کننده (برابر، ۳ ساله)"),
-             ("Index real cum 3y", "بازده واقعی شاخص کل (تجمعی ۳ ساله)"),
-             ("Equal-weight real cum 3y", "بازده واقعی شاخص هم‌وزن (تجمعی ۳ ساله)"),
-             ("Stocks beating inflation", "سهام نمونه جلوتر از تورم (تجمعی ۳ ساله)"),
-             ("Closure real loss (pro-rated)", "زیان واقعی تعطیلی بازار تا بازگشایی (روزشمار)")]
     w = (1232 - 4 * 16) / 5
-    for i, (m, lab) in enumerate(cards):
-        p1.add(f"card{i}", round(24 + i * (w + 16), 1), TOP, round(w, 1), 84, card(m, lab))
-    p1.add("growth", 24, 200, 760, BOTTOM - 200, line_chart(
-        "Real growth index", "رشد واقعی (۱۰۰ = پایان شهریور ۱۴۰۲)",
-        "رشد واقعی ۱۰۰ واحد سرمایه از پایان شهریور ۱۴۰۲ (خط تورم = ۱۰۰)"))
-    p1.add("rolling", 800, 200, 456, 216, line_chart(
-        "Real return rolling 12m", "بازده واقعی ۱۲ ماهه", "بازده واقعی ۱۲ ماههٔ غلتان (سالانه)"),
-        filters=[in_filter(hid("vf", "p1rolling"), "dim_series", "type", ["market_index"])])
-    p1.add("cagr", 800, 428, 456, 208, bar_chart(
-        [("Nominal CAGR", "اسمی (سالانه)"), ("Real CAGR", "واقعی (سالانه)")],
-        "نرخ رشد سالانهٔ اسمی و واقعی (CAGR؛ واقعی: سبز بالای صفر، قرمز زیر صفر)",
-        colors={"Nominal CAGR": BLUE_PALE}, sign_colored="Real CAGR"))
-    p1.add("hindsight", 800, 644, 456, 40, textbox([(HINDSIGHT_NOTE, 10, True, RED)]))
+    for i, (m, lab) in enumerate(CARDS_P1):
+        p1.add(f"card{i}", 24 + i * (w + 16), TOP, w, CARD_H, card(m, lab))
+    p1.add("hindsight", 24, TOP + CARD_H + 6, 1232, 26, textbox([(HINDSIGHT_NOTE, 10, True, RED)]))
+    charts_top = TOP + CARD_H + 38
+    p1.add("growth", 24, charts_top, 760, BOTTOM - charts_top, line_chart(
+        "Real growth index", "رشد واقعی، ۱۰۰ = پایان شهریور ۱۴۰۲",
+        "رشد واقعی ۱۰۰ واحد سرمایه از پایان شهریور ۱۴۰۲؛ خط تورم = ۱۰۰"))
+    p1.add("cagr", 800, charts_top, 456, BOTTOM - charts_top, bar_chart(
+        [("Nominal CAGR", "اسمی سالانه"), ("Real CAGR", "واقعی سالانه")],
+        "رشد سالانه: اسمی در برابر واقعی",
+        colors={"Nominal CAGR": BLUE_PALE, "Real CAGR": BLUE_DARK}))
 
     # ---------------- page 2 ----------------
     p2 = Page("dispersion", "پراکندگی: ۸ سهم نمونه، نه کل بازار", stock_pf)
-    p2.header("پراکندگی بازده: ۸ سهم نمونه (یک سهم از هر صنعت)", F["dispersion"],
-              "این ۸ سهم پراکندگی میان صنایع را نشان می‌دهند، نه بازار را. سبد هم‌وزن ۸ سهم با نگاه به "
-              "گذشته انتخاب شده و راهبرد قابل اجرا نیست. شاخص‌های صنایع در این گزارش نمایش داده نمی‌شوند.")
-    slicer_name = p2.add("slicer", 24, TOP, 240, 84, {
+    p2.header("پراکندگی بازده: ۸ سهم نمونه، یک سهم از هر صنعت", F["dispersion"],
+              "این ۸ سهم پراکندگی میان صنایع را نشان می‌دهند، نه بازار را. سبد هم‌وزن با نگاه به گذشته "
+              "انتخاب شده است. سبز یعنی بالای صفر و قرمز یعنی زیر صفر. شاخص‌های صنایع نمایش داده نمی‌شوند.")
+    slicer_name = p2.add("slicer", 24, TOP, 240, CARD_H, {
         "visualType": "slicer",
         "query": {"queryState": {"Values": {"projections": [
             proj(col_field("dim_series", "series_fa"), "انتخاب سری", True)]}}},
         "objects": {"data": [{"properties": {"mode": s("Dropdown")}}],
                     "selection": [{"properties": {"singleSelect": lit("true")}}],
-                    "header": [{"properties": {"show": lit("true"), "text": s("انتخاب سری")}}]},
+                    "header": [{"properties": {"show": lit("true"), "text": s(rtl("انتخاب سری")),
+                                               "fontSize": num(9)}}],
+                    "items": [{"properties": {"fontSize": num(9)}}]},
+        "visualContainerObjects": {"padding": padding(4)},
         "drillFilterOtherVisuals": True})
-    sel = [("Selected series", "سری انتخاب‌شده (پیش‌فرض: شاخص کل)"),
-           ("Selected real CAGR", "بازده واقعی سالانه (CAGR)"),
-           ("Selected real vol", "نوسان واقعی (سالانه)"),
-           ("Selected max drawdown", "بیشترین افت واقعی از اوج"),
-           ("Selected months beating inflation", "سهم ماه‌های جلوتر از تورم")]
     w2 = (1256 - 280 - 4 * 12) / 5
-    for i, (m, lab) in enumerate(sel):
-        p2.add(f"sel{i}", round(280 + i * (w2 + 12), 1), TOP, round(w2, 1), 84, card(m, lab, 18))
-    targets = [p2.add("bar", 24, 200, 400, BOTTOM - 200, bar_chart(
-        [("Real CAGR", "بازده واقعی سالانه")], "بازده واقعی سالانه (CAGR) هر سری",
+    for i, (m, lab) in enumerate(CARDS_P2):
+        p2.add(f"sel{i}", 280 + i * (w2 + 12), TOP, w2, CARD_H, card(m, lab))
+    row_top = TOP + CARD_H + 12
+    targets = [p2.add("bar", 24, row_top, 400, BOTTOM - row_top, bar_chart(
+        [("Real CAGR", "بازده واقعی سالانه")], "بازده واقعی سالانهٔ هر سری",
         sort_measure="Real CAGR", sign_colored="Real CAGR"))]
-    targets.append(p2.add("scatter", 440, 200, 400, 232, {
+    mid = row_top + (BOTTOM - row_top) // 2
+    targets.append(p2.add("scatter", 440, row_top, 400, mid - row_top - 6, {
         "visualType": "scatterChart",
         "query": {"queryState": {
             "Category": {"projections": [proj(col_field("dim_series", "series_fa"), "سری", True)]},
-            "X": {"projections": [proj(meas_field("Real vol per year"), "نوسان واقعی (سالانه)")]},
-            "Y": {"projections": [proj(meas_field("Real CAGR"), "بازده واقعی (سالانه)")]}}},
-        "objects": {"categoryLabels": [{"properties": {"show": lit("true")}}],
-                    "dataPoint": [{"properties": {"fill": color(BLUE)}}]},
-        "visualContainerObjects": title_objects("ریسک در برابر بازده واقعی (هر دو سالانه)"),
+            "X": {"projections": [proj(meas_field("Real vol per year"), "نوسان واقعی سالانه")]},
+            "Y": {"projections": [proj(meas_field("Real CAGR"), "بازده واقعی سالانه")]}}},
+        "objects": {"categoryLabels": [{"properties": {"show": lit("true"), "fontSize": num(8)}}],
+                    "dataPoint": [{"properties": {"fill": color(BLUE)}}], **axis_objects()},
+        "visualContainerObjects": title_objects("ریسک در برابر بازده واقعی سالانه"),
         "drillFilterOtherVisuals": True}))
     block_measure = "Real return per year (block)"
-    targets.append(p2.add("matrix", 440, 444, 400, BOTTOM - 444, {
+    mobj = matrix_text_objects()
+    mobj["values"].append({"properties": {"backColor": gradient3(block_measure, RED, WHITE, GREEN)},
+                           "selector": {"data": WILDCARD, "metadata": f"_Measures.{block_measure}"}})
+    targets.append(p2.add("matrix", 440, mid + 6, 400, BOTTOM - mid - 6, {
         "visualType": "pivotTable",
         "query": {"queryState": {
             "Rows": {"projections": [proj(col_field("dim_series", "series_fa"), "سری", True)]},
             "Columns": {"projections": [proj(col_field("yearly_real", "block_fa"), "دورهٔ ۱۲ ماهه", True)]},
-            "Values": {"projections": [proj(meas_field(block_measure), "بازده واقعی (سالانه)")]}}},
-        "objects": {"values": [{"properties": {"backColor": gradient3(block_measure, RED, WHITE, GREEN)},
-                                "selector": {"data": WILDCARD, "metadata": f"_Measures.{block_measure}"}}]},
-        "visualContainerObjects": title_objects(
-            "بازده واقعی هر دورهٔ ۱۲ ماهه (سالانه؛ قرمز زیر صفر، سبز بالای صفر)"),
+            "Values": {"projections": [proj(meas_field(block_measure), "بازده واقعی سالانه")]}}},
+        "objects": mobj,
+        "visualContainerObjects": title_objects("بازده واقعی هر دورهٔ ۱۲ ماهه"),
         "drillFilterOtherVisuals": True}))
     risk_cols = [("Nominal CAGR", "اسمی سالانه"), ("Real CAGR", "واقعی سالانه"),
-                 ("Real cum 3y", "واقعی تجمعی ۳ ساله"), ("Real vol per year", "نوسان سالانه"),
+                 ("Real cum 3y", "واقعی ۳ ساله"), ("Real vol per year", "نوسان سالانه"),
                  ("Real max drawdown", "بیشترین افت"), ("Months beating inflation", "ماه‌های برنده")]
-    targets.append(p2.add("table", 856, 200, 400, BOTTOM - 200, {
+    targets.append(p2.add("table", 856, row_top, 400, BOTTOM - row_top, {
         "visualType": "tableEx",
         "query": {"queryState": {"Values": {"projections":
             [proj(col_field("dim_series", "series_fa"), "سری")] +
             [proj(meas_field(m), lab) for m, lab in risk_cols]}},
             "sortDefinition": {"sort": [{"field": meas_field("Real CAGR"), "direction": "Descending"}]}},
+        "objects": {"columnHeaders": [{"properties": {"fontSize": num(9), "wordWrap": lit("true")}}],
+                    "values": [{"properties": {"fontSize": num(9)}}]},
         "visualContainerObjects": title_objects("جدول بازده و ریسک"),
         "drillFilterOtherVisuals": True}))
     p2.interactions = [{"source": slicer_name, "target": t, "type": "NoFilter"} for t in targets]
 
     # ---------------- page 3 ----------------
-    p3 = Page("closure", "تعطیلی بازار و دارایی «امن»", ["market_index", "stock"])
-    p3.header("تعطیلی بازار (۹ اسفند ۱۴۰۴ تا ۲۸ اردیبهشت ۱۴۰۵) و بازده اوراق دولتی", F["closure"],
-              "ارقام تعطیلی تجمعی در همان بازه‌اند. روش اصلی: تورم روزشمار (درون‌یابی هندسی شاخص قیمت تا "
-              "تاریخ دقیق). ماه‌های کامل فقط برای آزمون حساسیت آمده است.")
-    p3.add("closurebar", 24, TOP, 600, 296, bar_chart(
-        [("Closure nominal", "تغییر اسمی"), ("Closure CPI (pro-rated)", "تورم (روزشمار)"),
-         ("Closure real (pro-rated)", "تغییر واقعی (روزشمار)")],
-        "شاخص‌های بازار: از آخرین معامله (۶ اسفند ۱۴۰۴) تا بازگشایی (۲۹ اردیبهشت ۱۴۰۵)، تجمعی",
+    p3 = Page("closure", "تعطیلی بازار و دارایی امن", ["market_index", "stock"])
+    p3.header("تعطیلی بازار از ۹ اسفند ۱۴۰۴ تا ۲۸ اردیبهشت ۱۴۰۵ و بازده اوراق دولتی", F["closure"],
+              "ارقام تعطیلی تجمعی در همان بازه‌اند. روش اصلی تورم روزشمار است و ماه کامل فقط آزمون "
+              "حساسیت است. فولاد تا ۱۷ مرداد ۱۴۰۵ متوقف بود و قابل مقایسه نیست.")
+    p3.add("closurebar", 24, TOP, 600, 300, bar_chart(
+        [("Closure nominal", "تغییر اسمی"), ("Closure CPI (pro-rated)", "تورم روزشمار"),
+         ("Closure real (pro-rated)", "تغییر واقعی روزشمار")],
+        "شاخص‌های بازار از آخرین معامله تا بازگشایی، تجمعی",
         colors={"Closure nominal": BLUE, "Closure CPI (pro-rated)": GREY, "Closure real (pro-rated)": RED}),
         filters=[in_filter(hid("vf", "p3bar_type"), "dim_series", "type", ["market_index"]),
                  in_filter(hid("vf", "p3bar_window"), "closure_summary", "window", ["on_reopening"])])
-    ctx = [("Bond YTM", "بازده تا سررسید اوراق دولتی (سالانه)"),
-           ("Inflation 12m avg", "تورم ۱۲ ماهه (میانگین، سالانه)"),
-           ("Inflation point-to-point", "تورم نقطه به نقطه"),
-           ("Bond real yield (avg)", "بازده واقعی ضمنی (میانگین تورم)"),
-           ("Bond real yield (p2p)", "بازده واقعی ضمنی (نقطه به نقطه)")]
-    for i, (m, lab) in enumerate(ctx[:3]):
-        p3.add(f"ctx{i}", round(640 + i * (197 + 12.5), 1), TOP, 197, 84, card(m, lab, 18))
-    for i, (m, lab) in enumerate(ctx[3:]):
-        p3.add(f"ctx{i + 3}", round(640 + i * (302 + 12), 1), TOP + 92, 302, 84, card(m, lab, 18))
-    p3.add("statement", 640, TOP + 184, 616, 112, {
-        "visualType": "cardVisual",
-        "query": {"queryState": {"Data": {"projections": [
-            proj(meas_field("Bond conditional statement"), "اوراق دولتی در برابر تورم"),
-            proj(meas_field("Bond source note"), "منبع و تاریخ")]}}},
-        "objects": {"value": [{"properties": {"fontSize": lit("11D")}, "selector": {"id": "default"}}]},
-        "drillFilterOtherVisuals": True})
+    w3 = (616 - 2 * 12) / 3
+    for i, (m, lab) in enumerate(CARDS_P3[:3]):
+        p3.add(f"ctx{i}", 640 + i * (w3 + 12), TOP, w3, CARD_H, card(m, lab))
+    w3b = (616 - 12) / 2
+    for i, (m, lab) in enumerate(CARDS_P3[3:]):
+        p3.add(f"ctx{i + 3}", 640 + i * (w3b + 12), TOP + CARD_H + 12, w3b, CARD_H, card(m, lab))
+    line1, line2 = bond_statement()
+    st_top = TOP + 2 * CARD_H + 24
+    p3.add("statement", 640, st_top, 616, TOP + 300 - st_top, textbox([
+        (line1, 11, True, BLUE_DARK), (line2, 9, False, INK2)]))
     closure_cols = [("closure_summary", "nominal", "تغییر اسمی"),
-                    ("closure_summary", "cpi_prorated", "تورم (روزشمار)"),
-                    ("closure_summary", "real_prorated", "واقعی (روزشمار، اصلی)"),
-                    ("closure_summary", "cpi_whole_months", "تورم (ماه کامل)"),
-                    ("closure_summary", "real_whole_months", "واقعی (ماه کامل، حساسیت)"),
+                    ("closure_summary", "cpi_prorated", "تورم روزشمار"),
+                    ("closure_summary", "real_prorated", "واقعی روزشمار، اصلی"),
+                    ("closure_summary", "cpi_whole_months", "تورم ماه کامل"),
+                    ("closure_summary", "real_whole_months", "واقعی ماه کامل، حساسیت"),
                     ("closure_summary", "comparable", "قابل مقایسه")]
-    p3.add("closuretable", 24, 412, 1232, BOTTOM - 412, {
+    p3.add("closuretable", 24, TOP + 312, 1232, BOTTOM - TOP - 312, {
         "visualType": "tableEx",
         "query": {"queryState": {"Values": {"projections":
             [proj(col_field("dim_series", "series_fa"), "سری"),
@@ -789,31 +892,34 @@ def build_report() -> list[Page]:
              proj(col_field("closure_summary", "window_start"), "از"),
              proj(col_field("closure_summary", "window_end"), "تا")] +
             [proj(col_field(e, c), lab) for e, c, lab in closure_cols]}}},
-        "visualContainerObjects": title_objects(
-            "تعطیلی بازار: شاخص‌ها و ۸ سهم نمونه (تجمعی در هر بازه؛ فولاد تا ۱۷ مرداد ۱۴۰۵ متوقف بود و قابل مقایسه نیست)"),
+        "objects": {"columnHeaders": [{"properties": {"fontSize": num(9), "wordWrap": lit("true")}}],
+                    "values": [{"properties": {"fontSize": num(9)}}]},
+        "visualContainerObjects": title_objects("تعطیلی بازار: شاخص‌ها و ۸ سهم نمونه، تجمعی در هر بازه"),
         "drillFilterOtherVisuals": True})
 
     # ---------------- page 4 ----------------
     p4 = Page("timing", "زمان ورود", ["market_index", "stock"])
     p4.header("زمان ورود: بازده واقعی ۱۲ ماههٔ غلتان و همبستگی", F["timing"],
-              "هر نقطهٔ نمودار بازده واقعی ۱۲ ماهِ منتهی به آن ماه است (سالانه)؛ زیر خط صفر یعنی عقب‌ماندن "
-              "از تورم. همبستگی بر پایهٔ بازده واقعی ماهانه در ۳۶ ماه است.")
+              "هر نقطهٔ نمودار بازده واقعی ۱۲ ماهِ منتهی به آن ماه است؛ زیر خط صفر یعنی عقب‌ماندن از تورم. "
+              "همبستگی بر پایهٔ بازده واقعی ماهانه در ۳۶ ماه است.")
     p4.add("rolling", 24, TOP, 700, BOTTOM - TOP, line_chart(
-        "Real return rolling 12m", "بازده واقعی ۱۲ ماهه (سالانه)",
-        "بازده واقعی ۱۲ ماههٔ غلتان: شاخص کل و شاخص هم‌وزن (خط صفر = هم‌پای تورم)", zero_line=True),
+        "Real return rolling 12m", "بازده واقعی ۱۲ ماهه",
+        "بازده واقعی ۱۲ ماههٔ غلتان شاخص کل و شاخص هم‌وزن", zero_line=True),
         filters=[in_filter(hid("vf", "p4rolling"), "dim_series", "type", ["market_index"])])
     corr_measure = "Correlation (real, monthly)"
+    hobj = matrix_text_objects(8)
+    hobj["values"].append({"properties": {"backColor": gradient2(corr_measure, WHITE, BLUE_DARK, "0D", "1D"),
+                                          "fontColor": color(INK)},
+                           "selector": {"data": WILDCARD, "metadata": f"_Measures.{corr_measure}"}})
+    hobj["subTotals"] = [{"properties": {"rowSubtotals": lit("false"), "columnSubtotals": lit("false")}}]
     p4.add("corr", 740, TOP, 516, BOTTOM - TOP, {
         "visualType": "pivotTable",
         "query": {"queryState": {
             "Rows": {"projections": [proj(col_field("correlation_long", "series_a_fa"), "سری", True)]},
             "Columns": {"projections": [proj(col_field("correlation_long", "series_b_fa"), "در برابر", True)]},
             "Values": {"projections": [proj(meas_field(corr_measure), "همبستگی")]}}},
-        "objects": {"values": [{"properties": {"backColor": gradient2(corr_measure, WHITE, BLUE_DARK, "0D", "1D"),
-                                               "fontColor": color(INK)},
-                                "selector": {"data": WILDCARD, "metadata": f"_Measures.{corr_measure}"}}],
-                    "subTotals": [{"properties": {"rowSubtotals": lit("false"), "columnSubtotals": lit("false")}}]},
-        "visualContainerObjects": title_objects("نقشهٔ حرارتی همبستگی بازده واقعی ماهانه (۸ سهم و ۲ شاخص)"),
+        "objects": hobj,
+        "visualContainerObjects": title_objects("همبستگی بازده واقعی ماهانه: ۸ سهم و ۲ شاخص"),
         "drillFilterOtherVisuals": True})
     return [p1, p2, p3, p4]
 
@@ -911,30 +1017,30 @@ def build_guide() -> str:
     st = rs[rs["type"] == "stock"]
     folder = str(DATA) + "\\"
     clo = cl.loc[("index_total", "on_reopening")]
-    rows1 = [
-        ("رشد شاخص قیمت مصرف‌کننده (برابر، ۳ ساله)", "CPI growth (×)", fa(1 + rs.loc["cpi", "nominal_cum_3y"], ".2f") + "×"),
-        ("بازده واقعی شاخص کل (تجمعی ۳ ساله)", "Index real cum 3y", _pct(rs.loc["index_total", "real_cum_3y"])),
-        ("بازده واقعی شاخص هم‌وزن (تجمعی ۳ ساله)", "Equal-weight real cum 3y", _pct(rs.loc["index_equal_weight", "real_cum_3y"])),
-        ("سهام نمونه جلوتر از تورم (تجمعی ۳ ساله)", "Stocks beating inflation",
-         f"{(st['real_cum_3y'] > 0).sum()} از {len(st)}"),
-        ("زیان واقعی تعطیلی بازار تا بازگشایی (روزشمار)", "Closure real loss (pro-rated)", _pct(clo["real_prorated"])),
-    ]
+    values1 = {
+        "CPI growth (×)": fa(1 + rs.loc["cpi", "nominal_cum_3y"], ".2f") + "×",
+        "Index real cum 3y": _pct(rs.loc["index_total", "real_cum_3y"]),
+        "Equal-weight real cum 3y": _pct(rs.loc["index_equal_weight", "real_cum_3y"]),
+        "Stocks beating inflation": f"{(st['real_cum_3y'] > 0).sum()} / {len(st)}",
+        "Closure real loss (pro-rated)": _pct(clo["real_prorated"]),
+    }
+    values3 = {
+        "Bond YTM": _pct(ctx["bond_ytm"]), "Inflation 12m avg": _pct(ctx["inflation_12m_avg"]),
+        "Inflation point-to-point": _pct(ctx["inflation_point_to_point"]),
+        "Bond real yield (avg)": _pct(ctx["real_yield_avg"]),
+        "Bond real yield (p2p)": _pct(ctx["real_yield_p2p"]),
+    }
+    tbl = lambda cards, vals: "\n".join(f"| {lab} | `{m}` | {vals[m]} | ☐ |" for m, lab in cards)
 
     def sel(code):
         r = rs.loc[code]
         return [_pct(r["real_cagr"]), _pct(r["real_vol_per_year"]),
                 _pct(r["real_max_drawdown_peak_to_trough"]), _pct(r["pct_months_beat_inflation"], 0)]
 
-    rows3 = [
-        ("بازده تا سررسید اوراق دولتی (سالانه)", "Bond YTM", _pct(ctx["bond_ytm"])),
-        ("تورم ۱۲ ماهه (میانگین، سالانه)", "Inflation 12m avg", _pct(ctx["inflation_12m_avg"])),
-        ("تورم نقطه به نقطه", "Inflation point-to-point", _pct(ctx["inflation_point_to_point"])),
-        ("بازده واقعی ضمنی (میانگین تورم)", "Bond real yield (avg)", _pct(ctx["real_yield_avg"])),
-        ("بازده واقعی ضمنی (نقطه به نقطه)", "Bond real yield (p2p)", _pct(ctx["real_yield_p2p"])),
-    ]
-    tbl = lambda rows: "\n".join(f"| {a} | `{b}` | {c} | ☐ |" for a, b, c in rows)
     s_idx, s_fam = sel("index_total"), sel("fameli")
     F = findings()
+    line1, line2 = bond_statement()
+    p2_labels = " | ".join(lab for _, lab in CARDS_P2[1:])
     return f"""# راهنمای ساخت و بررسی داشبورد «بورس در برابر تورم»
 
 این پوشه یک پروژهٔ Power BI (`.pbip`) با مدل معنایی TMDL و گزارش PBIR است. همهٔ فایل‌ها را
@@ -942,7 +1048,8 @@ def build_guide() -> str:
 اعداد تحلیل‌اند و در داشبورد تغییری نمی‌کنند.
 
 > هشدار: اجرای دوبارهٔ `python src/build_dashboard.py` همهٔ فایل‌های گزارش را از نو می‌نویسد.
-> اگر در Power BI Desktop تغییر دستی داده‌اید، پیش از اجرای دوباره از آن نسخه پشتیبان بگیرید.
+> هر اصلاح ماندگار باید در `src/build_dashboard.py` انجام شود. اگر در Power BI Desktop تغییر
+> دستی داده‌اید، پیش از اجرای دوباره از آن نسخه پشتیبان بگیرید.
 
 ## ۱. باز کردن پروژه و تنظیم DataFolder
 
@@ -967,9 +1074,22 @@ def build_guide() -> str:
    python src/build_dashboard.py
    ```
    اولی CSVها را می‌سازد و دومی پروژه را. بعد پروژه را در Desktop ببندید و دوباره باز کنید.
-4. اگر Refresh روی یک ستون خطای نوع داده داد (مثلاً True/False یا عدد اعشاری)، در Power Query
-   مرحلهٔ `Typed` با فرهنگ `en-US` نوشته شده است. فقط مطمئن شوید CSV با UTF-8 ذخیره شده و
-   ساختار ستون‌ها تغییر نکرده است.
+
+### رفع اشکال بارگذاری
+
+- **Refresh با خطای «Container unexpectedly exited» یا کد `0x800705AF` قطع می‌شود.** این خطا از
+  کمبود حافظه هنگام اجرای هم‌زمان چند پرس‌وجوی Power Query است.
+  - بارگذاری موازی جدول‌ها در خود پروژه خاموش است: در `tse_inflation.SemanticModel/.pbi/editorSettings.json`
+    مقدار `"parallelQueryLoading": false` نوشته شده است. در Desktop می‌توانید آن را در
+    **File > Options and settings > Options > CURRENT FILE > Data Load > Parallel loading of
+    tables** ببینید؛ باید روی Disabled یا Custom با عدد ۱ باشد.
+  - تنظیم دوم سراسری است و در فایل پروژه ذخیره نمی‌شود. در هر رایانه یک بار تنظیم کنید:
+    **Options > GLOBAL > Data Load > Maximum number of simultaneous evaluations = 1** (و در صورت
+    نیاز **Maximum memory used per simultaneous evaluation** را بالا ببرید). Desktop را دوباره
+    باز کنید و Refresh را تکرار کنید.
+  - برنامه‌های سنگین دیگر را ببندید.
+- **خطای نوع داده روی یک ستون** (مثلاً True/False یا عدد اعشاری): مرحلهٔ `Typed` در Power Query
+  با فرهنگ `en-US` نوشته شده است. مطمئن شوید CSV با UTF-8 ذخیره شده و ستون‌ها تغییر نکرده‌اند.
 
 ## ۳. چک‌لیست مقدار کارت‌ها
 
@@ -978,32 +1098,36 @@ def build_guide() -> str:
 
 **صفحهٔ ۱: نمای کلی**
 
-| کارت | سنجه | مقدار درست | ✓ |
+| برچسب کارت | سنجه | مقدار درست | ✓ |
 |---|---|---|---|
-{tbl(rows1)}
+{tbl(CARDS_P1, values1)}
 
-**صفحهٔ ۲: پراکندگی** (کارت «سری انتخاب‌شده» و چهار کارت کنار آن)
+**صفحهٔ ۲: پراکندگی** (کارت «{CARDS_P2[0][1]}» و چهار کارت کنار آن: {p2_labels})
 
-| حالت | سری | بازده واقعی سالانه | نوسان واقعی | بیشترین افت | ماه‌های جلوتر از تورم | ✓ |
+| حالت | سری | بازده واقعی سالانه | نوسان واقعی سالانه | بیشترین افت | ماه‌های جلوتر از تورم | ✓ |
 |---|---|---|---|---|---|---|
 | بدون انتخاب در اسلایسر | شاخص کل | {s_idx[0]} | {s_idx[1]} | {s_idx[2]} | {s_idx[3]} | ☐ |
 | انتخاب «فملی» | فملی | {s_fam[0]} | {s_fam[1]} | {s_fam[2]} | {s_fam[3]} | ☐ |
 
-**صفحهٔ ۳: تعطیلی بازار و دارایی «امن»**
+**صفحهٔ ۳: تعطیلی بازار و دارایی امن**
 
-| کارت | سنجه | مقدار درست | ✓ |
+| برچسب کارت | سنجه | مقدار درست | ✓ |
 |---|---|---|---|
-{tbl(rows3)}
+{tbl(CARDS_P3, values3)}
 
-کارت متنی «اوراق دولتی در برابر تورم» باید این جمله را نشان دهد (اعداد با رقم لاتین):
-«اگر تورم در سطح سال گذشته بماند، بازده امروز اوراق دولتی به معنای بازده واقعی حدود
-{round(ctx['real_yield_avg'] * 100):d}% در سال است ({round(ctx['real_yield_p2p'] * 100):d}% در برابر تورم نقطه به نقطه).»
-و زیر آن: «منبع: {ctx['source_url']} | تاریخ داده: {ctx['snapshot_date']}».
+متن کنار کارت‌ها ثابت است (از `context.csv` هنگام ساخت):
+«{line1}»
+«{line2}»
 
 ## ۴. چه چیزی را در هر صفحه بررسی کنیم
 
 همهٔ صفحه‌ها:
-- زیر عنوان یک خط «یافتهٔ اصلی» و پایین صفحه پانویس «{FOOTER}» دیده شود.
+- عنوان، یک خط «یافتهٔ اصلی» و یک خط یادداشت روش بالای صفحه است. پانویس «{FOOTER}» کامل
+  و بریده‌نشده پایین صفحه دیده شود.
+- متن‌های فارسی راست‌چین باشند و نقطه و پرانتز در جای درست (انتهای جمله، سمت چپ) بیایند، نه در
+  ابتدای خط.
+- برچسب زیر عدد هر کارت کامل دیده شود (عدد ۲۰pt، برچسب ۹pt).
+- هیچ دو ویژوالی روی هم نیفتند و چیزی بیرون از صفحه نباشد.
 - در پنل Filters یک فیلتر صفحهٔ قفل‌شده روی `dim_series[type]` باشد. شاخص‌های صنایع
   (`sector_index`) در هیچ صفحه‌ای نباید دیده شوند.
 - نام سری‌ها فارسی باشد (`series_fa`) و ماه‌ها به ترتیب زمانی (شهریور ۱۴۰۲ تا شهریور ۱۴۰۵) بیایند،
@@ -1011,28 +1135,27 @@ def build_guide() -> str:
 
 **صفحهٔ ۱. نمای کلی: بورس در برابر تورم**
 - یافتهٔ اصلی: «{F['overview']}»
-- پنج کارت جدول بالا.
-- نمودار خطی رشد واقعی: فقط شاخص کل (آبی تیره)، شاخص هم‌وزن (آبی روشن) و تورم (خاکستری، خط
-  صاف روی ۱۰۰).
-- نمودار بازده واقعی ۱۲ ماههٔ غلتان: فقط دو شاخص، از خرداد ۱۴۰۳ به بعد. پیش از آن خالی است.
-- نمودار میله‌ای CAGR: میلهٔ اسمی آبی کم‌رنگ. میلهٔ واقعی **سبز** برای مقدار مثبت، **قرمز** برای
-  منفی و خاکستری برای صفر (تورم). شاخص کل و شاخص هم‌وزن باید قرمز باشند.
-- متن قرمز: «{HINDSIGHT_NOTE}»
+- پنج کارت جدول بالا و زیر آن متن قرمز: «{HINDSIGHT_NOTE}»
+- نمودار خطی رشد واقعی (سمت چپ): فقط شاخص کل (آبی تیره)، شاخص هم‌وزن (آبی روشن) و تورم
+  (خاکستری، خط صاف روی ۱۰۰).
+- نمودار میله‌ای «رشد سالانه: اسمی در برابر واقعی» کل ستون راست را پر می‌کند: میلهٔ اسمی آبی
+  کم‌رنگ و میلهٔ واقعی آبی تیره، برای شاخص کل، شاخص هم‌وزن و تورم.
+- نمودار بازده ۱۲ ماههٔ غلتان در این صفحه نیست؛ در صفحهٔ ۴ است.
 
 **صفحهٔ ۲. پراکندگی: ۸ سهم نمونه، نه کل بازار**
 - یافتهٔ اصلی: «{F['dispersion']}»
 - اسلایسر تک‌انتخابی فقط کارت‌ها را تغییر می‌دهد. نمودارها و جدول‌ها با آن **نباید** فیلتر شوند.
-- نمودار میله‌ای بازده واقعی سالانه: ۸ سهم، ۲ شاخص و سبد هم‌وزن. سبز و قرمز مثل صفحهٔ ۱.
+- نمودار میله‌ای بازده واقعی سالانه: ۸ سهم، ۲ شاخص و سبد هم‌وزن. میلهٔ مثبت **سبز**، منفی **قرمز**.
 - نمودار پراکنش ریسک و بازده: ۱۱ نقطه با برچسب.
 - ماتریس سری × دورهٔ ۱۲ ماهه: سه ستون (سال اول تا سوم). خانه‌های منفی قرمز، نزدیک صفر سفید و
   مثبت سبز. فملی در سال سوم باید پررنگ‌ترین سبز باشد.
 - جدول بازده و ریسک: مرتب‌شده بر اساس بازده واقعی سالانه، فملی در بالا.
 
-**صفحهٔ ۳. تعطیلی بازار و دارایی «امن»**
+**صفحهٔ ۳. تعطیلی بازار و دارایی امن**
 - یافتهٔ اصلی: «{F['closure']}»
 - نمودار میله‌ای تعطیلی: فقط دو شاخص، بازهٔ «تا بازگشایی». تغییر اسمی حدود صفر، تورم روزشمار
   {_pct(clo['cpi_prorated'])} و تغییر واقعی {_pct(clo['real_prorated'])}.
-- پنج کارت اوراق و متن شرطی (جدول بالا).
+- پنج کارت اوراق و متن ثابت کنار آن‌ها (جدول و متن بالا).
 - جدول تعطیلی: ۲ شاخص و ۸ سهم، هر کدام دو ردیف («تا بازگشایی» و «۲۰ روز معاملاتی پس از
   بازگشایی»). فولاد «قابل مقایسه = False» و ستون‌های واقعی آن خالی است.
 
@@ -1044,35 +1167,35 @@ def build_guide() -> str:
 
 ## ۵. رفع دستی اگر یک ویژوال درست نمایش داده نشد
 
-قالب‌بندی شرطی و خط صفر در فایل‌های گزارش نوشته شده‌اند، ولی Desktop گاهی آن‌ها را نمی‌خواند.
-اگر چنین شد، به این ترتیب دستی تنظیم کنید و فایل را ذخیره کنید:
+قالب‌بندی‌ها در فایل‌های گزارش نوشته شده‌اند، ولی Desktop گاهی بعضی را نمی‌خواند. اگر چنین شد،
+دستی تنظیم کنید و ذخیره کنید، و همان اصلاح را در `src/build_dashboard.py` هم بیاورید:
 
-1. **میله‌های سبز و قرمز (صفحهٔ ۱ و ۲):** ویژوال را انتخاب کنید و به **Format > Bars > Colors**
-   بروید. سری «واقعی» را انتخاب کنید، روی **fx** بزنید و این‌ها را بگذارید: Format style =
-   **Field value**، What field = `_Measures[Real CAGR color]`.
-2. **ماتریس دوره‌ها (صفحهٔ ۲):** **Format > Cell elements**، Series = «بازده واقعی (سالانه)»،
-   **Background color** روشن و **fx** را بزنید. Format style = **Gradient** و تیک
-   **Add a middle color** را بزنید. Minimum = Lowest value با `#C62828`، Center = **Number 0**
-   با `#FFFFFF`، Maximum = Highest value با `#2E7D32`.
-3. **نقشهٔ حرارتی همبستگی (صفحهٔ ۴):** مانند بند ۲ ولی بدون رنگ میانی. Minimum = Number 0 با
-   `#FFFFFF` و Maximum = Number 1 با `#1F4E79`. اگر ردیف یا ستون جمع (Total) دیده شد، از
-   **Format > Row subtotals / Column subtotals** خاموشش کنید.
-4. **خط صفر (صفحهٔ ۴):** ویژوال را انتخاب کنید. در پنل **Analytics** گزینهٔ **Constant line**
-   (محور Y) را اضافه کنید، Value = 0، سبک خط‌چین.
+1. **میله‌های سبز و قرمز (صفحهٔ ۲):** ویژوال را انتخاب کنید و به **Format > Bars > Colors**
+   بروید. روی **fx** بزنید: Format style = **Field value**، What field = `_Measures[Real CAGR color]`.
+2. **ماتریس دوره‌ها (صفحهٔ ۲):** **Format > Cell elements**، **Background color** روشن و **fx**:
+   Format style = **Gradient**، تیک **Add a middle color**. Minimum = Lowest value با `#C62828`،
+   Center = **Number 0** با `#FFFFFF`، Maximum = Highest value با `#2E7D32`.
+3. **نقشهٔ حرارتی همبستگی (صفحهٔ ۴):** مانند بند ۲ ولی بدون رنگ میانی: Minimum = Number 0 با
+   `#FFFFFF` و Maximum = Number 1 با `#1F4E79`. ردیف و ستون جمع را از
+   **Format > Row subtotals / Column subtotals** خاموش کنید.
+4. **خط صفر (صفحهٔ ۴):** در پنل **Analytics** گزینهٔ **Constant line** (محور Y) را اضافه کنید،
+   Value = 0، سبک خط‌چین.
 5. **رنگ خطوط سری‌ها:** **Format > Lines > Colors**. شاخص کل `#1F4E79`، شاخص کل (هم‌وزن)
-   `#6DA7EC` و شاخص قیمت مصرف‌کننده (تورم) `#8C8C8C`.
-6. **اسلایسر صفحهٔ ۲ نمودارها را هم فیلتر می‌کند:** اسلایسر را انتخاب کنید و به
+   `#6DA7EC` و شاخص قیمت مصرف‌کننده `#8C8C8C`.
+6. **برچسب کارت بریده شده است:** کارت را انتخاب کنید: **Format > Visual > Callout value > Font
+   size = 20**، **Label > Font size = 9**، **General > Properties > Padding = 4px**. اگر باز هم
+   بریده بود، ارتفاع کارت را بیشتر کنید (اکنون {CARD_H} پیکسل).
+7. **نقطه یا پرانتز در ابتدای خط فارسی آمده است:** متن را انتخاب کنید، تراز را راست بگذارید و در
+   انتهای جمله یک کاراکتر RLM (U+200F) اضافه کنید. در `src/build_dashboard.py` همهٔ متن‌ها از
+   تابع `rtl()` می‌گذرند؛ متن جدید را هم از آن عبور دهید.
+8. **اسلایسر صفحهٔ ۲ نمودارها را هم فیلتر می‌کند:** اسلایسر را انتخاب کنید و به
    **Format > Edit interactions** بروید. برای نمودار میله‌ای، پراکنش، ماتریس و جدول، گزینهٔ
    **None** را بزنید.
-7. **پوسته اعمال نشده است** (رنگ‌ها یا قلم متفاوت است): **View > Themes > Browse for themes**
-   و فایل `dashboard/theme.json` را انتخاب کنید.
-8. **متن فارسی به‌هم‌ریخته یا چپ‌چین است:** متن را انتخاب کنید. قلم را **Segoe UI** و تراز را
-   راست بگذارید.
-9. **ویژوالی خطای «Can't display this visual» می‌دهد:** آن را حذف کنید و با همان فیلدها دوباره
-   بسازید. فهرست فیلدهای هر ویژوال در `dashboard/README.md` و در
-   `src/build_dashboard.py` (تابع `build_report`) آمده است. همهٔ سنجه‌ها در جدول `_Measures`
-   هستند و در `dashboard/measures.dax` هم کپی شده‌اند.
-10. **ترتیب ماه‌ها الفبایی است:** در Data view ستون `dim_month[month_label_fa]` را انتخاب کنید و
+9. **پوسته اعمال نشده است:** **View > Themes > Browse for themes** و فایل `dashboard/theme.json`.
+10. **ویژوالی خطای «Can't display this visual» می‌دهد:** آن را حذف کنید و با همان فیلدها دوباره
+    بسازید. فیلدهای هر ویژوال در تابع `build_report` در `src/build_dashboard.py` آمده است. همهٔ
+    سنجه‌ها در جدول `_Measures` هستند و در `dashboard/measures.dax` هم کپی شده‌اند.
+11. **ترتیب ماه‌ها الفبایی است:** در Data view ستون `dim_month[month_label_fa]` را انتخاب کنید و
     **Column tools > Sort by column = sort_key** را بگذارید.
 
 ## ۶. بررسی خودکار (بدون باز کردن Desktop)
@@ -1080,10 +1203,11 @@ def build_guide() -> str:
 ```
 python -m pytest -q tests
 ```
-این آزمون‌ها فایل‌های گزارش را با طرح‌وارهٔ (schema) رسمی PBIR اعتبارسنجی می‌کنند و TMDL را با
-کتابخانهٔ خودِ Power BI Desktop می‌خوانند. همهٔ سنجه‌ها هم روی موتور محلی Power BI
-(`msmdsrv.exe`) اجرا و با CSVها مقایسه می‌شوند (`dashboard/tools/`). ظاهر صفحه‌ها و مرحلهٔ
-Power Query را فقط خودِ Desktop نشان می‌دهد. برای همین بخش‌های ۳ و ۴ را دستی بررسی کنید.
+این آزمون‌ها فایل‌های گزارش را با طرح‌وارهٔ (schema) رسمی PBIR اعتبارسنجی می‌کنند، TMDL را با
+کتابخانهٔ خودِ Power BI Desktop می‌خوانند و هم‌پوشانی ویژوال‌ها، جای پانویس و قاعده‌های متن فارسی
+را بررسی می‌کنند. همهٔ سنجه‌ها هم روی موتور محلی Power BI (`msmdsrv.exe`) اجرا و با CSVها مقایسه
+می‌شوند (`dashboard/tools/`). ظاهر نهایی صفحه‌ها را فقط خودِ Desktop نشان می‌دهد؛ برای همین
+بخش‌های ۳ و ۴ را دستی بررسی کنید.
 """
 
 
@@ -1132,13 +1256,10 @@ def check_report_fields() -> list[str]:
 # Python equivalents of the Power Query renames / added columns above. Used ONLY by the
 # engine test model; tests/test_dashboard.py checks they match the M expressions' outputs.
 ADDED_PY = {
-    "yearly_real": {"block_fa": lambda df: df["block"].map({
-        "1402-07..1403-06": "سال اول: مهر ۱۴۰۲ تا شهریور ۱۴۰۳",
-        "1403-07..1404-06": "سال دوم: مهر ۱۴۰۳ تا شهریور ۱۴۰۴",
-        "1404-07..1405-06": "سال سوم: مهر ۱۴۰۴ تا شهریور ۱۴۰۵"}).fillna(df["block"])},
+    "yearly_real": {"block_fa": lambda df: df["block"].map(lambda b: rtl(BLOCK_FA[b]) if b in BLOCK_FA else b)},
     "closure_summary": {
-        "window_fa": lambda df: df["window"].map(lambda w: "تا بازگشایی" if w == "on_reopening"
-                                                 else "۲۰ روز معاملاتی پس از بازگشایی"),
+        "window_fa": lambda df: df["window"].map(lambda w: rtl(WINDOW_FA["on_reopening"] if w == "on_reopening"
+                                                               else WINDOW_FA["after_20_days"])),
         "window_order": lambda df: df["window"].map(lambda w: 1 if w == "on_reopening" else 2)},
 }
 DT_DAX = {"string": "STRING", "double": "DOUBLE", "int64": "INTEGER", "boolean": "BOOLEAN",
@@ -1147,6 +1268,8 @@ DT_DAX = {"string": "STRING", "double": "DOUBLE", "int64": "INTEGER", "boolean":
 
 def table_frame(table: str) -> pd.DataFrame:
     df = pd.read_csv(DATA / f"{table}.csv", encoding="utf-8").rename(columns=RENAMES.get(table, {}))
+    for col in RLM_COLUMNS.get(table, []):
+        df[col] = df[col].map(lambda v: v if pd.isna(v) else RLM + v + RLM)
     for col, fn in ADDED_PY.get(table, {}).items():
         df[col] = fn(df)
     return df

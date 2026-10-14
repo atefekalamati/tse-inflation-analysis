@@ -54,8 +54,8 @@ table dim_series
 
 	column sort_order
 		dataType: int64
-		formatString: 0
 		isHidden
+		formatString: 0
 		lineageTag: d1941bef-720d-564d-829a-4a6c6ebc3165
 		summarizeBy: none
 		sourceColumn: sort_order
@@ -68,9 +68,10 @@ table dim_series
 				let
 				    Source = Csv.Document(File.Contents(DataFolder & "dim_series.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"type", type text}, {"sector", type text}, {"usage_note", type text}, {"sort_order", Int64.Type}}, "en-US")
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"type", type text}, {"sector", type text}, {"usage_note", type text}, {"sort_order", Int64.Type}}, "en-US"),
+				    Rtl = Table.TransformColumns(Typed, {{"series_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
 				in
-				    Typed
+				    Rtl
 
 	annotation PBI_ResultType = Table
 

@@ -3,9 +3,9 @@
   "name": "a7f88faf04754b755165",
   "position": {
     "x": 740,
-    "y": 104,
+    "y": 100,
     "z": 5,
-    "height": 580,
+    "height": 574,
     "width": 516,
     "tabOrder": 5
   },
@@ -29,7 +29,7 @@
               "queryRef": "correlation_long.series_a_fa",
               "nativeQueryRef": "series_a_fa",
               "active": true,
-              "displayName": "سری"
+              "displayName": "سری‏"
             }
           ]
         },
@@ -49,7 +49,7 @@
               "queryRef": "correlation_long.series_b_fa",
               "nativeQueryRef": "series_b_fa",
               "active": true,
-              "displayName": "در برابر"
+              "displayName": "در برابر‏"
             }
           ]
         },
@@ -68,14 +68,65 @@
               },
               "queryRef": "_Measures.Correlation (real, monthly)",
               "nativeQueryRef": "Correlation (real, monthly)",
-              "displayName": "همبستگی"
+              "displayName": "همبستگی‏"
             }
           ]
         }
       }
     },
     "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
       "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        },
         {
           "properties": {
             "backColor": {
@@ -192,7 +243,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'نقشهٔ حرارتی همبستگی بازده واقعی ماهانه (۸ سهم و ۲ شاخص)'"
+                  "Value": "'همبستگی بازده واقعی ماهانه: ۸ سهم و ۲ شاخص‏'"
                 }
               }
             },
@@ -210,7 +261,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -218,6 +276,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

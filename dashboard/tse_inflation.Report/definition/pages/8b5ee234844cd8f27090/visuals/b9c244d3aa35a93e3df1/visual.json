@@ -3,9 +3,9 @@
   "name": "b9c244d3aa35a93e3df1",
   "position": {
     "x": 24,
-    "y": 692,
+    "y": 682,
     "z": 3,
-    "height": 24,
+    "height": 30,
     "width": 1232,
     "tabOrder": 3
   },
@@ -19,17 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "منبع: TSETMC و شاخص قیمت مصرف‌کننده مرکز آمار ایران (۱۴۰۰=۱۰۰)",
+                    "value": "منبع: TSETMC و شاخص قیمت مصرف‌کننده مرکز آمار ایران (۱۴۰۰=۱۰۰)‏",
                     "textStyle": {
-                      "fontSize": "8pt",
-                      "color": "#52514E",
-                      "fontFamily": "Segoe UI"
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9pt",
+                      "color": "#52514E"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

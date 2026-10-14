@@ -3,9 +3,9 @@
   "name": "f53117d65068988b17d6",
   "position": {
     "x": 954,
-    "y": 196,
+    "y": 204,
     "z": 9,
-    "height": 84,
+    "height": 92,
     "width": 302,
     "tabOrder": 9
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "_Measures.Bond real yield (p2p)",
               "nativeQueryRef": "Bond real yield (p2p)",
-              "displayName": "بازده واقعی ضمنی (نقطه به نقطه)"
+              "displayName": "بازده واقعی با تورم نقطه به نقطه‏"
             }
           ]
         }
@@ -41,13 +41,65 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "18D"
+                  "Value": "20D"
                 }
               }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "label": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
           }
         }
       ]

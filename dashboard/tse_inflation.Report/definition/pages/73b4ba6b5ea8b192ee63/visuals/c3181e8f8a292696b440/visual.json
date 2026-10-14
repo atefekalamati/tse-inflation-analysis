@@ -3,7 +3,7 @@
   "name": "c3181e8f8a292696b440",
   "position": {
     "x": 24,
-    "y": 44,
+    "y": 42,
     "z": 1,
     "height": 28,
     "width": 1232,
@@ -19,18 +19,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "قیمت‌ها در ۳ سال ۳٫۶۲ برابر شد؛ شاخص کل ۶٫۶٪ و شاخص هم‌وزن ۲۶٫۴٪ از قدرت خرید را از دست دادند (تجمعی ۳ ساله).",
+                    "value": "قیمت‌ها در ۳ سال ۳٫۶۲ برابر شد؛ شاخص کل ۶٫۶٪ و شاخص هم‌وزن ۲۶٫۴٪ از قدرت خرید را در این ۳ سال از دست دادند.‏",
                     "textStyle": {
-                      "fontSize": "12pt",
-                      "color": "#1F4E79",
                       "fontFamily": "Segoe UI",
-                      "fontWeight": "bold"
+                      "fontSize": "11pt",
+                      "color": "#1F4E79"
                     }
                   }
                 ],
                 "horizontalTextAlignment": "right"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
           }
         }
       ]

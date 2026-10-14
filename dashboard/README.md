@@ -51,11 +51,10 @@ the CSVs at build time), a method note and the footer «منبع: TSETMC و شا
 1. **نمای کلی: بورس در برابر تورم.**
    - Five headline cards: CPI growth, overall-index real return, equal-weight real return, stocks
      beating inflation, and the closure real loss.
-   - Real growth chart of the two market indices against CPI = 100.
-   - Rolling 12-month real return.
-   - Nominal against real CAGR. Real bars are green `#2E7D32` above 0 and red `#C62828` below 0,
-     coloured by the measure `Real CAGR color`.
-   - Hindsight note on the 8 stocks.
+   - Hindsight note on the 8 stocks, under the cards.
+   - Real growth chart of the two market indices against CPI = 100 (left column).
+   - "رشد سالانه: اسمی در برابر واقعی": nominal against real CAGR, coloured by series, filling the
+     right column. The rolling 12-month chart is on page 4 only.
    - Page filter: market indices and CPI.
 2. **پراکندگی: ۸ سهم نمونه، نه کل بازار.**
    - A single-select slicer drives the five "Selected" cards only. They show the overall index
@@ -65,9 +64,10 @@ the CSVs at build time), a method note and the footer «منبع: TSETMC و شا
    - Series × 12-month block matrix with a red-white-green colour scale centred on 0.
    - Risk table.
    - Page filter: stocks, market indices and the hindsight portfolio.
-3. **تعطیلی بازار و دارایی «امن»**
+3. **تعطیلی بازار و دارایی امن**
    - Closure bar chart for the market indices, with CPI pro-rated to the exact dates.
-   - Five bond and inflation cards, plus the conditional statement with its source and date.
+   - Five bond and inflation cards, plus a text box with the conditional statement, source and
+     date (static: the bond yield is a dated snapshot, written from `context.csv` at build time).
    - Closure table for both windows, with pro-rated and whole-month figures.
    - Page filter: market indices and stocks.
 4. **زمان ورود**
@@ -76,6 +76,19 @@ the CSVs at build time), a method note and the footer «منبع: TSETMC و شا
    - Correlation heatmap from `correlation_long`: 8 stocks and 2 indices, white (0) to dark blue
      (1).
    - Page filter: market indices and stocks.
+
+**Layout rules (tested in `tests/test_dashboard.py`):**
+- **Persian text:** every Persian string ends with a right-to-left mark (U+200F), and starts with
+  one if it begins with a digit, a Latin letter or a bracket. Power Query does the same for the
+  Persian data columns. Text boxes are right-aligned.
+- **Titles and labels:** visual titles and field labels contain no parentheses or Latin letters.
+- **Cards:** value at 20pt, label at 9pt, padding 4px, height 92px.
+- **Placement:** no two visuals overlap and nothing leaves the 1280 × 720 canvas. The footer box
+  ends 8px above the bottom edge.
+
+**Load settings:** parallel loading of tables is off in `.pbi/editorSettings.json`. With it on, the
+refresh crashed on a low-memory machine. Also set the global option "Maximum number of
+simultaneous evaluations" to 1; see BUILD_GUIDE.md.
 
 **Sector indices never appear.** Every page has a locked page filter on `dim_series[type]` that
 excludes `sector_index`.

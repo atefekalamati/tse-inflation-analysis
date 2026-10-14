@@ -89,7 +89,7 @@ table yearly_real
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				    Renamed = Table.RenameColumns(Promoted, {{"code", "series_code"}}),
 				    Typed = Table.TransformColumnTypes(Renamed, {{"series_code", type text}, {"series", type text}, {"type", type text}, {"block", type text}, {"real_return_per_year", type number}, {"nominal_return_per_year", type number}, {"inflation_per_year", type number}, {"rank_among_stocks", Int64.Type}}, "en-US"),
-				    Added1 = Table.AddColumn(Typed, "block_fa", each if [block] = "1402-07..1403-06" then "سال اول: مهر ۱۴۰۲ تا شهریور ۱۴۰۳" else if [block] = "1403-07..1404-06" then "سال دوم: مهر ۱۴۰۳ تا شهریور ۱۴۰۴" else if [block] = "1404-07..1405-06" then "سال سوم: مهر ۱۴۰۴ تا شهریور ۱۴۰۵" else [block], type text)
+				    Added1 = Table.AddColumn(Typed, "block_fa", each if [block] = "1402-07..1403-06" then "سال اول: مهر ۱۴۰۲ تا شهریور ۱۴۰۳#(200F)" else if [block] = "1403-07..1404-06" then "سال دوم: مهر ۱۴۰۳ تا شهریور ۱۴۰۴#(200F)" else if [block] = "1404-07..1405-06" then "سال سوم: مهر ۱۴۰۴ تا شهریور ۱۴۰۵#(200F)" else [block], type text)
 				in
 				    Added1
 

@@ -3,9 +3,9 @@
   "name": "01343222ccf39adff6d3",
   "position": {
     "x": 24,
-    "y": 104,
+    "y": 100,
     "z": 4,
-    "height": 296,
+    "height": 300,
     "width": 600,
     "tabOrder": 4
   },
@@ -29,7 +29,7 @@
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
               "active": true,
-              "displayName": "سری"
+              "displayName": "سری‏"
             }
           ]
         },
@@ -48,7 +48,7 @@
               },
               "queryRef": "_Measures.Closure nominal",
               "nativeQueryRef": "Closure nominal",
-              "displayName": "تغییر اسمی"
+              "displayName": "تغییر اسمی‏"
             },
             {
               "field": {
@@ -63,7 +63,7 @@
               },
               "queryRef": "_Measures.Closure CPI (pro-rated)",
               "nativeQueryRef": "Closure CPI (pro-rated)",
-              "displayName": "تورم (روزشمار)"
+              "displayName": "تورم روزشمار‏"
             },
             {
               "field": {
@@ -78,7 +78,7 @@
               },
               "queryRef": "_Measures.Closure real (pro-rated)",
               "nativeQueryRef": "Closure real (pro-rated)",
-              "displayName": "تغییر واقعی (روزشمار)"
+              "displayName": "تغییر واقعی روزشمار‏"
             }
           ]
         }
@@ -92,6 +92,13 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
                 }
               }
             }
@@ -112,6 +119,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Top'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
                 }
               }
             }
@@ -173,6 +187,46 @@
             "metadata": "_Measures.Closure real (pro-rated)"
           }
         }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -189,7 +243,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'شاخص‌های بازار: از آخرین معامله (۶ اسفند ۱۴۰۴) تا بازگشایی (۲۹ اردیبهشت ۱۴۰۵)، تجمعی'"
+                  "Value": "'شاخص‌های بازار از آخرین معامله تا بازگشایی، تجمعی‏'"
                 }
               }
             },
@@ -207,7 +261,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -215,6 +276,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

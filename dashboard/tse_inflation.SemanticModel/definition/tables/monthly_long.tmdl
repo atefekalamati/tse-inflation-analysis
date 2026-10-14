@@ -12,8 +12,8 @@ table monthly_long
 
 	column month_end_gregorian
 		dataType: dateTime
-		formatString: yyyy-mm-dd
 		isHidden
+		formatString: yyyy-mm-dd
 		lineageTag: 84a0e4fd-4d2c-5c88-836b-60a966c99b75
 		summarizeBy: none
 		sourceColumn: month_end_gregorian

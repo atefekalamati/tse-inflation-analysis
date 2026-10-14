@@ -1,0 +1,1005 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "table_measures.stocks_beating_inflation": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Stocks beating inflation"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "سهام نمونه جلوتر از تورم (تجمعی ۳ ساله)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.cpi_growth_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "CPI growth (×)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "رشد شاخص قیمت مصرف‌کننده (برابر، ۳ ساله)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.equalweight_real_cum_3y": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Equal-weight real cum 3y"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی شاخص هم‌وزن (تجمعی ۳ ساله)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.nominal_cagr": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Nominal CAGR"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "اسمی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "اسمی سالانه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_cagr": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real CAGR"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "واقعی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "بازده واقعی سالانه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "بازده واقعی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "واقعی سالانه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_growth_index": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real growth index"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "رشد واقعی (۱۰۰ = پایان شهریور ۱۴۰۲)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.index_real_cum_3y": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Index real cum 3y"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی شاخص کل (تجمعی ۳ ساله)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.closure_real_loss_prorated": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Closure real loss (pro-rated)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "زیان واقعی تعطیلی بازار تا بازگشایی (روزشمار)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_return_rolling_12m": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real return rolling 12m"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی ۱۲ ماهه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "بازده واقعی ۱۲ ماهه (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_return_per_year_block": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real return per year (block)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.selected_months_beating_inflation": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Selected months beating inflation"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "سهم ماه‌های جلوتر از تورم": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.selected_real_vol": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Selected real vol"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "نوسان واقعی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.selected_max_drawdown": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Selected max drawdown"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بیشترین افت واقعی از اوج": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.selected_real_cagr": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Selected real CAGR"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی سالانه (CAGR)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_vol_per_year": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real vol per year"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "نوسان واقعی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "نوسان سالانه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.selected_series": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Selected series"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "سری انتخاب‌شده (پیش‌فرض: شاخص کل)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_cum_3y": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real cum 3y"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "واقعی تجمعی ۳ ساله": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.real_max_drawdown": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Real max drawdown"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بیشترین افت": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.months_beating_inflation": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Months beating inflation"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "ماه‌های برنده": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.closure_nominal": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Closure nominal"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تغییر اسمی": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.closure_cpi_prorated": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Closure CPI (pro-rated)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تورم (روزشمار)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.closure_real_prorated": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Closure real (pro-rated)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تغییر واقعی (روزشمار)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.inflation_12m_avg": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Inflation 12m avg"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تورم ۱۲ ماهه (میانگین، سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.bond_conditional_statement": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Bond conditional statement"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "اوراق دولتی در برابر تورم": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.bond_source_note": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Bond source note"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "منبع و تاریخ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.bond_real_yield_avg": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Bond real yield (avg)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی ضمنی (میانگین تورم)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.bond_ytm": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Bond YTM"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده تا سررسید اوراق دولتی (سالانه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.inflation_pointtopoint": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Inflation point-to-point"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تورم نقطه به نقطه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.bond_real_yield_p2p": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Bond real yield (p2p)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازده واقعی ضمنی (نقطه به نقطه)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.correlation_real_monthly": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Correlation (real, monthly)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "همبستگی": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_series.series_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_series",
+			          "ConceptualProperty": "series_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "سری": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "انتخاب سری": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_month.month_label_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_month",
+			          "ConceptualProperty": "month_label_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "ماه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "yearly_real.block_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "yearly_real",
+			          "ConceptualProperty": "block_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "دورهٔ ۱۲ ماهه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.window_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "window_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "بازه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.window_start": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "window_start"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "از": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.window_end": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "window_end"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تا": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.nominal": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "nominal"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تغییر اسمی": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.cpi_prorated": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "cpi_prorated"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تورم (روزشمار)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.real_prorated": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "real_prorated"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "واقعی (روزشمار، اصلی)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.cpi_whole_months": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "cpi_whole_months"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "تورم (ماه کامل)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.real_whole_months": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "real_whole_months"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "واقعی (ماه کامل، حساسیت)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.comparable": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "comparable"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "قابل مقایسه": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "correlation_long.series_a_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "correlation_long",
+			          "ConceptualProperty": "series_a_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "سری": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "correlation_long.series_b_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "correlation_long",
+			          "ConceptualProperty": "series_b_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "در برابر": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

@@ -3,9 +3,9 @@
   "name": "0dc91e7939d0cebe0dd4",
   "position": {
     "x": 440,
-    "y": 444,
+    "y": 445,
     "z": 12,
-    "height": 240,
+    "height": 229,
     "width": 400,
     "tabOrder": 12
   },
@@ -29,7 +29,7 @@
               "queryRef": "dim_series.series_fa",
               "nativeQueryRef": "series_fa",
               "active": true,
-              "displayName": "سری"
+              "displayName": "سری‏"
             }
           ]
         },
@@ -49,7 +49,7 @@
               "queryRef": "yearly_real.block_fa",
               "nativeQueryRef": "block_fa",
               "active": true,
-              "displayName": "دورهٔ ۱۲ ماهه"
+              "displayName": "دورهٔ ۱۲ ماهه‏"
             }
           ]
         },
@@ -68,14 +68,65 @@
               },
               "queryRef": "_Measures.Real return per year (block)",
               "nativeQueryRef": "Real return per year (block)",
-              "displayName": "بازده واقعی (سالانه)"
+              "displayName": "بازده واقعی سالانه‏"
             }
           ]
         }
       }
     },
     "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
       "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        },
         {
           "properties": {
             "backColor": {
@@ -163,7 +214,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'بازده واقعی هر دورهٔ ۱۲ ماهه (سالانه؛ قرمز زیر صفر، سبز بالای صفر)'"
+                  "Value": "'بازده واقعی هر دورهٔ ۱۲ ماهه‏'"
                 }
               }
             },
@@ -181,7 +232,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -189,6 +247,47 @@
               "expr": {
                 "Literal": {
                   "Value": "'right'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }

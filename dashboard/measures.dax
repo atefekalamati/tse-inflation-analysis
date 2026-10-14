@@ -30,7 +30,7 @@
         risk_summary[series_code] = "index_equal_weight"
     )
 
-// [1 Headline] How many of the 8 sample stocks had a positive real return, cumulative over 3 years. Text.
+// [1 Headline] How many of the 8 sample stocks had a positive real return, cumulative over 3 years, as '3 / 8'.
 'Stocks beating inflation' =
     VAR Stocks =
         CALCULATETABLE (
@@ -41,7 +41,7 @@
     VAR Winners = COUNTROWS ( FILTER ( Stocks, risk_summary[real_cum_3y] > 0 ) )
     VAR Total = COUNTROWS ( Stocks )
     RETURN
-        FORMAT ( Winners, "0" ) & " از " & FORMAT ( Total, "0" )
+        FORMAT ( Winners, "0" ) & " / " & FORMAT ( Total, "0" )
 
 // [1 Headline] Overall index, real change from the last close before the closure (1404-12-06) to the first close after it (1405-02-29), CPI pro-rated to those dates. Cumulative over the closure.  Format: 0.0%;-0.0%;0.0%
 'Closure real loss (pro-rated)' =
@@ -231,10 +231,11 @@
 
 // [5 Context] Source and snapshot date of the bond yield. Text.
 'Bond source note' =
-    "منبع: " & MAX ( context[source_url] ) & "  |  تاریخ داده: " & MAX ( context[snapshot_date] )
+    "منبع: " & MAX ( context[source_url] ) & "  |  تاریخ داده: " & MAX ( context[snapshot_date] ) & UNICHAR ( 8207 )
 
 // [5 Context] The bond comparison as a conditional sentence. Text.
 'Bond conditional statement' =
     "اگر تورم در سطح سال گذشته بماند، بازده امروز اوراق دولتی به معنای بازده واقعی حدود "
         & FORMAT ( [Bond real yield (avg)], "0%" ) & " در سال است ("
         & FORMAT ( [Bond real yield (p2p)], "0%" ) & " در برابر تورم نقطه به نقطه)."
+        & UNICHAR ( 8207 )
