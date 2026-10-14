@@ -3,11 +3,11 @@
   "name": "0dc91e7939d0cebe0dd4",
   "position": {
     "x": 440,
-    "y": 445,
-    "z": 12,
-    "height": 229,
+    "y": 204,
+    "z": 11,
+    "height": 300,
     "width": 400,
-    "tabOrder": 12
+    "tabOrder": 11
   },
   "visual": {
     "visualType": "pivotTable",
@@ -23,11 +23,11 @@
                       "Entity": "dim_series"
                     }
                   },
-                  "Property": "series_fa"
+                  "Property": "series_short_fa"
                 }
               },
-              "queryRef": "dim_series.series_fa",
-              "nativeQueryRef": "series_fa",
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
               "active": true,
               "displayName": "سری‏"
             }
@@ -49,7 +49,7 @@
               "queryRef": "yearly_real.block_fa",
               "nativeQueryRef": "block_fa",
               "active": true,
-              "displayName": "دورهٔ ۱۲ ماهه‏"
+              "displayName": "دوره‏"
             }
           ]
         },
@@ -196,6 +196,95 @@
               }
             ],
             "metadata": "_Measures.Real return per year (block)"
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "96D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "dim_series.series_short_fa"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "88D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Real return per year (block)"
+          }
+        }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "rowSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowTotal": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnTotal": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           }
         }
       ]

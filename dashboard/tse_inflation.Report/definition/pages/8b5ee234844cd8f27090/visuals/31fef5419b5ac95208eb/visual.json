@@ -23,11 +23,11 @@
                       "Entity": "dim_series"
                     }
                   },
-                  "Property": "series_fa"
+                  "Property": "series_short_fa"
                 }
               },
-              "queryRef": "dim_series.series_fa",
-              "nativeQueryRef": "series_fa",
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
               "active": true,
               "displayName": "سری‏"
             }
@@ -126,13 +126,63 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
+                    "Conditional": {
+                      "Cases": [
+                        {
+                          "Condition": {
+                            "Comparison": {
+                              "ComparisonKind": 3,
+                              "Left": {
+                                "Measure": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Entity": "_Measures"
+                                    }
+                                  },
+                                  "Property": "Real CAGR"
+                                }
+                              },
+                              "Right": {
+                                "Literal": {
+                                  "Value": "0D"
+                                }
+                              }
+                            }
+                          },
+                          "Value": {
+                            "Literal": {
+                              "Value": "'#C62828'"
+                            }
+                          }
+                        },
+                        {
+                          "Condition": {
+                            "Comparison": {
+                              "ComparisonKind": 2,
+                              "Left": {
+                                "Measure": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Entity": "_Measures"
+                                    }
+                                  },
+                                  "Property": "Real CAGR"
+                                }
+                              },
+                              "Right": {
+                                "Literal": {
+                                  "Value": "0D"
+                                }
+                              }
+                            }
+                          },
+                          "Value": {
+                            "Literal": {
+                              "Value": "'#2E7D32'"
+                            }
+                          }
                         }
-                      },
-                      "Property": "Real CAGR color"
+                      ]
                     }
                   }
                 }
@@ -146,8 +196,7 @@
                   "matchingOption": 1
                 }
               }
-            ],
-            "metadata": "_Measures.Real CAGR"
+            ]
           }
         }
       ],

@@ -1,101 +1,101 @@
-series_a,series_a_code,series_a_fa,series_a_order,series_b,series_b_code,series_b_fa,series_b_order,corr_real_return_per_month
-Foolad,foolad,فولاد,5,Foolad,foolad,فولاد,5,1.0
-Foolad,foolad,فولاد,5,Fameli,fameli,فملی,6,0.6386678751107946
-Foolad,foolad,فولاد,5,Shepna,shepna,شپنا,7,0.45533222074641183
-Foolad,foolad,فولاد,5,Khodro,khodro,خودرو,8,0.5453049058963437
-Foolad,foolad,فولاد,5,Vbmellat,vbmellat,وبملت,9,0.6097746619290676
-Foolad,foolad,فولاد,5,Akhaber,akhaber,اخابر,10,0.40898027948602433
-Foolad,foolad,فولاد,5,Shasta,shasta,شستا,11,0.6897561920637318
-Foolad,foolad,فولاد,5,Tipico,tipico,تیپیکو,12,0.30106115379035386
-Foolad,foolad,فولاد,5,Overall index (TEDPIX),index_total,شاخص کل,1,0.7025737169925259
-Foolad,foolad,فولاد,5,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.5438737901930168
-Fameli,fameli,فملی,6,Foolad,foolad,فولاد,5,0.6386678751107946
-Fameli,fameli,فملی,6,Fameli,fameli,فملی,6,1.0
-Fameli,fameli,فملی,6,Shepna,shepna,شپنا,7,0.8666643609263293
-Fameli,fameli,فملی,6,Khodro,khodro,خودرو,8,0.6670289002291374
-Fameli,fameli,فملی,6,Vbmellat,vbmellat,وبملت,9,0.7085663480679779
-Fameli,fameli,فملی,6,Akhaber,akhaber,اخابر,10,0.6020239805519082
-Fameli,fameli,فملی,6,Shasta,shasta,شستا,11,0.8341399367862946
-Fameli,fameli,فملی,6,Tipico,tipico,تیپیکو,12,0.7083324614818114
-Fameli,fameli,فملی,6,Overall index (TEDPIX),index_total,شاخص کل,1,0.9234873979407553
-Fameli,fameli,فملی,6,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.8009646077163417
-Shepna,shepna,شپنا,7,Foolad,foolad,فولاد,5,0.45533222074641183
-Shepna,shepna,شپنا,7,Fameli,fameli,فملی,6,0.8666643609263293
-Shepna,shepna,شپنا,7,Shepna,shepna,شپنا,7,1.0
-Shepna,shepna,شپنا,7,Khodro,khodro,خودرو,8,0.6998184158154265
-Shepna,shepna,شپنا,7,Vbmellat,vbmellat,وبملت,9,0.6966975029745252
-Shepna,shepna,شپنا,7,Akhaber,akhaber,اخابر,10,0.6569030551203144
-Shepna,shepna,شپنا,7,Shasta,shasta,شستا,11,0.8104416571365081
-Shepna,shepna,شپنا,7,Tipico,tipico,تیپیکو,12,0.8677573663045794
-Shepna,shepna,شپنا,7,Overall index (TEDPIX),index_total,شاخص کل,1,0.863620176759653
-Shepna,shepna,شپنا,7,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.8434364786859154
-Khodro,khodro,خودرو,8,Foolad,foolad,فولاد,5,0.5453049058963437
-Khodro,khodro,خودرو,8,Fameli,fameli,فملی,6,0.6670289002291374
-Khodro,khodro,خودرو,8,Shepna,shepna,شپنا,7,0.6998184158154265
-Khodro,khodro,خودرو,8,Khodro,khodro,خودرو,8,1.0
-Khodro,khodro,خودرو,8,Vbmellat,vbmellat,وبملت,9,0.6801901812543218
-Khodro,khodro,خودرو,8,Akhaber,akhaber,اخابر,10,0.738061326782469
-Khodro,khodro,خودرو,8,Shasta,shasta,شستا,11,0.7386517508771258
-Khodro,khodro,خودرو,8,Tipico,tipico,تیپیکو,12,0.5657472525652494
-Khodro,khodro,خودرو,8,Overall index (TEDPIX),index_total,شاخص کل,1,0.7428035077645593
-Khodro,khodro,خودرو,8,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.7439961382260125
-Vbmellat,vbmellat,وبملت,9,Foolad,foolad,فولاد,5,0.6097746619290676
-Vbmellat,vbmellat,وبملت,9,Fameli,fameli,فملی,6,0.7085663480679779
-Vbmellat,vbmellat,وبملت,9,Shepna,shepna,شپنا,7,0.6966975029745252
-Vbmellat,vbmellat,وبملت,9,Khodro,khodro,خودرو,8,0.6801901812543218
-Vbmellat,vbmellat,وبملت,9,Vbmellat,vbmellat,وبملت,9,1.0
-Vbmellat,vbmellat,وبملت,9,Akhaber,akhaber,اخابر,10,0.6110487900337155
-Vbmellat,vbmellat,وبملت,9,Shasta,shasta,شستا,11,0.8132589501718565
-Vbmellat,vbmellat,وبملت,9,Tipico,tipico,تیپیکو,12,0.6118381477230632
-Vbmellat,vbmellat,وبملت,9,Overall index (TEDPIX),index_total,شاخص کل,1,0.8314607115552132
-Vbmellat,vbmellat,وبملت,9,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.7662212360034416
-Akhaber,akhaber,اخابر,10,Foolad,foolad,فولاد,5,0.40898027948602433
-Akhaber,akhaber,اخابر,10,Fameli,fameli,فملی,6,0.6020239805519082
-Akhaber,akhaber,اخابر,10,Shepna,shepna,شپنا,7,0.6569030551203144
-Akhaber,akhaber,اخابر,10,Khodro,khodro,خودرو,8,0.738061326782469
-Akhaber,akhaber,اخابر,10,Vbmellat,vbmellat,وبملت,9,0.6110487900337155
-Akhaber,akhaber,اخابر,10,Akhaber,akhaber,اخابر,10,1.0
-Akhaber,akhaber,اخابر,10,Shasta,shasta,شستا,11,0.7938709700622393
-Akhaber,akhaber,اخابر,10,Tipico,tipico,تیپیکو,12,0.7336681685982732
-Akhaber,akhaber,اخابر,10,Overall index (TEDPIX),index_total,شاخص کل,1,0.7618644012156113
-Akhaber,akhaber,اخابر,10,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.8719492127416866
-Shasta,shasta,شستا,11,Foolad,foolad,فولاد,5,0.6897561920637318
-Shasta,shasta,شستا,11,Fameli,fameli,فملی,6,0.8341399367862946
-Shasta,shasta,شستا,11,Shepna,shepna,شپنا,7,0.8104416571365081
-Shasta,shasta,شستا,11,Khodro,khodro,خودرو,8,0.7386517508771258
-Shasta,shasta,شستا,11,Vbmellat,vbmellat,وبملت,9,0.8132589501718565
-Shasta,shasta,شستا,11,Akhaber,akhaber,اخابر,10,0.7938709700622393
-Shasta,shasta,شستا,11,Shasta,shasta,شستا,11,1.0
-Shasta,shasta,شستا,11,Tipico,tipico,تیپیکو,12,0.7578257237705776
-Shasta,shasta,شستا,11,Overall index (TEDPIX),index_total,شاخص کل,1,0.9539163244353555
-Shasta,shasta,شستا,11,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.9238638240625375
-Tipico,tipico,تیپیکو,12,Foolad,foolad,فولاد,5,0.30106115379035386
-Tipico,tipico,تیپیکو,12,Fameli,fameli,فملی,6,0.7083324614818114
-Tipico,tipico,تیپیکو,12,Shepna,shepna,شپنا,7,0.8677573663045794
-Tipico,tipico,تیپیکو,12,Khodro,khodro,خودرو,8,0.5657472525652494
-Tipico,tipico,تیپیکو,12,Vbmellat,vbmellat,وبملت,9,0.6118381477230632
-Tipico,tipico,تیپیکو,12,Akhaber,akhaber,اخابر,10,0.7336681685982732
-Tipico,tipico,تیپیکو,12,Shasta,shasta,شستا,11,0.7578257237705776
-Tipico,tipico,تیپیکو,12,Tipico,tipico,تیپیکو,12,1.0
-Tipico,tipico,تیپیکو,12,Overall index (TEDPIX),index_total,شاخص کل,1,0.7833676658872719
-Tipico,tipico,تیپیکو,12,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.856928101109877
-Overall index (TEDPIX),index_total,شاخص کل,1,Foolad,foolad,فولاد,5,0.7025737169925259
-Overall index (TEDPIX),index_total,شاخص کل,1,Fameli,fameli,فملی,6,0.9234873979407553
-Overall index (TEDPIX),index_total,شاخص کل,1,Shepna,shepna,شپنا,7,0.863620176759653
-Overall index (TEDPIX),index_total,شاخص کل,1,Khodro,khodro,خودرو,8,0.7428035077645593
-Overall index (TEDPIX),index_total,شاخص کل,1,Vbmellat,vbmellat,وبملت,9,0.8314607115552132
-Overall index (TEDPIX),index_total,شاخص کل,1,Akhaber,akhaber,اخابر,10,0.7618644012156113
-Overall index (TEDPIX),index_total,شاخص کل,1,Shasta,shasta,شستا,11,0.9539163244353555
-Overall index (TEDPIX),index_total,شاخص کل,1,Tipico,tipico,تیپیکو,12,0.7833676658872719
-Overall index (TEDPIX),index_total,شاخص کل,1,Overall index (TEDPIX),index_total,شاخص کل,1,1.0
-Overall index (TEDPIX),index_total,شاخص کل,1,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,0.9407512639442046
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Foolad,foolad,فولاد,5,0.5438737901930168
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Fameli,fameli,فملی,6,0.8009646077163417
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Shepna,shepna,شپنا,7,0.8434364786859154
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Khodro,khodro,خودرو,8,0.7439961382260125
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Vbmellat,vbmellat,وبملت,9,0.7662212360034416
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Akhaber,akhaber,اخابر,10,0.8719492127416866
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Shasta,shasta,شستا,11,0.9238638240625375
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Tipico,tipico,تیپیکو,12,0.856928101109877
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Overall index (TEDPIX),index_total,شاخص کل,1,0.9407512639442046
-Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),2,1.0
+series_a,series_a_code,series_a_fa,series_a_short_fa,series_a_order,series_b,series_b_code,series_b_fa,series_b_short_fa,series_b_order,corr_real_return_per_month
+Foolad,foolad,فولاد,فولاد,5,Foolad,foolad,فولاد,فولاد,5,1.0
+Foolad,foolad,فولاد,فولاد,5,Fameli,fameli,فملی,فملی,6,0.6386678751107946
+Foolad,foolad,فولاد,فولاد,5,Shepna,shepna,شپنا,شپنا,7,0.45533222074641183
+Foolad,foolad,فولاد,فولاد,5,Khodro,khodro,خودرو,خودرو,8,0.5453049058963437
+Foolad,foolad,فولاد,فولاد,5,Vbmellat,vbmellat,وبملت,وبملت,9,0.6097746619290676
+Foolad,foolad,فولاد,فولاد,5,Akhaber,akhaber,اخابر,اخابر,10,0.40898027948602433
+Foolad,foolad,فولاد,فولاد,5,Shasta,shasta,شستا,شستا,11,0.6897561920637318
+Foolad,foolad,فولاد,فولاد,5,Tipico,tipico,تیپیکو,تیپیکو,12,0.30106115379035386
+Foolad,foolad,فولاد,فولاد,5,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.7025737169925259
+Foolad,foolad,فولاد,فولاد,5,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.5438737901930168
+Fameli,fameli,فملی,فملی,6,Foolad,foolad,فولاد,فولاد,5,0.6386678751107946
+Fameli,fameli,فملی,فملی,6,Fameli,fameli,فملی,فملی,6,1.0
+Fameli,fameli,فملی,فملی,6,Shepna,shepna,شپنا,شپنا,7,0.8666643609263293
+Fameli,fameli,فملی,فملی,6,Khodro,khodro,خودرو,خودرو,8,0.6670289002291374
+Fameli,fameli,فملی,فملی,6,Vbmellat,vbmellat,وبملت,وبملت,9,0.7085663480679779
+Fameli,fameli,فملی,فملی,6,Akhaber,akhaber,اخابر,اخابر,10,0.6020239805519082
+Fameli,fameli,فملی,فملی,6,Shasta,shasta,شستا,شستا,11,0.8341399367862946
+Fameli,fameli,فملی,فملی,6,Tipico,tipico,تیپیکو,تیپیکو,12,0.7083324614818114
+Fameli,fameli,فملی,فملی,6,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.9234873979407553
+Fameli,fameli,فملی,فملی,6,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.8009646077163417
+Shepna,shepna,شپنا,شپنا,7,Foolad,foolad,فولاد,فولاد,5,0.45533222074641183
+Shepna,shepna,شپنا,شپنا,7,Fameli,fameli,فملی,فملی,6,0.8666643609263293
+Shepna,shepna,شپنا,شپنا,7,Shepna,shepna,شپنا,شپنا,7,1.0
+Shepna,shepna,شپنا,شپنا,7,Khodro,khodro,خودرو,خودرو,8,0.6998184158154265
+Shepna,shepna,شپنا,شپنا,7,Vbmellat,vbmellat,وبملت,وبملت,9,0.6966975029745252
+Shepna,shepna,شپنا,شپنا,7,Akhaber,akhaber,اخابر,اخابر,10,0.6569030551203144
+Shepna,shepna,شپنا,شپنا,7,Shasta,shasta,شستا,شستا,11,0.8104416571365081
+Shepna,shepna,شپنا,شپنا,7,Tipico,tipico,تیپیکو,تیپیکو,12,0.8677573663045794
+Shepna,shepna,شپنا,شپنا,7,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.863620176759653
+Shepna,shepna,شپنا,شپنا,7,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.8434364786859154
+Khodro,khodro,خودرو,خودرو,8,Foolad,foolad,فولاد,فولاد,5,0.5453049058963437
+Khodro,khodro,خودرو,خودرو,8,Fameli,fameli,فملی,فملی,6,0.6670289002291374
+Khodro,khodro,خودرو,خودرو,8,Shepna,shepna,شپنا,شپنا,7,0.6998184158154265
+Khodro,khodro,خودرو,خودرو,8,Khodro,khodro,خودرو,خودرو,8,1.0
+Khodro,khodro,خودرو,خودرو,8,Vbmellat,vbmellat,وبملت,وبملت,9,0.6801901812543218
+Khodro,khodro,خودرو,خودرو,8,Akhaber,akhaber,اخابر,اخابر,10,0.738061326782469
+Khodro,khodro,خودرو,خودرو,8,Shasta,shasta,شستا,شستا,11,0.7386517508771258
+Khodro,khodro,خودرو,خودرو,8,Tipico,tipico,تیپیکو,تیپیکو,12,0.5657472525652494
+Khodro,khodro,خودرو,خودرو,8,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.7428035077645593
+Khodro,khodro,خودرو,خودرو,8,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.7439961382260125
+Vbmellat,vbmellat,وبملت,وبملت,9,Foolad,foolad,فولاد,فولاد,5,0.6097746619290676
+Vbmellat,vbmellat,وبملت,وبملت,9,Fameli,fameli,فملی,فملی,6,0.7085663480679779
+Vbmellat,vbmellat,وبملت,وبملت,9,Shepna,shepna,شپنا,شپنا,7,0.6966975029745252
+Vbmellat,vbmellat,وبملت,وبملت,9,Khodro,khodro,خودرو,خودرو,8,0.6801901812543218
+Vbmellat,vbmellat,وبملت,وبملت,9,Vbmellat,vbmellat,وبملت,وبملت,9,1.0
+Vbmellat,vbmellat,وبملت,وبملت,9,Akhaber,akhaber,اخابر,اخابر,10,0.6110487900337155
+Vbmellat,vbmellat,وبملت,وبملت,9,Shasta,shasta,شستا,شستا,11,0.8132589501718565
+Vbmellat,vbmellat,وبملت,وبملت,9,Tipico,tipico,تیپیکو,تیپیکو,12,0.6118381477230632
+Vbmellat,vbmellat,وبملت,وبملت,9,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.8314607115552132
+Vbmellat,vbmellat,وبملت,وبملت,9,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.7662212360034416
+Akhaber,akhaber,اخابر,اخابر,10,Foolad,foolad,فولاد,فولاد,5,0.40898027948602433
+Akhaber,akhaber,اخابر,اخابر,10,Fameli,fameli,فملی,فملی,6,0.6020239805519082
+Akhaber,akhaber,اخابر,اخابر,10,Shepna,shepna,شپنا,شپنا,7,0.6569030551203144
+Akhaber,akhaber,اخابر,اخابر,10,Khodro,khodro,خودرو,خودرو,8,0.738061326782469
+Akhaber,akhaber,اخابر,اخابر,10,Vbmellat,vbmellat,وبملت,وبملت,9,0.6110487900337155
+Akhaber,akhaber,اخابر,اخابر,10,Akhaber,akhaber,اخابر,اخابر,10,1.0
+Akhaber,akhaber,اخابر,اخابر,10,Shasta,shasta,شستا,شستا,11,0.7938709700622393
+Akhaber,akhaber,اخابر,اخابر,10,Tipico,tipico,تیپیکو,تیپیکو,12,0.7336681685982732
+Akhaber,akhaber,اخابر,اخابر,10,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.7618644012156113
+Akhaber,akhaber,اخابر,اخابر,10,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.8719492127416866
+Shasta,shasta,شستا,شستا,11,Foolad,foolad,فولاد,فولاد,5,0.6897561920637318
+Shasta,shasta,شستا,شستا,11,Fameli,fameli,فملی,فملی,6,0.8341399367862946
+Shasta,shasta,شستا,شستا,11,Shepna,shepna,شپنا,شپنا,7,0.8104416571365081
+Shasta,shasta,شستا,شستا,11,Khodro,khodro,خودرو,خودرو,8,0.7386517508771258
+Shasta,shasta,شستا,شستا,11,Vbmellat,vbmellat,وبملت,وبملت,9,0.8132589501718565
+Shasta,shasta,شستا,شستا,11,Akhaber,akhaber,اخابر,اخابر,10,0.7938709700622393
+Shasta,shasta,شستا,شستا,11,Shasta,shasta,شستا,شستا,11,1.0
+Shasta,shasta,شستا,شستا,11,Tipico,tipico,تیپیکو,تیپیکو,12,0.7578257237705776
+Shasta,shasta,شستا,شستا,11,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.9539163244353555
+Shasta,shasta,شستا,شستا,11,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.9238638240625375
+Tipico,tipico,تیپیکو,تیپیکو,12,Foolad,foolad,فولاد,فولاد,5,0.30106115379035386
+Tipico,tipico,تیپیکو,تیپیکو,12,Fameli,fameli,فملی,فملی,6,0.7083324614818114
+Tipico,tipico,تیپیکو,تیپیکو,12,Shepna,shepna,شپنا,شپنا,7,0.8677573663045794
+Tipico,tipico,تیپیکو,تیپیکو,12,Khodro,khodro,خودرو,خودرو,8,0.5657472525652494
+Tipico,tipico,تیپیکو,تیپیکو,12,Vbmellat,vbmellat,وبملت,وبملت,9,0.6118381477230632
+Tipico,tipico,تیپیکو,تیپیکو,12,Akhaber,akhaber,اخابر,اخابر,10,0.7336681685982732
+Tipico,tipico,تیپیکو,تیپیکو,12,Shasta,shasta,شستا,شستا,11,0.7578257237705776
+Tipico,tipico,تیپیکو,تیپیکو,12,Tipico,tipico,تیپیکو,تیپیکو,12,1.0
+Tipico,tipico,تیپیکو,تیپیکو,12,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.7833676658872719
+Tipico,tipico,تیپیکو,تیپیکو,12,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.856928101109877
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Foolad,foolad,فولاد,فولاد,5,0.7025737169925259
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Fameli,fameli,فملی,فملی,6,0.9234873979407553
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Shepna,shepna,شپنا,شپنا,7,0.863620176759653
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Khodro,khodro,خودرو,خودرو,8,0.7428035077645593
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Vbmellat,vbmellat,وبملت,وبملت,9,0.8314607115552132
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Akhaber,akhaber,اخابر,اخابر,10,0.7618644012156113
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Shasta,shasta,شستا,شستا,11,0.9539163244353555
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Tipico,tipico,تیپیکو,تیپیکو,12,0.7833676658872719
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,1.0
+Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,0.9407512639442046
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Foolad,foolad,فولاد,فولاد,5,0.5438737901930168
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Fameli,fameli,فملی,فملی,6,0.8009646077163417
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Shepna,shepna,شپنا,شپنا,7,0.8434364786859154
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Khodro,khodro,خودرو,خودرو,8,0.7439961382260125
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Vbmellat,vbmellat,وبملت,وبملت,9,0.7662212360034416
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Akhaber,akhaber,اخابر,اخابر,10,0.8719492127416866
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Shasta,shasta,شستا,شستا,11,0.9238638240625375
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Tipico,tipico,تیپیکو,تیپیکو,12,0.856928101109877
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Overall index (TEDPIX),index_total,شاخص کل,شاخص کل,1,0.9407512639442046
+Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,Equal-weight index,index_equal_weight,شاخص کل (هم‌وزن),هم‌وزن,2,1.0

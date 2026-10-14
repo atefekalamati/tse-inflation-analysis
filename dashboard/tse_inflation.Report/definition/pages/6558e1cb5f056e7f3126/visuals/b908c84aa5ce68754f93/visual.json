@@ -62,11 +62,11 @@
                       "Entity": "dim_series"
                     }
                   },
-                  "Property": "series_fa"
+                  "Property": "series_short_fa"
                 }
               },
-              "queryRef": "dim_series.series_fa",
-              "nativeQueryRef": "series_fa",
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
               "displayName": "سری‏"
             }
           ]
@@ -159,7 +159,7 @@
                             "Entity": "dim_series"
                           }
                         },
-                        "Property": "series_fa"
+                        "Property": "series_short_fa"
                       }
                     },
                     "Right": {
@@ -200,12 +200,12 @@
                             "Entity": "dim_series"
                           }
                         },
-                        "Property": "series_fa"
+                        "Property": "series_short_fa"
                       }
                     },
                     "Right": {
                       "Literal": {
-                        "Value": "'‏شاخص کل (هم‌وزن)‏'"
+                        "Value": "'‏هم‌وزن‏'"
                       }
                     }
                   }
@@ -241,12 +241,12 @@
                             "Entity": "dim_series"
                           }
                         },
-                        "Property": "series_fa"
+                        "Property": "series_short_fa"
                       }
                     },
                     "Right": {
                       "Literal": {
-                        "Value": "'‏شاخص قیمت مصرف‌کننده (تورم)‏'"
+                        "Value": "'‏تورم‏'"
                       }
                     }
                   }

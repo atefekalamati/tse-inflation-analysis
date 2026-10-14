@@ -335,7 +335,8 @@ def test_every_page_has_subtitle_and_footer():
         foot = next(v for v in visuals if _texts([v]) == [bd.FOOTER])
         p = foot["position"]
         assert p["height"] >= 28 and p["y"] + p["height"] <= 720 - 8, name   # fits, with margin
-    assert bd.FOOTER == "منبع: TSETMC و شاخص قیمت مصرف‌کننده مرکز آمار ایران (۱۴۰۰=۱۰۰)"
+    assert bd.FOOTER == "منبع: سامانهٔ معاملات بورس تهران و شاخص قیمت مصرف‌کننده مرکز آمار ایران با پایهٔ ۱۴۰۰"
+    assert not re.search(r"[A-Za-z()]", bd.FOOTER)
 
 
 def _overlap(a, b):
@@ -422,10 +423,10 @@ def test_text_boxes_right_aligned():
 
 
 def test_parallel_loading_disabled():
-    ed = json.loads((DASH / "tse_inflation.SemanticModel" / ".pbi" / "editorSettings.json").read_text(encoding="utf-8"))
-    assert ed["parallelQueryLoading"] is False
-    assert "parallelQueryLoading" in (DASH / "BUILD_GUIDE.md").read_text(encoding="utf-8")
-    assert "0x800705AF" in (DASH / "BUILD_GUIDE.md").read_text(encoding="utf-8")
+    assert "\tmaxParallelismPerRefresh: 1" in tmdl("model.tmdl")
+    guide = (DASH / "BUILD_GUIDE.md").read_text(encoding="utf-8")
+    assert "maxParallelismPerRefresh" in guide and "0x800705AF" in guide
+    assert "simultaneous evaluations" in guide
 
 
 def test_page1_layout_and_hindsight_note():
@@ -444,18 +445,119 @@ def test_page1_layout_and_hindsight_note():
     assert bp["x"] + bp["width"] == 1256
 
 
-def test_page2_real_bars_sign_coloured():
+def test_page2_real_bars_sign_coloured_with_fx_rules():
     bar = next(v for v in _page(PAGE_NAMES[1]) if v["visual"]["visualType"] == "clusteredBarChart")
-    real = next(d for d in bar["visual"]["objects"]["dataPoint"] if d["selector"].get("metadata") == "_Measures.Real CAGR")
-    assert real["properties"]["fill"]["solid"]["color"]["expr"]["Measure"]["Property"] == "Real CAGR color"
-    dax = next(m for m in bd.MEASURES if m["name"] == "Real CAGR color")["dax"]
-    assert any('"#2E7D32"' in x for x in dax) and any('"#C62828"' in x for x in dax)
+    dp = bar["visual"]["objects"]["dataPoint"]
+    assert len(dp) == 1 and dp[0]["selector"] == {"data": [{"dataViewWildcard": {"matchingOption": 1}}]}
+    cases = dp[0]["properties"]["fill"]["solid"]["color"]["expr"]["Conditional"]["Cases"]
+    got = [(c["Condition"]["Comparison"]["ComparisonKind"],
+            c["Condition"]["Comparison"]["Left"]["Measure"]["Property"],
+            c["Condition"]["Comparison"]["Right"]["Literal"]["Value"],
+            c["Value"]["Literal"]["Value"]) for c in cases]
+    assert got == [(3, "Real CAGR", "0D", "'#C62828'"),       # < 0  -> red
+                   (2, "Real CAGR", "0D", "'#2E7D32'")]       # >= 0 -> green
+
+
+def _visuals_of(kind):
+    for name in PAGE_NAMES:
+        for v in _page(name):
+            if v["visual"]["visualType"] == kind:
+                yield name, v
+
+
+def test_tables_series_rightmost_no_totals_and_fit():
+    n = 0
+    for name, v in _visuals_of("tableEx"):
+        n += 1
+        projs = v["visual"]["query"]["queryState"]["Values"]["projections"]
+        assert plain(projs[-1]["displayName"]) == "سری", name                 # rightmost column
+        o = v["visual"]["objects"]
+        assert o["total"][0]["properties"]["totals"]["expr"]["Literal"]["Value"] == "false"
+        widths = {w["selector"]["metadata"]: float(w["properties"]["value"]["expr"]["Literal"]["Value"][:-1])
+                  for w in o["columnWidth"]}
+        assert set(widths) == {p["queryRef"] for p in projs}
+        assert sum(widths.values()) <= v["position"]["width"] - 24, name     # no horizontal scroll
+    assert n == 2
+
+
+def test_risk_table_columns():
+    t = next(v for v in _page(PAGE_NAMES[1]) if v["visual"]["visualType"] == "tableEx")
+    labels = [plain(p["displayName"]) for p in t["visual"]["query"]["queryState"]["Values"]["projections"]]
+    assert labels == list(reversed(["سری", "بازده واقعی سالانه", "نوسان واقعی", "بیشترین افت واقعی",
+                                    "درصد ماه‌های جلوتر از تورم"]))
+
+
+def test_matrices_no_totals_and_columns_fit():
+    expected_cols = {"block_fa": 3, "series_b_short_fa": 10}
+    for name, v in _visuals_of("pivotTable"):
+        o = v["visual"]["objects"]
+        st = o["subTotals"][0]["properties"]
+        assert st["rowSubtotals"]["expr"]["Literal"]["Value"] == "false"
+        assert st["columnSubtotals"]["expr"]["Literal"]["Value"] == "false"
+        qs = v["visual"]["query"]["queryState"]
+        row_ref = qs["Rows"]["projections"][0]["queryRef"]
+        val_ref = qs["Values"]["projections"][0]["queryRef"]
+        widths = {w["selector"]["metadata"]: float(w["properties"]["value"]["expr"]["Literal"]["Value"][:-1])
+                  for w in o["columnWidth"]}
+        ncol = expected_cols[qs["Columns"]["projections"][0]["field"]["Column"]["Property"]]
+        assert widths[row_ref] + ncol * widths[val_ref] <= v["position"]["width"] - 24, name
+        fonts = {e["properties"]["fontSize"]["expr"]["Literal"]["Value"]
+                 for k in ("columnHeaders", "rowHeaders") for e in o[k]}
+        assert fonts == {"9D"}
+
+
+def test_heatmap_short_names_and_fills_box():
+    heat = next(v for v in _page(PAGE_NAMES[3]) if v["visual"]["visualType"] == "pivotTable")
+    qs = heat["visual"]["query"]["queryState"]
+    assert qs["Rows"]["projections"][0]["field"]["Column"]["Property"] == "series_a_short_fa"
+    assert qs["Columns"]["projections"][0]["field"]["Column"]["Property"] == "series_b_short_fa"
+    pad = heat["visual"]["objects"]["grid"][0]["properties"]["rowPadding"]["expr"]["Literal"]["Value"]
+    assert int(pad[:-1]) >= 12                       # rows stretched to fill the box height
+    assert heat["position"]["y"] + heat["position"]["height"] == bd.CONTENT_BOTTOM
+    corr = pd.read_csv(PBI / "correlation_long.csv")
+    assert "هم‌وزن" in set(corr["series_a_short_fa"]) and "شاخص کل (هم‌وزن)" not in set(corr["series_a_short_fa"])
+
+
+def test_short_names_used_in_visuals():
+    d = pd.read_csv(PBI / "dim_series.csv").set_index("series_code")
+    assert d.loc["cpi", "series_short_fa"] == "تورم"
+    assert d.loc["index_equal_weight", "series_short_fa"] == "هم‌وزن"
+    assert d.loc["ew_portfolio_8", "series_short_fa"] == "سبد ۸ سهم"
+    assert d["series_short_fa"].is_unique
+    for _, visuals in _pages():
+        for v in visuals:
+            cols = {(e, p) for e, p, k in bd.report_field_refs(v) if k == "Column"}
+            assert ("dim_series", "series_fa") not in cols
+    assert set(bd.SERIES_COLORS) == {"شاخص کل", "هم‌وزن", "تورم"}
+
+
+def test_scatter_hides_non_stock_labels():
+    sc = next(v for v in _page(PAGE_NAMES[1]) if v["visual"]["visualType"] == "scatterChart")
+    hidden = [e["selector"]["data"][0]["scopeId"]["Comparison"]["Right"]["Literal"]["Value"].strip("'")
+              for e in sc["visual"]["objects"]["categoryLabels"] if "selector" in e]
+    assert sorted(plain(h) for h in hidden) == sorted(["شاخص کل", "هم‌وزن", "سبد ۸ سهم"])
+
+
+def test_page3_comparable_and_bond_source():
+    t = next(v for v in _page(PAGE_NAMES[2]) if v["visual"]["visualType"] == "tableEx")
+    props = [p["field"]["Column"]["Property"] for p in t["visual"]["query"]["queryState"]["Values"]["projections"]]
+    assert "comparable_fa" in props and "comparable" not in props
+    texts = " ".join(_texts(_page(PAGE_NAMES[2])))
+    assert "منبع: فرابورس ایران، ۲۲ مهر ۱۴۰۵" in texts and "ifb" not in texts
+    assert "https://ifb.ir/ytm.aspx" in (DASH / "README.md").read_text(encoding="utf-8")
+    df = bd.table_frame("closure_summary")
+    assert set(df["comparable_fa"].map(plain)) == {"بله", "خیر"}
+    assert (df.loc[df["series_code"] == "foolad", "comparable_fa"].map(plain) == "خیر").all()
+
+
+def test_card_label_drawdown_short():
+    assert ("Selected max drawdown", "بیشترین افت واقعی") in bd.CARDS_P2
 
 
 def test_page2_block_matrix_diverging_on_zero():
     m = next(v for v in _page(PAGE_NAMES[1]) if v["visual"]["visualType"] == "pivotTable")
     qs = m["visual"]["query"]["queryState"]
-    assert qs["Rows"]["projections"][0]["field"]["Column"]["Property"] == "series_fa"
+    assert qs["Rows"]["projections"][0]["field"]["Column"]["Property"] == "series_short_fa"
     assert qs["Columns"]["projections"][0]["field"]["Column"]["Property"] == "block_fa"
     rule = next(e for e in m["visual"]["objects"]["values"] if "backColor" in e["properties"])
     rule = rule["properties"]["backColor"]["solid"]["color"]["expr"]["FillRule"]

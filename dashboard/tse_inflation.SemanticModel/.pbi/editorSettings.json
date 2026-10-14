@@ -1,5 +1,4 @@
 {
   "version": "1.0",
-  "parallelQueryLoading": false,
   "shouldNotifyUserOfNameConflictResolution": true
 }

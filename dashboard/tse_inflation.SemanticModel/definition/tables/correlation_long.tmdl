@@ -26,6 +26,15 @@ table correlation_long
 
 		annotation SummarizationSetBy = User
 
+	column series_a_short_fa
+		dataType: string
+		lineageTag: bad127d7-ab87-5b33-8b5c-db070ab34cf5
+		summarizeBy: none
+		sourceColumn: series_a_short_fa
+		sortByColumn: series_a_order
+
+		annotation SummarizationSetBy = User
+
 	column series_a_order
 		dataType: int64
 		isHidden
@@ -61,6 +70,15 @@ table correlation_long
 
 		annotation SummarizationSetBy = User
 
+	column series_b_short_fa
+		dataType: string
+		lineageTag: b53bfa63-af0e-53e8-8485-7394596cbcf5
+		summarizeBy: none
+		sourceColumn: series_b_short_fa
+		sortByColumn: series_b_order
+
+		annotation SummarizationSetBy = User
+
 	column series_b_order
 		dataType: int64
 		isHidden
@@ -86,8 +104,8 @@ table correlation_long
 				let
 				    Source = Csv.Document(File.Contents(DataFolder & "correlation_long.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				    Typed = Table.TransformColumnTypes(Promoted, {{"series_a", type text}, {"series_a_code", type text}, {"series_a_fa", type text}, {"series_a_order", Int64.Type}, {"series_b", type text}, {"series_b_code", type text}, {"series_b_fa", type text}, {"series_b_order", Int64.Type}, {"corr_real_return_per_month", type number}}, "en-US"),
-				    Rtl = Table.TransformColumns(Typed, {{"series_a_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}, {"series_b_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_a", type text}, {"series_a_code", type text}, {"series_a_fa", type text}, {"series_a_short_fa", type text}, {"series_a_order", Int64.Type}, {"series_b", type text}, {"series_b_code", type text}, {"series_b_fa", type text}, {"series_b_short_fa", type text}, {"series_b_order", Int64.Type}, {"corr_real_return_per_month", type number}}, "en-US"),
+				    Rtl = Table.TransformColumns(Typed, {{"series_a_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}, {"series_b_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}, {"series_a_short_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}, {"series_b_short_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
 				in
 				    Rtl
 

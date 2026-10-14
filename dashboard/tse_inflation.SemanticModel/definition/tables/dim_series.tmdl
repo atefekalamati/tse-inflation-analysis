@@ -28,6 +28,15 @@ table dim_series
 
 		annotation SummarizationSetBy = User
 
+	column series_short_fa
+		dataType: string
+		lineageTag: a5009ce3-f155-5e24-8435-81227e657bf8
+		summarizeBy: none
+		sourceColumn: series_short_fa
+		sortByColumn: sort_order
+
+		annotation SummarizationSetBy = User
+
 	column type
 		dataType: string
 		lineageTag: 4b4d552a-be91-5d65-a647-1903906d4b4f
@@ -68,8 +77,8 @@ table dim_series
 				let
 				    Source = Csv.Document(File.Contents(DataFolder & "dim_series.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"type", type text}, {"sector", type text}, {"usage_note", type text}, {"sort_order", Int64.Type}}, "en-US"),
-				    Rtl = Table.TransformColumns(Typed, {{"series_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"series_short_fa", type text}, {"type", type text}, {"sector", type text}, {"usage_note", type text}, {"sort_order", Int64.Type}}, "en-US"),
+				    Rtl = Table.TransformColumns(Typed, {{"series_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}, {"series_short_fa", each if _ = null then null else "#(200F)" & _ & "#(200F)", type text}})
 				in
 				    Rtl
 

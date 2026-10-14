@@ -1,20 +1,20 @@
-series_code,series,series_fa,type,sector,usage_note,sort_order
-index_total,Overall index (TEDPIX),شاخص کل,market_index,,the market: conclusions about the market use only these two indices,1
-index_equal_weight,Equal-weight index,شاخص کل (هم‌وزن),market_index,,the market: conclusions about the market use only these two indices,2
-cpi,CPI,شاخص قیمت مصرف‌کننده (تورم),cpi,,"inflation benchmark (SCI CPI, 1400=100)",3
-ew_portfolio_8,8-stock EW portfolio (hindsight),سبد هم‌وزن ۸ سهم با نگاه به گذشته,portfolio,,"hindsight-selected portfolio, not an investable strategy",4
-foolad,Foolad,فولاد,stock,فلزات اساسی,"individual stock: dispersion, not the market",5
-fameli,Fameli,فملی,stock,فلزات اساسی,"individual stock: dispersion, not the market",6
-shepna,Shepna,شپنا,stock,فرآورده‌های نفتی,"individual stock: dispersion, not the market",7
-khodro,Khodro,خودرو,stock,خودرو و ساخت قطعات,"individual stock: dispersion, not the market",8
-vbmellat,Vbmellat,وبملت,stock,بانک‌ها و موسسات اعتباری,"individual stock: dispersion, not the market",9
-akhaber,Akhaber,اخابر,stock,مخابرات,"individual stock: dispersion, not the market",10
-shasta,Shasta,شستا,stock,سرمایه‌گذاری‌ها,"individual stock: dispersion, not the market",11
-tipico,Tipico,تیپیکو,stock,مواد و محصولات دارویی,"individual stock: dispersion, not the market",12
-sector_automobile,Automobile (sector index),شاخص صنعت خودرو و ساخت قطعات,sector_index,خودرو و ساخت قطعات,trend only: unknown whether dividends are included; do not compare with stocks,13
-sector_banking,Banking (sector index),شاخص صنعت بانک‌ها و موسسات اعتباری,sector_index,بانک‌ها و موسسات اعتباری,trend only: unknown whether dividends are included; do not compare with stocks,14
-sector_basic_metals,Basic Metals (sector index),شاخص صنعت فلزات اساسی,sector_index,فلزات اساسی,trend only: unknown whether dividends are included; do not compare with stocks,15
-sector_investment_companies,Investment Companies (sector index),شاخص صنعت سرمایه‌گذاری‌ها,sector_index,سرمایه‌گذاری‌ها,trend only: unknown whether dividends are included; do not compare with stocks,16
-sector_petroleum_products,Petroleum Products (sector index),شاخص صنعت فرآورده‌های نفتی,sector_index,فرآورده‌های نفتی,trend only: unknown whether dividends are included; do not compare with stocks,17
-sector_pharmaceutical,Pharmaceutical (sector index),شاخص صنعت مواد و محصولات دارویی,sector_index,مواد و محصولات دارویی,trend only: unknown whether dividends are included; do not compare with stocks,18
-sector_telecommunications,Telecommunications (sector index),شاخص صنعت مخابرات,sector_index,مخابرات,trend only: unknown whether dividends are included; do not compare with stocks,19
+series_code,series,series_fa,series_short_fa,type,sector,usage_note,sort_order
+index_total,Overall index (TEDPIX),شاخص کل,شاخص کل,market_index,,the market: conclusions about the market use only these two indices,1
+index_equal_weight,Equal-weight index,شاخص کل (هم‌وزن),هم‌وزن,market_index,,the market: conclusions about the market use only these two indices,2
+cpi,CPI,شاخص قیمت مصرف‌کننده (تورم),تورم,cpi,,"inflation benchmark (SCI CPI, 1400=100)",3
+ew_portfolio_8,8-stock EW portfolio (hindsight),سبد هم‌وزن ۸ سهم با نگاه به گذشته,سبد ۸ سهم,portfolio,,"hindsight-selected portfolio, not an investable strategy",4
+foolad,Foolad,فولاد,فولاد,stock,فلزات اساسی,"individual stock: dispersion, not the market",5
+fameli,Fameli,فملی,فملی,stock,فلزات اساسی,"individual stock: dispersion, not the market",6
+shepna,Shepna,شپنا,شپنا,stock,فرآورده‌های نفتی,"individual stock: dispersion, not the market",7
+khodro,Khodro,خودرو,خودرو,stock,خودرو و ساخت قطعات,"individual stock: dispersion, not the market",8
+vbmellat,Vbmellat,وبملت,وبملت,stock,بانک‌ها و موسسات اعتباری,"individual stock: dispersion, not the market",9
+akhaber,Akhaber,اخابر,اخابر,stock,مخابرات,"individual stock: dispersion, not the market",10
+shasta,Shasta,شستا,شستا,stock,سرمایه‌گذاری‌ها,"individual stock: dispersion, not the market",11
+tipico,Tipico,تیپیکو,تیپیکو,stock,مواد و محصولات دارویی,"individual stock: dispersion, not the market",12
+sector_automobile,Automobile (sector index),شاخص صنعت خودرو و ساخت قطعات,شاخص صنعت خودرو و ساخت قطعات,sector_index,خودرو و ساخت قطعات,trend only: unknown whether dividends are included; do not compare with stocks,13
+sector_banking,Banking (sector index),شاخص صنعت بانک‌ها و موسسات اعتباری,شاخص صنعت بانک‌ها و موسسات اعتباری,sector_index,بانک‌ها و موسسات اعتباری,trend only: unknown whether dividends are included; do not compare with stocks,14
+sector_basic_metals,Basic Metals (sector index),شاخص صنعت فلزات اساسی,شاخص صنعت فلزات اساسی,sector_index,فلزات اساسی,trend only: unknown whether dividends are included; do not compare with stocks,15
+sector_investment_companies,Investment Companies (sector index),شاخص صنعت سرمایه‌گذاری‌ها,شاخص صنعت سرمایه‌گذاری‌ها,sector_index,سرمایه‌گذاری‌ها,trend only: unknown whether dividends are included; do not compare with stocks,16
+sector_petroleum_products,Petroleum Products (sector index),شاخص صنعت فرآورده‌های نفتی,شاخص صنعت فرآورده‌های نفتی,sector_index,فرآورده‌های نفتی,trend only: unknown whether dividends are included; do not compare with stocks,17
+sector_pharmaceutical,Pharmaceutical (sector index),شاخص صنعت مواد و محصولات دارویی,شاخص صنعت مواد و محصولات دارویی,sector_index,مواد و محصولات دارویی,trend only: unknown whether dividends are included; do not compare with stocks,18
+sector_telecommunications,Telecommunications (sector index),شاخص صنعت مخابرات,شاخص صنعت مخابرات,sector_index,مخابرات,trend only: unknown whether dividends are included; do not compare with stocks,19

@@ -45,8 +45,8 @@ python src/build_dashboard.py   # rewrite dashboard/ and dashboard/measures.dax
 ## Report pages
 
 Every page has a title, a one-line Persian subtitle with the page's main finding (computed from
-the CSVs at build time), a method note and the footer «منبع: TSETMC و شاخص قیمت مصرف‌کننده
-مرکز آمار ایران (۱۴۰۰=۱۰۰)».
+the CSVs at build time), a method note and the footer «منبع: سامانهٔ معاملات بورس تهران و شاخص قیمت
+مصرف‌کننده مرکز آمار ایران با پایهٔ ۱۴۰۰».
 
 1. **نمای کلی: بورس در برابر تورم.**
    - Five headline cards: CPI growth, overall-index real return, equal-weight real return, stocks
@@ -67,7 +67,10 @@ the CSVs at build time), a method note and the footer «منبع: TSETMC و شا
 3. **تعطیلی بازار و دارایی امن**
    - Closure bar chart for the market indices, with CPI pro-rated to the exact dates.
    - Five bond and inflation cards, plus a text box with the conditional statement, source and
-     date (static: the bond yield is a dated snapshot, written from `context.csv` at build time).
+     date. The text is static because the bond yield is a dated snapshot written from
+     `context.csv` at build time. On the page the source reads «منبع: فرابورس ایران، ۲۲ مهر ۱۴۰۵».
+     The URL is https://ifb.ir/ytm.aspx (median yield to maturity of government Murabaha bonds,
+     اراد, traded in the 30 days before the 1405-07-22 snapshot).
    - Closure table for both windows, with pro-rated and whole-month figures.
    - Page filter: market indices and stocks.
 4. **زمان ورود**
@@ -82,12 +85,18 @@ the CSVs at build time), a method note and the footer «منبع: TSETMC و شا
   one if it begins with a digit, a Latin letter or a bracket. Power Query does the same for the
   Persian data columns. Text boxes are right-aligned.
 - **Titles and labels:** visual titles and field labels contain no parentheses or Latin letters.
+- **Short names:** visuals use `dim_series[series_short_fa]`: «شاخص کل», «هم‌وزن», «تورم»,
+  «سبد ۸ سهم» and the stock tickers.
+- **Tables:** column order is reversed so «سری» is the rightmost column, and column widths are
+  fixed. Tables and matrices show no totals or subtotals.
+- **Green/red bars (page 2):** fx rules on the bar colour, based on the `Real CAGR` measure: below
+  0 is `#C62828`, 0 or above is `#2E7D32`.
 - **Cards:** value at 20pt, label at 9pt, padding 4px, height 92px.
 - **Placement:** no two visuals overlap and nothing leaves the 1280 × 720 canvas. The footer box
   ends 8px above the bottom edge.
 
-**Load settings:** parallel loading of tables is off in `.pbi/editorSettings.json`. With it on, the
-refresh crashed on a low-memory machine. Also set the global option "Maximum number of
+**Load settings:** parallel loading of tables is set to One (`maxParallelismPerRefresh: 1` in
+`model.tmdl`). With it on, the refresh crashed on a low-memory machine. Also set the global option "Maximum number of
 simultaneous evaluations" to 1; see BUILD_GUIDE.md.
 
 **Sector indices never appear.** Every page has a locked page filter on `dim_series[type]` that

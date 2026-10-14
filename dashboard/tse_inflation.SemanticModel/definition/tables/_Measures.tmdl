@@ -86,12 +86,12 @@ table _Measures
 		displayFolder: 2 Selected series
 		lineageTag: 7bd9d5dc-bf69-5413-9e19-6da6ab25da59
 
-	/// Persian name of the selected series.
+	/// Short Persian name of the selected series.
 	measure 'Selected series' =
 			VAR SeriesCode = [Selected series code]
 			RETURN
 			    CALCULATE (
-			        MAX ( dim_series[series_fa] ),
+			        MAX ( dim_series[series_short_fa] ),
 			        REMOVEFILTERS ( dim_series ),
 			        dim_series[series_code] = SeriesCode
 			    )

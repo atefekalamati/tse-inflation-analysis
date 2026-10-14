@@ -4,10 +4,10 @@
   "position": {
     "x": 856,
     "y": 204,
-    "z": 13,
-    "height": 470,
+    "z": 12,
+    "height": 300,
     "width": 400,
-    "tabOrder": 13
+    "tabOrder": 12
   },
   "visual": {
     "visualType": "tableEx",
@@ -17,78 +17,18 @@
           "projections": [
             {
               "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_series"
-                    }
-                  },
-                  "Property": "series_fa"
-                }
-              },
-              "queryRef": "dim_series.series_fa",
-              "nativeQueryRef": "series_fa",
-              "displayName": "سری‏"
-            },
-            {
-              "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Nominal CAGR"
+                  "Property": "Months beating inflation"
                 }
               },
-              "queryRef": "_Measures.Nominal CAGR",
-              "nativeQueryRef": "Nominal CAGR",
-              "displayName": "اسمی سالانه‏"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Real CAGR"
-                }
-              },
-              "queryRef": "_Measures.Real CAGR",
-              "nativeQueryRef": "Real CAGR",
-              "displayName": "واقعی سالانه‏"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Real cum 3y"
-                }
-              },
-              "queryRef": "_Measures.Real cum 3y",
-              "nativeQueryRef": "Real cum 3y",
-              "displayName": "واقعی ۳ ساله‏"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Real vol per year"
-                }
-              },
-              "queryRef": "_Measures.Real vol per year",
-              "nativeQueryRef": "Real vol per year",
-              "displayName": "نوسان سالانه‏"
+              "queryRef": "_Measures.Months beating inflation",
+              "nativeQueryRef": "Months beating inflation",
+              "displayName": "درصد ماه‌های جلوتر از تورم‏"
             },
             {
               "field": {
@@ -103,7 +43,7 @@
               },
               "queryRef": "_Measures.Real max drawdown",
               "nativeQueryRef": "Real max drawdown",
-              "displayName": "بیشترین افت‏"
+              "displayName": "بیشترین افت واقعی‏"
             },
             {
               "field": {
@@ -113,12 +53,42 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Months beating inflation"
+                  "Property": "Real vol per year"
                 }
               },
-              "queryRef": "_Measures.Months beating inflation",
-              "nativeQueryRef": "Months beating inflation",
-              "displayName": "ماه‌های برنده‏"
+              "queryRef": "_Measures.Real vol per year",
+              "nativeQueryRef": "Real vol per year",
+              "displayName": "نوسان واقعی‏"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real CAGR"
+                }
+              },
+              "queryRef": "_Measures.Real CAGR",
+              "nativeQueryRef": "Real CAGR",
+              "displayName": "بازده واقعی سالانه‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_series"
+                    }
+                  },
+                  "Property": "series_short_fa"
+                }
+              },
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
+              "displayName": "سری‏"
             }
           ]
         }
@@ -172,6 +142,104 @@
                 }
               }
             }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "82D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Months beating inflation"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "70D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Real max drawdown"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "66D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Real vol per year"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "70D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Real CAGR"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "72D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "dim_series.series_short_fa"
           }
         }
       ]

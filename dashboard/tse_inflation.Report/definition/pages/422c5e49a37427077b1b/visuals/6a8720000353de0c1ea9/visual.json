@@ -20,120 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_series"
-                    }
-                  },
-                  "Property": "series_fa"
-                }
-              },
-              "queryRef": "dim_series.series_fa",
-              "nativeQueryRef": "series_fa",
-              "displayName": "سری‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
                       "Entity": "closure_summary"
                     }
                   },
-                  "Property": "window_fa"
+                  "Property": "comparable_fa"
                 }
               },
-              "queryRef": "closure_summary.window_fa",
-              "nativeQueryRef": "window_fa",
-              "displayName": "بازه‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "closure_summary"
-                    }
-                  },
-                  "Property": "window_start"
-                }
-              },
-              "queryRef": "closure_summary.window_start",
-              "nativeQueryRef": "window_start",
-              "displayName": "از‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "closure_summary"
-                    }
-                  },
-                  "Property": "window_end"
-                }
-              },
-              "queryRef": "closure_summary.window_end",
-              "nativeQueryRef": "window_end",
-              "displayName": "تا‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "closure_summary"
-                    }
-                  },
-                  "Property": "nominal"
-                }
-              },
-              "queryRef": "closure_summary.nominal",
-              "nativeQueryRef": "nominal",
-              "displayName": "تغییر اسمی‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "closure_summary"
-                    }
-                  },
-                  "Property": "cpi_prorated"
-                }
-              },
-              "queryRef": "closure_summary.cpi_prorated",
-              "nativeQueryRef": "cpi_prorated",
-              "displayName": "تورم روزشمار‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "closure_summary"
-                    }
-                  },
-                  "Property": "real_prorated"
-                }
-              },
-              "queryRef": "closure_summary.real_prorated",
-              "nativeQueryRef": "real_prorated",
-              "displayName": "واقعی روزشمار، اصلی‏"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "closure_summary"
-                    }
-                  },
-                  "Property": "cpi_whole_months"
-                }
-              },
-              "queryRef": "closure_summary.cpi_whole_months",
-              "nativeQueryRef": "cpi_whole_months",
-              "displayName": "تورم ماه کامل‏"
+              "queryRef": "closure_summary.comparable_fa",
+              "nativeQueryRef": "comparable_fa",
+              "displayName": "قابل مقایسه‏"
             },
             {
               "field": {
@@ -158,12 +53,117 @@
                       "Entity": "closure_summary"
                     }
                   },
-                  "Property": "comparable"
+                  "Property": "cpi_whole_months"
                 }
               },
-              "queryRef": "closure_summary.comparable",
-              "nativeQueryRef": "comparable",
-              "displayName": "قابل مقایسه‏"
+              "queryRef": "closure_summary.cpi_whole_months",
+              "nativeQueryRef": "cpi_whole_months",
+              "displayName": "تورم ماه کامل‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "real_prorated"
+                }
+              },
+              "queryRef": "closure_summary.real_prorated",
+              "nativeQueryRef": "real_prorated",
+              "displayName": "واقعی روزشمار، اصلی‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "cpi_prorated"
+                }
+              },
+              "queryRef": "closure_summary.cpi_prorated",
+              "nativeQueryRef": "cpi_prorated",
+              "displayName": "تورم روزشمار‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "nominal"
+                }
+              },
+              "queryRef": "closure_summary.nominal",
+              "nativeQueryRef": "nominal",
+              "displayName": "تغییر اسمی‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "window_end"
+                }
+              },
+              "queryRef": "closure_summary.window_end",
+              "nativeQueryRef": "window_end",
+              "displayName": "تا‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "window_start"
+                }
+              },
+              "queryRef": "closure_summary.window_start",
+              "nativeQueryRef": "window_start",
+              "displayName": "از‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "window_fa"
+                }
+              },
+              "queryRef": "closure_summary.window_fa",
+              "nativeQueryRef": "window_fa",
+              "displayName": "بازه‏"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_series"
+                    }
+                  },
+                  "Property": "series_short_fa"
+                }
+              },
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
+              "displayName": "سری‏"
             }
           ]
         }
@@ -200,6 +200,174 @@
                 }
               }
             }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "90D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.comparable_fa"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "130D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.real_whole_months"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.cpi_whole_months"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "120D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.real_prorated"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.cpi_prorated"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.nominal"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "90D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.window_end"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "90D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.window_start"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "190D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "closure_summary.window_fa"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "dim_series.series_short_fa"
           }
         }
       ]

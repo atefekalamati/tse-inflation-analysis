@@ -69,12 +69,12 @@
         "index_total"
     )
 
-// [2 Selected series] Persian name of the selected series.
+// [2 Selected series] Short Persian name of the selected series.
 'Selected series' =
     VAR SeriesCode = [Selected series code]
     RETURN
         CALCULATE (
-            MAX ( dim_series[series_fa] ),
+            MAX ( dim_series[series_short_fa] ),
             REMOVEFILTERS ( dim_series ),
             dim_series[series_code] = SeriesCode
         )

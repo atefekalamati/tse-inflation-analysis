@@ -124,6 +124,14 @@ table closure_summary
 
 		annotation SummarizationSetBy = User
 
+	column comparable_fa
+		dataType: string
+		lineageTag: d09cd324-4ac9-5daf-8b0d-6e5779d73fdc
+		summarizeBy: none
+		sourceColumn: comparable_fa
+
+		annotation SummarizationSetBy = User
+
 	partition closure_summary = m
 		mode: import
 		source =
@@ -132,9 +140,10 @@ table closure_summary
 				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"window", type text}, {"window_start", type text}, {"window_end", type text}, {"nominal", type number}, {"cpi_prorated", type number}, {"real_prorated", type number}, {"cpi_whole_months", type number}, {"real_whole_months", type number}, {"comparable", type logical}}, "en-US"),
 				    Added1 = Table.AddColumn(Typed, "window_fa", each if [window] = "on_reopening" then "تا بازگشایی#(200F)" else "#(200F)۲۰ روز معاملاتی پس از بازگشایی#(200F)", type text),
-				    Added2 = Table.AddColumn(Added1, "window_order", each if [window] = "on_reopening" then 1 else 2, Int64.Type)
+				    Added2 = Table.AddColumn(Added1, "window_order", each if [window] = "on_reopening" then 1 else 2, Int64.Type),
+				    Added3 = Table.AddColumn(Added2, "comparable_fa", each if [comparable] then "بله#(200F)" else "خیر#(200F)", type text)
 				in
-				    Added2
+				    Added3
 
 	annotation PBI_ResultType = Table
 

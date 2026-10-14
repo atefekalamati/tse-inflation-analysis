@@ -15,7 +15,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "سهام نمونه جلوتر از تورم (تجمعی ۳ ساله)": {
+			          "سهام نمونهٔ جلوتر از تورم‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -36,7 +36,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "رشد شاخص قیمت مصرف‌کننده (برابر، ۳ ساله)": {
+			          "رشد قیمت‌ها در ۳ سال، برابر‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -57,7 +57,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی شاخص هم‌وزن (تجمعی ۳ ساله)": {
+			          "بازده واقعی شاخص هم‌وزن، ۳ ساله‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -78,17 +78,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "اسمی (سالانه)": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "اسمی سالانه": {
+			          "اسمی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -109,7 +99,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "واقعی (سالانه)": {
+			          "واقعی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -119,27 +109,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "بازده واقعی سالانه": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "بازده واقعی (سالانه)": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "واقعی سالانه": {
+			          "بازده واقعی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -160,7 +130,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "رشد واقعی (۱۰۰ = پایان شهریور ۱۴۰۲)": {
+			          "رشد واقعی، ۱۰۰ = پایان شهریور ۱۴۰۲‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -181,7 +151,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی شاخص کل (تجمعی ۳ ساله)": {
+			          "بازده واقعی شاخص کل، ۳ ساله‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -202,7 +172,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "زیان واقعی تعطیلی بازار تا بازگشایی (روزشمار)": {
+			          "زیان واقعی تعطیلی تا بازگشایی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -223,17 +193,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی ۱۲ ماهه": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "بازده واقعی ۱۲ ماهه (سالانه)": {
+			          "بازده واقعی ۱۲ ماهه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -254,7 +214,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی (سالانه)": {
+			          "بازده واقعی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -275,7 +235,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "سهم ماه‌های جلوتر از تورم": {
+			          "ماه‌های جلوتر از تورم‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -296,7 +256,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "نوسان واقعی (سالانه)": {
+			          "نوسان واقعی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -317,7 +277,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بیشترین افت واقعی از اوج": {
+			          "بیشترین افت واقعی از اوج‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -338,7 +298,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی سالانه (CAGR)": {
+			          "بازده واقعی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -359,7 +319,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "نوسان واقعی (سالانه)": {
+			          "نوسان واقعی سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -369,7 +329,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "نوسان سالانه": {
+			          "نوسان سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -390,7 +350,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "سری انتخاب‌شده (پیش‌فرض: شاخص کل)": {
+			          "سری انتخاب‌شده‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -411,7 +371,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "واقعی تجمعی ۳ ساله": {
+			          "واقعی ۳ ساله‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -432,7 +392,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بیشترین افت": {
+			          "بیشترین افت‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -453,7 +413,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "ماه‌های برنده": {
+			          "ماه‌های برنده‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -474,7 +434,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تغییر اسمی": {
+			          "تغییر اسمی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -495,7 +455,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تورم (روزشمار)": {
+			          "تورم روزشمار‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -516,7 +476,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تغییر واقعی (روزشمار)": {
+			          "تغییر واقعی روزشمار‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -537,7 +497,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تورم ۱۲ ماهه (میانگین، سالانه)": {
+			          "تورم ۱۲ ماهه، میانگین‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -555,19 +515,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "Bond conditional statement"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "اوراق دولتی در برابر تورم": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_measures.bond_source_note": {
 			      "Definition": {
@@ -576,19 +524,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "Bond source note"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "منبع و تاریخ": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_measures.bond_real_yield_avg": {
 			      "Definition": {
@@ -600,7 +536,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی ضمنی (میانگین تورم)": {
+			          "بازده واقعی با تورم میانگین‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -621,7 +557,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده تا سررسید اوراق دولتی (سالانه)": {
+			          "بازده اوراق دولتی، سالانه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -642,7 +578,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تورم نقطه به نقطه": {
+			          "تورم نقطه به نقطه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -663,7 +599,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازده واقعی ضمنی (نقطه به نقطه)": {
+			          "بازده واقعی با تورم نقطه به نقطه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -684,7 +620,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "همبستگی": {
+			          "همبستگی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -705,7 +641,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "سری": {
+			          "سری‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -715,7 +651,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "انتخاب سری": {
+			          "انتخاب سری‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -736,7 +672,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "ماه": {
+			          "ماه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -757,7 +693,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "دورهٔ ۱۲ ماهه": {
+			          "دورهٔ ۱۲ ماهه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -778,7 +714,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بازه": {
+			          "بازه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -799,7 +735,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "از": {
+			          "از‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -820,7 +756,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تا": {
+			          "تا‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -841,7 +777,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تغییر اسمی": {
+			          "تغییر اسمی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -862,7 +798,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تورم (روزشمار)": {
+			          "تورم روزشمار‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -883,7 +819,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "واقعی (روزشمار، اصلی)": {
+			          "واقعی روزشمار، اصلی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -904,7 +840,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "تورم (ماه کامل)": {
+			          "تورم ماه کامل‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -925,7 +861,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "واقعی (ماه کامل، حساسیت)": {
+			          "واقعی ماه کامل، حساسیت‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -946,7 +882,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "قابل مقایسه": {
+			          "قابل مقایسه‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -967,7 +903,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "سری": {
+			          "سری‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -988,7 +924,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "در برابر": {
+			          "در برابر‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

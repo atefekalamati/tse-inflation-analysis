@@ -776,6 +776,9 @@ def month_end_gregorian(month: str) -> str:
 FA_MONTHS = ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
              "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"]
 FA_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
+# Short Persian display names for visuals (axis labels, legends, matrix headers).
+SERIES_SHORT_FA = {"index_total": "شاخص کل", "index_equal_weight": "هم‌وزن", "cpi": "تورم",
+                   PORTFOLIO_CODE: "سبد ۸ سهم"}
 SERIES_FA = {"index_total": "شاخص کل", "index_equal_weight": "شاخص کل (هم‌وزن)",
              "cpi": "شاخص قیمت مصرف‌کننده (تورم)",
              PORTFOLIO_CODE: "سبد هم‌وزن ۸ سهم با نگاه به گذشته"}
@@ -817,6 +820,8 @@ def dim_series_frame(allm: pd.DataFrame) -> pd.DataFrame:
                    c.replace("sector_", "").replace("_", " ").title() + " (sector index)"
                    for c, lab, t in zip(d["code"], d["label"], d["type"])]
     d["usage_note"] = d["type"].map(USAGE_NOTE)
+    d["series_short_fa"] = [SERIES_SHORT_FA.get(c, sym if t == "stock" else fa_)
+                            for c, sym, t, fa_ in zip(d["code"], d["symbol"], d["type"], d["series_fa"])]
     d["_k1"] = d["type"].map(TYPE_ORDER)
     d["_k2"] = [stock_order.get(c, 0) if t == "stock" else
                 (MARKET_CODES.index(c) if t == "market_index" else 0)
@@ -824,7 +829,8 @@ def dim_series_frame(allm: pd.DataFrame) -> pd.DataFrame:
     d = d.sort_values(["_k1", "_k2", "code"]).reset_index(drop=True)
     d["sort_order"] = np.arange(1, len(d) + 1)
     return d.rename(columns={"code": "series_code"})[
-        ["series_code", "series", "series_fa", "type", "sector", "usage_note", "sort_order"]]
+        ["series_code", "series", "series_fa", "series_short_fa", "type", "sector", "usage_note",
+         "sort_order"]]
 
 
 def dim_month_frame(months: list[str]) -> pd.DataFrame:
@@ -901,13 +907,16 @@ def export_powerbi(res: dict) -> dict[str, str]:
     codes10 = STOCK_CODES + MARKET_CODES
     corr10 = wide(m, "return_real", codes10).corr().rename_axis(index="a", columns="b")
     order = dict(zip(dim_series["series_code"], dim_series["sort_order"]))
+    short = dict(zip(dim_series["series_code"], dim_series["series_short_fa"]))
     cl = corr10.stack().rename("corr_real_return_per_month").reset_index()
     cl.columns = ["series_a_code", "series_b_code", "corr_real_return_per_month"]
     cl = pd.DataFrame({
         "series_a": cl["series_a_code"].map(LABELS), "series_a_code": cl["series_a_code"],
-        "series_a_fa": cl["series_a_code"].map(fa), "series_a_order": cl["series_a_code"].map(order),
+        "series_a_fa": cl["series_a_code"].map(fa), "series_a_short_fa": cl["series_a_code"].map(short),
+        "series_a_order": cl["series_a_code"].map(order),
         "series_b": cl["series_b_code"].map(LABELS), "series_b_code": cl["series_b_code"],
-        "series_b_fa": cl["series_b_code"].map(fa), "series_b_order": cl["series_b_code"].map(order),
+        "series_b_fa": cl["series_b_code"].map(fa), "series_b_short_fa": cl["series_b_code"].map(short),
+        "series_b_order": cl["series_b_code"].map(order),
         "corr_real_return_per_month": cl["corr_real_return_per_month"]})
     frames = {
         "monthly_long": ml, "risk_summary": rt, "yearly_real": yearly, "correlation_long": cl,

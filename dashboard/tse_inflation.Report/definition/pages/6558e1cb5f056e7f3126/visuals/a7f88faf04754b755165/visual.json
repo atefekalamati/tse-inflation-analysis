@@ -23,11 +23,11 @@
                       "Entity": "correlation_long"
                     }
                   },
-                  "Property": "series_a_fa"
+                  "Property": "series_a_short_fa"
                 }
               },
-              "queryRef": "correlation_long.series_a_fa",
-              "nativeQueryRef": "series_a_fa",
+              "queryRef": "correlation_long.series_a_short_fa",
+              "nativeQueryRef": "series_a_short_fa",
               "active": true,
               "displayName": "سری‏"
             }
@@ -43,11 +43,11 @@
                       "Entity": "correlation_long"
                     }
                   },
-                  "Property": "series_b_fa"
+                  "Property": "series_b_short_fa"
                 }
               },
-              "queryRef": "correlation_long.series_b_fa",
-              "nativeQueryRef": "series_b_fa",
+              "queryRef": "correlation_long.series_b_short_fa",
+              "nativeQueryRef": "series_b_short_fa",
               "active": true,
               "displayName": "در برابر‏"
             }
@@ -81,7 +81,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8D"
+                  "Value": "9D"
                 }
               }
             },
@@ -101,7 +101,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8D"
+                  "Value": "9D"
                 }
               }
             },
@@ -121,7 +121,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8D"
+                  "Value": "9D"
                 }
               }
             }
@@ -183,17 +183,6 @@
                   }
                 }
               }
-            },
-            "fontColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#1A1A1A'"
-                    }
-                  }
-                }
-              }
             }
           },
           "selector": {
@@ -204,6 +193,49 @@
                 }
               }
             ],
+            "metadata": "_Measures.Correlation (real, monthly)"
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "62D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "correlation_long.series_a_short_fa"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "42D"
+                }
+              }
+            }
+          },
+          "selector": {
             "metadata": "_Measures.Correlation (real, monthly)"
           }
         }
@@ -219,6 +251,32 @@
               }
             },
             "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowTotal": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnTotal": [
+        {
+          "properties": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "false"

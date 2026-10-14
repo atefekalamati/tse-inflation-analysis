@@ -3,11 +3,11 @@
   "name": "9c471ef4fcaa6429746f",
   "position": {
     "x": 440,
-    "y": 204,
-    "z": 11,
-    "height": 229,
-    "width": 400,
-    "tabOrder": 11
+    "y": 516,
+    "z": 13,
+    "height": 158,
+    "width": 816,
+    "tabOrder": 13
   },
   "visual": {
     "visualType": "scatterChart",
@@ -23,11 +23,11 @@
                       "Entity": "dim_series"
                     }
                   },
-                  "Property": "series_fa"
+                  "Property": "series_short_fa"
                 }
               },
-              "queryRef": "dim_series.series_fa",
-              "nativeQueryRef": "series_fa",
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
               "active": true,
               "displayName": "سری‏"
             }
@@ -91,6 +91,117 @@
                 }
               }
             }
+          }
+        },
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "dim_series"
+                          }
+                        },
+                        "Property": "series_short_fa"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'‏شاخص کل‏'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "dim_series"
+                          }
+                        },
+                        "Property": "series_short_fa"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'‏هم‌وزن‏'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "dim_series"
+                          }
+                        },
+                        "Property": "series_short_fa"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'‏سبد ۸ سهم‏'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ],
