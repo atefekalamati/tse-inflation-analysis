@@ -123,8 +123,13 @@ logged in [`reports/corrections.md`](reports/corrections.md). `data/raw` is neve
   high; Close is correct. Logged, not changed: only closing prices are used.
 - **Open = 0 row:** شستا on 1402-07-17. Logged, not changed (Open is not used).
 - **Suspensions:** open-market days without a trade, per stock in the analysis period:
-  فولاد 78, فملی 48, شپنا 23, خودرو 77, وبملت 30, اخابر 52, شستا 11, تیپیکو 18. Months with a long suspension (5 or more days), no
-  trade, or a market closure are flagged in the monthly panel.
+  فولاد 78, فملی 48, شپنا 23, خودرو 77, وبملت 30, اخابر 52, شستا 11, تیپیکو 18. The longest
+  single suspensions, in open-market days before trading resumed, were فولاد 51 (resumed
+  1405-05-17, after the market closure), خودرو 23 (1404-05-08), اخابر 22 (1404-02-07) and فملی 18
+  (1404-02-22). In a month without a trade the last price is carried forward, so the move lands in
+  the month trading resumes. Months with a long suspension (5 or more open-market days), no trade,
+  or a market closure are flagged in the monthly panel. فولاد is excluded from the closure
+  comparison because it was not trading when the market reopened.
 - **Market closure:** the overall index has 61 flat, zero-volume rows (market closed), including
   1404-12-09 to 1405-02-28. No stock traded on those days; they are flagged and never counted as
   stock suspensions.
@@ -161,8 +166,22 @@ would overwrite them.
 
 ## Limitations
 
-- The 8 stocks are one company per sector chosen after the period: they show dispersion, not the market.
-- Adjusted prices treat rights issues paid in cash like bonus shares, which slightly overstates
-  returns around those events.
-- CPI is a monthly average of prices, while stock returns run month end to month end.
-- The bond yield is a single forward-looking snapshot compared with trailing inflation.
+- **Hindsight selection:** the 8 stocks were hand-picked, one per sector, after the period. They
+  show dispersion across sectors, not the market, and the equal-weight portfolio of them is not an
+  investable strategy.
+- **Sector indices:** it is unknown whether TSETMC sector indices include dividends. They are
+  therefore never compared with the stocks, whose adjusted prices do include dividends.
+- **Bond comparison:** the bond yield is a forward-looking snapshot (1405-07-22), while the
+  inflation it is compared with is trailing (the 12 months to 1405-06).
+- **CPI is monthly:** it is an average of prices collected during each month, while stock returns
+  run month end to month end. Within-month figures, such as the market closure, use CPI
+  interpolated by calendar day.
+- **No taxes or fees:** returns are gross of transaction costs, taxes and fund fees.
+- **Rights issues:** adjusted prices treat rights issues paid in cash like bonus shares, which
+  slightly overstates returns around those events.
+
+## License
+
+The code is released under the [MIT License](LICENSE).
+
+Market data © TSETMC; CPI © Statistical Centre of Iran; bond yields © IFB. Data is included for reproducibility only.
