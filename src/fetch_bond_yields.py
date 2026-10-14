@@ -30,7 +30,9 @@ def main() -> int:
     fetched = y.attrs.get("fetched_at")
     from persiantools.jdatetime import JalaliDate
     jd = JalaliDate(fetched.date()).strftime("%Y%m%d") if fetched is not None else "unknown"
-    y = y.assign(fetched_at=str(fetched), reference_url=y.attrs.get("reference_url"))
+    # keep only the snapshot DATE (Tehran calendar day); no time of day
+    snapshot = fetched.date().isoformat() if fetched is not None else ""
+    y = y.assign(snapshot_date=snapshot, reference_url=y.attrs.get("reference_url"))
     out = EXT / f"ifb_debt_yields_{jd}.csv"
     y.to_csv(out, index=False, encoding="utf-8")
     print(f"wrote {out} ({len(y)} rows), source {y.attrs.get('reference_url')}")

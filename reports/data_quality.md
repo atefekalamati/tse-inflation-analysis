@@ -1,6 +1,6 @@
 # Data quality report (raw data, step 1)
 
-Generated 2026-10-13T12:54:21-07:00 by `src/data_quality.py`. Raw data downloaded 2026-10-13T23:13:14+03:30 (Tehran time) with algotik-tse 1.8.0. Nothing in data/raw was modified.
+Written by `src/data_quality.py` from the raw data in `data/raw`, downloaded with algotik-tse 1.8.0. Nothing in data/raw was modified.
 
 Analysis period 1402-07-01 to 1405-06-31 (Jalali). Prices were fetched from 1402-06-01 so the base price at the end of 1402-06 exists.
 

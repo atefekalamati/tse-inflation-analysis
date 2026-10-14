@@ -49,7 +49,7 @@ def setup_logging() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
     except Exception:
         pass
-    fmt = logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
+    fmt = logging.Formatter("%(levelname)s %(name)s: %(message)s")   # no run timestamps
     fh = logging.FileHandler(LOG_FILE, mode="w", encoding="utf-8")
     fh.setFormatter(fmt)
     sh = logging.StreamHandler(sys.stdout)
@@ -275,11 +275,7 @@ def main() -> int:
     retries, backoff = fcfg["max_retries"], fcfg["backoff_base_seconds"]
     start, end = cfg["period"]["fetch_start"], cfg["period"]["end"]
 
-    started = dt.datetime.now(dt.timezone.utc)
-    tehran = dt.timezone(dt.timedelta(hours=3, minutes=30))
     meta: dict = {
-        "download_started_utc": started.isoformat(timespec="seconds"),
-        "download_started_tehran": started.astimezone(tehran).isoformat(timespec="seconds"),
         "library": {"name": "algotik-tse", "import_name": "algotik_tse",
                     "version": getattr(att, "__version__", "unknown")},
         "python": platform.python_version(),
@@ -331,6 +327,7 @@ def main() -> int:
             df = with_retry(lambda: att.get_price_adjustments(used, start=start, end=end,
                                                               progress=False),
                             call, retries, backoff, allow_empty=True)
+            df = df.drop(columns=["FetchedAt"], errors="ignore")   # run timestamp, not data
             info = save_raw(df, RAW / f"adjustments_{code}.csv")
             info.update(call=call, symbol=sym, ins_code=ins, kind="price_adjustments")
             meta["files"][info["file"]] = info
@@ -374,7 +371,6 @@ def main() -> int:
     meta["symbol_to_sector_index_file"] = {
         s["symbol"]: index_files.get(s.get("sector_index_tse") or s["sector_index"])
         for s in cfg["symbols"]}
-    meta["download_finished_utc"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     (RAW / "metadata.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2),
                                        encoding="utf-8")
     log.info("metadata written: %d files, %d failures", len(meta["files"]), len(meta["failures"]))

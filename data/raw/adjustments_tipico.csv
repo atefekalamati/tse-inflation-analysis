@@ -1,5 +1,5 @@
-index,InsCode,Symbol,GregorianDate,JalaliDate,AdjustedClosingPrice,UnadjustedClosingPrice,AdjustmentAmount,CorporateTypeCode,CorporateActionType,IsConfirmedDPS,IdentityVerified,Source,FetchedAt
-0,29758477602878557,تيپيكو,2023-09-11,1402-06-20,30880.0,34740.0,3860.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:42.337344+03:30
-1,29758477602878557,تيپيكو,2024-09-08,1403-06-18,20240.0,23240.0,3000.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:42.337344+03:30
-2,29758477602878557,تيپيكو,2025-09-15,1404-06-24,22790.0,26590.0,3800.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:42.337344+03:30
-3,29758477602878557,تيپيكو,2026-09-08,1405-06-17,26100.0,28015.0,1915.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:42.337344+03:30
+index,InsCode,Symbol,GregorianDate,JalaliDate,AdjustedClosingPrice,UnadjustedClosingPrice,AdjustmentAmount,CorporateTypeCode,CorporateActionType,IsConfirmedDPS,IdentityVerified,Source
+0,29758477602878557,تيپيكو,2023-09-11,1402-06-20,30880.0,34740.0,3860.0,,,False,True,tsetmc_price_adjustment
+1,29758477602878557,تيپيكو,2024-09-08,1403-06-18,20240.0,23240.0,3000.0,,,False,True,tsetmc_price_adjustment
+2,29758477602878557,تيپيكو,2025-09-15,1404-06-24,22790.0,26590.0,3800.0,,,False,True,tsetmc_price_adjustment
+3,29758477602878557,تيپيكو,2026-09-08,1405-06-17,26100.0,28015.0,1915.0,,,False,True,tsetmc_price_adjustment

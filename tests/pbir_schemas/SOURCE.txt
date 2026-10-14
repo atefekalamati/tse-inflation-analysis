@@ -1,3 +1,3 @@
 Microsoft Power BI report (PBIR) JSON schemas, copied unchanged from
 https://github.com/microsoft/json-schemas/tree/main/fabric/item/report/definition
-(MIT licence) on 2026-10-13. Used by tests/test_dashboard.py to validate the report offline.
+(MIT licence). Used by tests/test_dashboard.py to validate the report offline.

@@ -238,7 +238,8 @@ def engine(tmp_path_factory):
         pytest.skip("Power BI Desktop not installed")
     out = tmp_path_factory.mktemp("engine") / "results.tsv"
     r = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-                        str(DASH / "tools" / "test_model_on_engine.ps1"), "-OutFile", str(out)],
+                        str(DASH / "tools" / "test_model_on_engine.ps1"), "-OutFile", str(out),
+                        "-Python", sys.executable],
                        capture_output=True, text=True, encoding="utf-8", timeout=600, cwd=ROOT)
     assert r.returncode == 0 and "refresh: OK" in r.stdout, r.stdout + r.stderr
     return parse_results(out)

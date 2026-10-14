@@ -137,7 +137,7 @@ def main() -> int:
         pass
     EXT.mkdir(parents=True, exist_ok=True)
     SRC_DIR.mkdir(parents=True, exist_ok=True)
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s",
                         handlers=[logging.StreamHandler(sys.stdout),
                                   logging.FileHandler(EXT / "fetch_cpi.log", "w", encoding="utf-8")])
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))["cpi"]

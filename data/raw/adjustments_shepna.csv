@@ -1,4 +1,4 @@
-index,InsCode,Symbol,GregorianDate,JalaliDate,AdjustedClosingPrice,UnadjustedClosingPrice,AdjustmentAmount,CorporateTypeCode,CorporateActionType,IsConfirmedDPS,IdentityVerified,Source,FetchedAt
-0,7745894403636165,شپنا,2024-07-20,1403-04-30,4990.0,5600.0,610.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:24.789515+03:30
-1,7745894403636165,شپنا,2025-07-21,1404-04-30,3450.0,3810.0,360.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:24.789515+03:30
-2,7745894403636165,شپنا,2026-07-21,1405-04-30,9160.0,9900.0,740.0,,,False,True,tsetmc_price_adjustment,2026-10-13 23:13:24.789515+03:30
+index,InsCode,Symbol,GregorianDate,JalaliDate,AdjustedClosingPrice,UnadjustedClosingPrice,AdjustmentAmount,CorporateTypeCode,CorporateActionType,IsConfirmedDPS,IdentityVerified,Source
+0,7745894403636165,شپنا,2024-07-20,1403-04-30,4990.0,5600.0,610.0,,,False,True,tsetmc_price_adjustment
+1,7745894403636165,شپنا,2025-07-21,1404-04-30,3450.0,3810.0,360.0,,,False,True,tsetmc_price_adjustment
+2,7745894403636165,شپنا,2026-07-21,1405-04-30,9160.0,9900.0,740.0,,,False,True,tsetmc_price_adjustment

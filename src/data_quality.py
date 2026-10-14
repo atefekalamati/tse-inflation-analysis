@@ -203,10 +203,9 @@ def main() -> int:
     summary_rows = []
 
     out.append("# Data quality report (raw data, step 1)\n")
-    out.append(f"Generated {dt.datetime.now().astimezone().isoformat(timespec='seconds')} by "
-               "`src/data_quality.py`. Raw data downloaded "
-               f"{meta['download_started_tehran']} (Tehran time) with {meta['library']['name']} "
-               f"{meta['library']['version']}. Nothing in data/raw was modified.\n")
+    out.append("Written by `src/data_quality.py` from the raw data in `data/raw`, downloaded with "
+               f"{meta['library']['name']} {meta['library']['version']}. Nothing in data/raw was "
+               "modified.\n")
     out.append(f"Analysis period {p_start} to {p_end} (Jalali). Prices were fetched from "
                f"{f_start} so the base price at the end of 1402-06 exists.\n")
     out.append("Index calendar = days on which شاخص کل has a row: "

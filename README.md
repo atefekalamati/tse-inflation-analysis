@@ -10,6 +10,20 @@
 **Did the Tehran Stock Exchange beat inflation, Mehr 1402 – Shahrivar 1405? No: the overall index
 lost 6.6% in real terms while prices rose ×3.62.**
 
+## How to open the dashboard
+
+- **Without Power BI:** open [`dashboard/dashboard.pdf`](dashboard/dashboard.pdf), a PDF export of all four pages.
+- **In Power BI Desktop:**
+  1. Open `dashboard/tse_inflation.pbip`.
+  2. Go to **Transform data > Edit parameters** and set **DataFolder** to
+     `<unzip folder>\data\processed\powerbi\`. Keep the trailing `\`.
+  3. Click **Refresh**.
+- **If the refresh crashes** (for example "Container unexpectedly exited", `0x800705AF`): set
+  **File > Options and settings > Options > Global > Data Load > Maximum number of simultaneous
+  evaluations** to **1**, restart Power BI Desktop and refresh again.
+
+More detail, in Persian: [`dashboard/BUILD_GUIDE.md`](dashboard/BUILD_GUIDE.md).
+
 ## Dashboard
 
 ![Dashboard, page 1: overview](reports/figures/dashboard_1_overview.png)
@@ -69,7 +83,7 @@ Full analysis with tables and charts: [`notebooks/01_analysis.ipynb`](notebooks/
 
 | Source | What | Notes |
 |---|---|---|
-| TSETMC via [`algotik-tse`](https://pypi.org/project/algotik-tse/) 1.8.0 | Daily prices of 8 stocks (adjusted and unadjusted), the overall index, the equal-weight index and 7 sector indices | Adjusted official closing prices (قیمت پایانی), back-adjusted for capital increases and dividends. Downloaded 2026-10-13 (Gregorian), see [`data/raw/metadata.json`](data/raw/metadata.json). |
+| TSETMC via [`algotik-tse`](https://pypi.org/project/algotik-tse/) 1.8.0 | Daily prices of 8 stocks (adjusted and unadjusted), the overall index, the equal-weight index and 7 sector indices | Adjusted official closing prices (قیمت پایانی), back-adjusted for capital increases and dividends. Every request and call is listed in [`data/raw/metadata.json`](data/raw/metadata.json). |
 | Statistical Centre of Iran ([amar.org.ir](https://amar.org.ir/prices)) | Monthly CPI, all households, whole country, base 1400 = 100 | 1402-06 to 1405-06 (37 months). CPI 1402-06 = 201.7, CPI 1405-06 = 729.8. Only the Statistical Centre series is used, never Central Bank (CBI) figures. |
 | Iran Fara Bourse, [ifb.ir/ytm.aspx](https://ifb.ir/ytm.aspx) | Yield to maturity of government Murabaha bonds (اراد) | Snapshot of 1405-07-22: median of 103 issues traded in the previous 30 days. Treasury bills (اخزا) are not on that page. |
 

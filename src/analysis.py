@@ -350,10 +350,11 @@ def risk_free_context(m: pd.DataFrame, recent_days: int = 30) -> dict | None:
         return None
     f = files[-1]
     y = pd.read_csv(f, encoding="utf-8")
-    fetched = pd.Timestamp(y["fetched_at"].iloc[0])
+    snap = pd.Timestamp(y["snapshot_date"].iloc[0])   # Gregorian date of the IFB snapshot
     y["LastTradeDate"] = pd.to_datetime(y["LastTradeDate"])
     gov = y[(y["DebtType"] == "erad") & y["ReferenceYTM"].notna()]
-    recent = gov[gov["LastTradeDate"] >= (fetched.tz_localize(None) - pd.Timedelta(days=recent_days))]
+    # traded in the 30 days before the snapshot day
+    recent = gov[gov["LastTradeDate"] > snap - pd.Timedelta(days=recent_days)]
     cpi = m[m["code"] == "cpi"].set_index("month_jalali")["cpi_index"]
     last = cpi.index.max()
     months = list(cpi.index)
@@ -363,7 +364,7 @@ def risk_free_context(m: pd.DataFrame, recent_days: int = 30) -> dict | None:
     ytm = float(recent["ReferenceYTM"].median())
     return {
         "file": f.relative_to(ROOT).as_posix(), "source": y["reference_url"].iloc[0],
-        "fetched_at": str(fetched),
+        "snapshot_date_gregorian": str(snap.date()),
         "snapshot_jalali": f.stem.rsplit("_", 1)[-1][:4] + "-" + f.stem.rsplit("_", 1)[-1][4:6] + "-" + f.stem.rsplit("_", 1)[-1][6:],
         "instrument": "government Murabaha bonds (اراد)",
         "n_bonds": int(len(recent)), "ytm_median": ytm,

@@ -1,10 +1,10 @@
-2026-10-13 12:47:51,966 INFO cpi: GET https://amar.org.ir/prices -> 200 (627809 bytes)
-2026-10-13 12:47:51,971 INFO cpi: national CPI workbook links found: ['/Portals/0/Statistics/ts_national_140506-14050719122615.xlsx']; using /Portals/0/Statistics/ts_national_140506-14050719122615.xlsx
-2026-10-13 12:48:16,993 INFO cpi: GET https://amar.org.ir/Portals/0/Statistics/ts_national_140506-14050719122615.xlsx -> 200 (909262 bytes)
-2026-10-13 12:48:17,742 INFO cpi: parsed 186 CPI months (1390-01 .. 1405-06)
-2026-10-13 12:48:17,742 INFO cpi: wrote E:\BI\mini\tse-inflation-analysis\data\external\cpi_iran_sci.csv: 37 rows, 0 missing
-2026-10-13 12:48:17,742 INFO cpi: check 1402-06: known 201.7, fetched 201.7326 -> OK
-2026-10-13 12:48:17,742 INFO cpi: check 1403-06: known 264.7, fetched 264.7312 -> OK
-2026-10-13 12:48:17,742 INFO cpi: check 1404-06: known 384.6, fetched 384.5593 -> OK
-2026-10-13 12:48:17,742 INFO cpi: check 1405-05: known 700.1, fetched 700.1304 -> OK
-2026-10-13 12:48:17,742 INFO cpi: check 1405-06: known 729.8, fetched 729.8394 -> OK
+INFO cpi: GET https://amar.org.ir/prices -> 200 (627809 bytes)
+INFO cpi: national CPI workbook links found: ['/Portals/0/Statistics/ts_national_140506-14050719122615.xlsx']; using /Portals/0/Statistics/ts_national_140506-14050719122615.xlsx
+INFO cpi: GET https://amar.org.ir/Portals/0/Statistics/ts_national_140506-14050719122615.xlsx -> 200 (909262 bytes)
+INFO cpi: parsed 186 CPI months (1390-01 .. 1405-06)
+INFO cpi: wrote E:\BI\mini\tse-inflation-analysis\data\external\cpi_iran_sci.csv: 37 rows, 0 missing
+INFO cpi: check 1402-06: known 201.7, fetched 201.7326 -> OK
+INFO cpi: check 1403-06: known 264.7, fetched 264.7312 -> OK
+INFO cpi: check 1404-06: known 384.6, fetched 384.5593 -> OK
+INFO cpi: check 1405-05: known 700.1, fetched 700.1304 -> OK
+INFO cpi: check 1405-06: known 729.8, fetched 729.8394 -> OK

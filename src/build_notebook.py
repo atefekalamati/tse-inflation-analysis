@@ -208,5 +208,8 @@ nb = nbf.v4.new_notebook()
 nb["cells"] = cells
 nb["metadata"]["kernelspec"] = {"name": "python3", "display_name": "Python 3", "language": "python"}
 ExecutePreprocessor(timeout=600, kernel_name="python3").preprocess(nb, {"metadata": {"path": str(NB.parent)}})
+# drop execution timestamps (cell metadata "execution"); outputs are kept
+for cell in nb.cells:
+    cell.metadata.pop("execution", None)
 nbf.write(nb, NB)
 print(f"wrote {NB.relative_to(ROOT)}")

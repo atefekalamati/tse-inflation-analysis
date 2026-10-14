@@ -1,6 +1,4 @@
 {
-  "download_started_utc": "2026-10-13T19:43:14+00:00",
-  "download_started_tehran": "2026-10-13T23:13:14+03:30",
   "library": {
     "name": "algotik-tse",
     "import_name": "algotik_tse",
@@ -27,7 +25,8 @@
     "CSV files are the DataFrames returned by algotik-tse, unchanged; the Gregorian 'Date' index is written as the first column.",
     "Close = last trade price (<LAST>); Final = official closing price (<CLOSE>, qeymat-e payani); mapping per algotik_tse/core/stock.py.",
     "auto_adjust=True back-adjusts OHLC/Close/Final by the cumulative product of (next day's yesterday-price / today's Final), computed only from events inside the requested window, and truncates prices to int.",
-    "Prices are fetched from period.fetch_start, one month before the analysis start, so the base price at the end of 1402-06 is available."
+    "Prices are fetched from period.fetch_start, one month before the analysis start, so the base price at the end of 1402-06 is available.",
+    "Run timestamps (download times, the price-adjustment FetchedAt column, log timestamps) are not stored; only the data dates are kept."
   ],
   "symbol_resolution": {
     "فولاد": {
@@ -335,8 +334,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('فولاد', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "فولاد",
@@ -414,8 +412,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('فملی', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "فملی",
@@ -493,8 +490,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('شپنا', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "شپنا",
@@ -572,8 +568,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('خودرو', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "خودرو",
@@ -651,8 +646,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('وبملت', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "وبملت",
@@ -730,8 +724,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('اخابر', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "اخابر",
@@ -809,8 +802,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('شستا', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "شستا",
@@ -888,8 +880,7 @@
         "CorporateActionType",
         "IsConfirmedDPS",
         "IdentityVerified",
-        "Source",
-        "FetchedAt"
+        "Source"
       ],
       "call": "algotik_tse.get_price_adjustments('تیپیکو', start='1402-06-01', end='1405-06-31', progress=False)",
       "symbol": "تیپیکو",
@@ -1118,6 +1109,5 @@
     "اخابر": "data/raw/sector_of_akhaber.csv",
     "شستا": "data/raw/sector_of_shasta.csv",
     "تیپیکو": "data/raw/sector_of_tipico.csv"
-  },
-  "download_finished_utc": "2026-10-13T19:44:00+00:00"
+  }
 }
