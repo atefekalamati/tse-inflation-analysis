@@ -1,0 +1,76 @@
+table dim_series
+	lineageTag: 3ba69a72-908e-5234-b1ef-098fcfba7abd
+
+	column series_code
+		dataType: string
+		isKey
+		lineageTag: 298ab7e5-9a4e-5b95-9c10-5fd2aa1e0c9d
+		summarizeBy: none
+		sourceColumn: series_code
+
+		annotation SummarizationSetBy = User
+
+	column series
+		dataType: string
+		lineageTag: ebe1ac50-d6f9-56c5-accb-d3575d45ea16
+		summarizeBy: none
+		sourceColumn: series
+		sortByColumn: sort_order
+
+		annotation SummarizationSetBy = User
+
+	column series_fa
+		dataType: string
+		lineageTag: 6eb8fd2f-9eba-59fa-a94b-8dc7e54cd95d
+		summarizeBy: none
+		sourceColumn: series_fa
+		sortByColumn: sort_order
+
+		annotation SummarizationSetBy = User
+
+	column type
+		dataType: string
+		lineageTag: 4b4d552a-be91-5d65-a647-1903906d4b4f
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = User
+
+	column sector
+		dataType: string
+		lineageTag: 2df9a7bd-578a-5f52-aae9-78844d65a9b8
+		summarizeBy: none
+		sourceColumn: sector
+
+		annotation SummarizationSetBy = User
+
+	column usage_note
+		dataType: string
+		lineageTag: cd362964-9f8c-56ee-a954-3958712104b6
+		summarizeBy: none
+		sourceColumn: usage_note
+
+		annotation SummarizationSetBy = User
+
+	column sort_order
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: d1941bef-720d-564d-829a-4a6c6ebc3165
+		summarizeBy: none
+		sourceColumn: sort_order
+
+		annotation SummarizationSetBy = User
+
+	partition dim_series = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_series.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"type", type text}, {"sector", type text}, {"usage_note", type text}, {"sort_order", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

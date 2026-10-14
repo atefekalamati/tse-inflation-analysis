@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "47c22d6abb9fd0038a17",
+  "position": {
+    "x": 800,
+    "y": 644,
+    "z": 12,
+    "height": 40,
+    "width": 456,
+    "tabOrder": 12
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "۸ سهم با نگاه به گذشته انتخاب شده‌اند و نمایندهٔ کل بازار نیستند.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#C62828",
+                      "fontFamily": "Segoe UI",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

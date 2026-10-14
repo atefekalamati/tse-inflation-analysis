@@ -1,0 +1,7 @@
+expression DataFolder = "E:\BI\mini\tse-inflation-analysis\data\processed\powerbi\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 022b9a71-0c16-547c-8bad-665994dfa199
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

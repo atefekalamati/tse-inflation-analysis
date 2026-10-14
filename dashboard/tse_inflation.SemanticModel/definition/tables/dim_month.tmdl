@@ -1,0 +1,64 @@
+table dim_month
+	lineageTag: 94834c4b-f8b0-5778-ba92-ce7f5c1c1c44
+
+	column month
+		dataType: string
+		isKey
+		lineageTag: 35913419-fd44-5bcb-a232-c073fe4c7d25
+		summarizeBy: none
+		sourceColumn: month
+		sortByColumn: sort_key
+
+		annotation SummarizationSetBy = User
+
+	column month_label_fa
+		dataType: string
+		lineageTag: 6a385d6c-7c03-58e1-8a2d-c6ee8dce630e
+		summarizeBy: none
+		sourceColumn: month_label_fa
+		sortByColumn: sort_key
+
+		annotation SummarizationSetBy = User
+
+	column month_end_gregorian
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: b4a3b2cf-e074-5428-8167-796bab2eb510
+		summarizeBy: none
+		sourceColumn: month_end_gregorian
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column jalali_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 5f56178c-72b2-5e0c-85d7-1ae8a20a45ef
+		summarizeBy: none
+		sourceColumn: jalali_year
+
+		annotation SummarizationSetBy = User
+
+	column sort_key
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 336e15bb-8c88-560c-91ea-8a71498bf75c
+		summarizeBy: none
+		sourceColumn: sort_key
+
+		annotation SummarizationSetBy = User
+
+	partition dim_month = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_month.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"month", type text}, {"month_label_fa", type text}, {"month_end_gregorian", type date}, {"jalali_year", Int64.Type}, {"sort_key", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

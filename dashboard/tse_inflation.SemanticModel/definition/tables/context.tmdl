@@ -1,0 +1,93 @@
+table context
+	lineageTag: ca45df02-c822-549c-9669-4092e2ffbbba
+
+	column bond_ytm
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: de763dd3-034e-58d8-8934-69737ce1df3c
+		summarizeBy: none
+		sourceColumn: bond_ytm
+
+		annotation SummarizationSetBy = User
+
+	column inflation_12m_avg
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: b8cea9f7-d4cc-54b6-a5ea-8a820586481f
+		summarizeBy: none
+		sourceColumn: inflation_12m_avg
+
+		annotation SummarizationSetBy = User
+
+	column inflation_point_to_point
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 446da3f0-b2c5-50ec-bbeb-0183df14da5d
+		summarizeBy: none
+		sourceColumn: inflation_point_to_point
+
+		annotation SummarizationSetBy = User
+
+	column real_yield_avg
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: dc3ff785-e829-57f6-96d6-12d2333a0575
+		summarizeBy: none
+		sourceColumn: real_yield_avg
+
+		annotation SummarizationSetBy = User
+
+	column real_yield_p2p
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: adadda14-ff6e-579b-96ad-e1d70410fe69
+		summarizeBy: none
+		sourceColumn: real_yield_p2p
+
+		annotation SummarizationSetBy = User
+
+	column snapshot_date
+		dataType: string
+		lineageTag: 1c86f656-2bde-5254-9f56-7b2db5f1db9c
+		summarizeBy: none
+		sourceColumn: snapshot_date
+
+		annotation SummarizationSetBy = User
+
+	column source_url
+		dataType: string
+		lineageTag: 40c141f0-a04c-5e20-a5f6-fa16cd31b67d
+		summarizeBy: none
+		sourceColumn: source_url
+
+		annotation SummarizationSetBy = User
+
+	column instrument
+		dataType: string
+		lineageTag: 535443cc-82a1-5f52-a460-a7711aa609ca
+		summarizeBy: none
+		sourceColumn: instrument
+
+		annotation SummarizationSetBy = User
+
+	column n_bonds
+		dataType: int64
+		formatString: 0
+		lineageTag: dd53f856-2a3a-53f2-a094-ddb9e34745dd
+		summarizeBy: none
+		sourceColumn: n_bonds
+
+		annotation SummarizationSetBy = User
+
+	partition context = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "context.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"bond_ytm", type number}, {"inflation_12m_avg", type number}, {"inflation_point_to_point", type number}, {"real_yield_avg", type number}, {"real_yield_p2p", type number}, {"snapshot_date", type text}, {"source_url", type text}, {"instrument", type text}, {"n_bonds", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,2 @@
+bond_ytm,inflation_12m_avg,inflation_point_to_point,real_yield_avg,real_yield_p2p,snapshot_date,source_url,instrument,n_bonds
+0.4042,0.7358102565308142,0.8978591858264771,-0.19104061361727964,-0.26011370575499215,1405-07-22,https://ifb.ir/ytm.aspx,اوراق مرابحه دولت (اراد),103

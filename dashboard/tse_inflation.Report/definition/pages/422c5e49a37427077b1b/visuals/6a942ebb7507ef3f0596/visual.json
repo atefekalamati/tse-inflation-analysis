@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "6a942ebb7507ef3f0596",
+  "position": {
+    "x": 640,
+    "y": 288,
+    "z": 10,
+    "height": 112,
+    "width": 616,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Bond conditional statement"
+                }
+              },
+              "queryRef": "_Measures.Bond conditional statement",
+              "nativeQueryRef": "Bond conditional statement",
+              "displayName": "اوراق دولتی در برابر تورم"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Bond source note"
+                }
+              },
+              "queryRef": "_Measures.Bond source note",
+              "nativeQueryRef": "Bond source note",
+              "displayName": "منبع و تاریخ"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "value": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

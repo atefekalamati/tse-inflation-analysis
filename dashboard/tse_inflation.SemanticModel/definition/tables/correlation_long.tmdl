@@ -1,0 +1,94 @@
+table correlation_long
+	lineageTag: 97cf1ec3-48d7-58e9-ab57-9bbb79015ac5
+
+	column series_a
+		dataType: string
+		lineageTag: 1486e170-6f88-580e-ad19-6fb967d9f9d9
+		summarizeBy: none
+		sourceColumn: series_a
+
+		annotation SummarizationSetBy = User
+
+	column series_a_code
+		dataType: string
+		lineageTag: 1e10ae28-903b-5ee5-8731-b2ee68ef7c4c
+		summarizeBy: none
+		sourceColumn: series_a_code
+
+		annotation SummarizationSetBy = User
+
+	column series_a_fa
+		dataType: string
+		lineageTag: b0af0823-8ee7-5505-b1d0-9f60a862e11a
+		summarizeBy: none
+		sourceColumn: series_a_fa
+		sortByColumn: series_a_order
+
+		annotation SummarizationSetBy = User
+
+	column series_a_order
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 54a8e8c8-4c4f-5a30-b213-2ffdf07f4322
+		summarizeBy: none
+		sourceColumn: series_a_order
+
+		annotation SummarizationSetBy = User
+
+	column series_b
+		dataType: string
+		lineageTag: 99279ef6-7b9d-5387-b665-78121aa6ae3a
+		summarizeBy: none
+		sourceColumn: series_b
+
+		annotation SummarizationSetBy = User
+
+	column series_b_code
+		dataType: string
+		lineageTag: 0fc1b6fe-eb27-5986-b96c-2310df49bddc
+		summarizeBy: none
+		sourceColumn: series_b_code
+
+		annotation SummarizationSetBy = User
+
+	column series_b_fa
+		dataType: string
+		lineageTag: 4f7fcf4d-1e48-516b-83d0-dc9aa787aff0
+		summarizeBy: none
+		sourceColumn: series_b_fa
+		sortByColumn: series_b_order
+
+		annotation SummarizationSetBy = User
+
+	column series_b_order
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 29a3d71d-79fc-546d-8a38-9ba041ef0dc0
+		summarizeBy: none
+		sourceColumn: series_b_order
+
+		annotation SummarizationSetBy = User
+
+	column corr_real_return_per_month
+		dataType: double
+		formatString: 0.00
+		lineageTag: b6363632-3ac3-55f2-abfb-a512286ae8e6
+		summarizeBy: none
+		sourceColumn: corr_real_return_per_month
+
+		annotation SummarizationSetBy = User
+
+	partition correlation_long = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "correlation_long.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_a", type text}, {"series_a_code", type text}, {"series_a_fa", type text}, {"series_a_order", Int64.Type}, {"series_b", type text}, {"series_b_code", type text}, {"series_b_fa", type text}, {"series_b_order", Int64.Type}, {"corr_real_return_per_month", type number}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

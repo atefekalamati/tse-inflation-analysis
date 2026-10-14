@@ -1,0 +1,193 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "f00baa0967e94ae1c768",
+  "position": {
+    "x": 856,
+    "y": 200,
+    "z": 13,
+    "height": 484,
+    "width": 400,
+    "tabOrder": 13
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_series"
+                    }
+                  },
+                  "Property": "series_fa"
+                }
+              },
+              "queryRef": "dim_series.series_fa",
+              "nativeQueryRef": "series_fa",
+              "displayName": "سری"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Nominal CAGR"
+                }
+              },
+              "queryRef": "_Measures.Nominal CAGR",
+              "nativeQueryRef": "Nominal CAGR",
+              "displayName": "اسمی سالانه"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real CAGR"
+                }
+              },
+              "queryRef": "_Measures.Real CAGR",
+              "nativeQueryRef": "Real CAGR",
+              "displayName": "واقعی سالانه"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real cum 3y"
+                }
+              },
+              "queryRef": "_Measures.Real cum 3y",
+              "nativeQueryRef": "Real cum 3y",
+              "displayName": "واقعی تجمعی ۳ ساله"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real vol per year"
+                }
+              },
+              "queryRef": "_Measures.Real vol per year",
+              "nativeQueryRef": "Real vol per year",
+              "displayName": "نوسان سالانه"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real max drawdown"
+                }
+              },
+              "queryRef": "_Measures.Real max drawdown",
+              "nativeQueryRef": "Real max drawdown",
+              "displayName": "بیشترین افت"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Months beating inflation"
+                }
+              },
+              "queryRef": "_Measures.Months beating inflation",
+              "nativeQueryRef": "Months beating inflation",
+              "displayName": "ماه‌های برنده"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Real CAGR"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'جدول بازده و ریسک'"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1A1A1A'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'right'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

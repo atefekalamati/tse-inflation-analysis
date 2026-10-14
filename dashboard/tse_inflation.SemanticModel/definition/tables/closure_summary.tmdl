@@ -1,0 +1,140 @@
+table closure_summary
+	lineageTag: 1fb95e8e-a5c3-522d-aa1d-0a2087ae27b9
+
+	column series_code
+		dataType: string
+		isHidden
+		lineageTag: 52e71955-a93a-51f9-98c7-473f37cdf605
+		summarizeBy: none
+		sourceColumn: series_code
+
+		annotation SummarizationSetBy = User
+
+	column series
+		dataType: string
+		isHidden
+		lineageTag: 59e3369b-77b8-5522-a300-78adeb0eba56
+		summarizeBy: none
+		sourceColumn: series
+
+		annotation SummarizationSetBy = User
+
+	column series_fa
+		dataType: string
+		isHidden
+		lineageTag: 7c29ed4d-0e89-567e-8f72-5236d3fe60b2
+		summarizeBy: none
+		sourceColumn: series_fa
+
+		annotation SummarizationSetBy = User
+
+	column window
+		dataType: string
+		lineageTag: 491b7358-31d0-58fc-aa5b-f2e7fad40d7d
+		summarizeBy: none
+		sourceColumn: window
+
+		annotation SummarizationSetBy = User
+
+	column window_start
+		dataType: string
+		lineageTag: 2d19f71c-65e8-51eb-986c-ec187bbc20ce
+		summarizeBy: none
+		sourceColumn: window_start
+
+		annotation SummarizationSetBy = User
+
+	column window_end
+		dataType: string
+		lineageTag: 1b1a1840-0587-5df2-aea1-35b67fb28afc
+		summarizeBy: none
+		sourceColumn: window_end
+
+		annotation SummarizationSetBy = User
+
+	column nominal
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: d6086e0c-6b26-534e-9d2b-4fc32846b89d
+		summarizeBy: none
+		sourceColumn: nominal
+
+		annotation SummarizationSetBy = User
+
+	column cpi_prorated
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: e50dfcca-fd8e-5eb3-9003-ae2b173b7b0a
+		summarizeBy: none
+		sourceColumn: cpi_prorated
+
+		annotation SummarizationSetBy = User
+
+	column real_prorated
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 3df31ed0-9c2e-5774-b999-b7f9800b6fde
+		summarizeBy: none
+		sourceColumn: real_prorated
+
+		annotation SummarizationSetBy = User
+
+	column cpi_whole_months
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 23dbb754-c17a-5f08-b36e-89e9e0b4922b
+		summarizeBy: none
+		sourceColumn: cpi_whole_months
+
+		annotation SummarizationSetBy = User
+
+	column real_whole_months
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: db501cd4-c945-5619-a535-32b029313979
+		summarizeBy: none
+		sourceColumn: real_whole_months
+
+		annotation SummarizationSetBy = User
+
+	column comparable
+		dataType: boolean
+		lineageTag: 2e71926d-ae11-5d5c-8023-2ff299540411
+		summarizeBy: none
+		sourceColumn: comparable
+
+		annotation SummarizationSetBy = User
+
+	column window_fa
+		dataType: string
+		lineageTag: da6828b1-3ff3-502f-853d-1c69facc80fc
+		summarizeBy: none
+		sourceColumn: window_fa
+		sortByColumn: window_order
+
+		annotation SummarizationSetBy = User
+
+	column window_order
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 151f93e9-250f-53f6-8551-309888951b67
+		summarizeBy: none
+		sourceColumn: window_order
+
+		annotation SummarizationSetBy = User
+
+	partition closure_summary = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "closure_summary.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"series_code", type text}, {"series", type text}, {"series_fa", type text}, {"window", type text}, {"window_start", type text}, {"window_end", type text}, {"nominal", type number}, {"cpi_prorated", type number}, {"real_prorated", type number}, {"cpi_whole_months", type number}, {"real_whole_months", type number}, {"comparable", type logical}}, "en-US"),
+				    Added1 = Table.AddColumn(Typed, "window_fa", each if [window] = "on_reopening" then "تا بازگشایی" else "۲۰ روز معاملاتی پس از بازگشایی", type text),
+				    Added2 = Table.AddColumn(Added1, "window_order", each if [window] = "on_reopening" then 1 else 2, Int64.Type)
+				in
+				    Added2
+
+	annotation PBI_ResultType = Table
+

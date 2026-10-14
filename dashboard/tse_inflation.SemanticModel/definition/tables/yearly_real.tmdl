@@ -1,0 +1,97 @@
+table yearly_real
+	lineageTag: 6d34fbb9-144c-5c6e-b9f0-70a7c49c25fd
+
+	column series_code
+		dataType: string
+		isHidden
+		lineageTag: 20170b53-ed43-50ab-8c83-9b8aabf676b3
+		summarizeBy: none
+		sourceColumn: series_code
+
+		annotation SummarizationSetBy = User
+
+	column series
+		dataType: string
+		isHidden
+		lineageTag: af74d368-5c36-5a66-ba6f-39b4b336b3f2
+		summarizeBy: none
+		sourceColumn: series
+
+		annotation SummarizationSetBy = User
+
+	column type
+		dataType: string
+		isHidden
+		lineageTag: 0af97c1c-a361-53af-b2c3-bcb2a011ebb0
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = User
+
+	column block
+		dataType: string
+		lineageTag: ea37c65d-11f4-557d-b89c-4fe13d1ea22d
+		summarizeBy: none
+		sourceColumn: block
+
+		annotation SummarizationSetBy = User
+
+	column real_return_per_year
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: f55425e4-f5c6-510c-aa43-62f480c51cc8
+		summarizeBy: none
+		sourceColumn: real_return_per_year
+
+		annotation SummarizationSetBy = User
+
+	column nominal_return_per_year
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: e78dcc67-1ba8-5aa7-93dd-42277f0024dc
+		summarizeBy: none
+		sourceColumn: nominal_return_per_year
+
+		annotation SummarizationSetBy = User
+
+	column inflation_per_year
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 3b21890e-be8c-53d4-9a11-b4ca9045a3fa
+		summarizeBy: none
+		sourceColumn: inflation_per_year
+
+		annotation SummarizationSetBy = User
+
+	column rank_among_stocks
+		dataType: int64
+		formatString: 0
+		lineageTag: 5757f82e-a2e6-5071-bca5-4612a84dc734
+		summarizeBy: none
+		sourceColumn: rank_among_stocks
+
+		annotation SummarizationSetBy = User
+
+	column block_fa
+		dataType: string
+		lineageTag: 7f9681a9-324c-5020-ae53-dd0dd07d98a3
+		summarizeBy: none
+		sourceColumn: block_fa
+		sortByColumn: block
+
+		annotation SummarizationSetBy = User
+
+	partition yearly_real = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "yearly_real.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Renamed = Table.RenameColumns(Promoted, {{"code", "series_code"}}),
+				    Typed = Table.TransformColumnTypes(Renamed, {{"series_code", type text}, {"series", type text}, {"type", type text}, {"block", type text}, {"real_return_per_year", type number}, {"nominal_return_per_year", type number}, {"inflation_per_year", type number}, {"rank_among_stocks", Int64.Type}}, "en-US"),
+				    Added1 = Table.AddColumn(Typed, "block_fa", each if [block] = "1402-07..1403-06" then "سال اول: مهر ۱۴۰۲ تا شهریور ۱۴۰۳" else if [block] = "1403-07..1404-06" then "سال دوم: مهر ۱۴۰۳ تا شهریور ۱۴۰۴" else if [block] = "1404-07..1405-06" then "سال سوم: مهر ۱۴۰۴ تا شهریور ۱۴۰۵" else [block], type text)
+				in
+				    Added1
+
+	annotation PBI_ResultType = Table
+

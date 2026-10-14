@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "da02c85fdaebbd2c21fb",
+  "position": {
+    "x": 24,
+    "y": 8,
+    "z": 0,
+    "height": 36,
+    "width": 1232,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "تعطیلی بازار (۹ اسفند ۱۴۰۴ تا ۲۸ اردیبهشت ۱۴۰۵) و بازده اوراق دولتی",
+                    "textStyle": {
+                      "fontSize": "18pt",
+                      "color": "#0D366B",
+                      "fontFamily": "Segoe UI",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

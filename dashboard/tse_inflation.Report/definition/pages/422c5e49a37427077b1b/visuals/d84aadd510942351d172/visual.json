@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "d84aadd510942351d172",
+  "position": {
+    "x": 24,
+    "y": 692,
+    "z": 3,
+    "height": 24,
+    "width": 1232,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "منبع: TSETMC و شاخص قیمت مصرف‌کننده مرکز آمار ایران (۱۴۰۰=۱۰۰)",
+                    "textStyle": {
+                      "fontSize": "8pt",
+                      "color": "#52514E",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

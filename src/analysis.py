@@ -773,23 +773,119 @@ def month_end_gregorian(month: str) -> str:
     raise ValueError(month)
 
 
-def export_powerbi(m, port, rt, yearly, corr) -> dict[str, str]:
+FA_MONTHS = ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"]
+FA_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
+SERIES_FA = {"index_total": "شاخص کل", "index_equal_weight": "شاخص کل (هم‌وزن)",
+             "cpi": "شاخص قیمت مصرف‌کننده (تورم)",
+             PORTFOLIO_CODE: "سبد هم‌وزن ۸ سهم (انتخاب با نگاه به گذشته)"}
+TYPE_DIM = {"stock": "stock", "market_index": "market_index", "sector_index": "sector_index",
+            "portfolio_hindsight": "portfolio", "cpi": "cpi"}
+USAGE_NOTE = {
+    "stock": "individual stock: dispersion, not the market",
+    "market_index": "the market: conclusions about the market use only these two indices",
+    "sector_index": "trend only: unknown whether dividends are included; do not compare with stocks",
+    "portfolio": "hindsight-selected portfolio, not an investable strategy",
+    "cpi": "inflation benchmark (SCI CPI, 1400=100)",
+}
+TYPE_ORDER = {"market_index": 0, "cpi": 1, "portfolio": 2, "stock": 3, "sector_index": 4}
+
+
+def month_label_fa(month: str) -> str:
+    y, mo = month.split("-")
+    return f"{FA_MONTHS[int(mo) - 1]} {y.translate(FA_DIGITS)}"
+
+
+def rolling_real_12m_long(allm: pd.DataFrame) -> pd.Series:
+    """Real return over the 12 months ending in each month; NaN for the base month and
+    the first 11 return months. Aligned to allm's index."""
+    out = pd.Series(np.nan, index=allm.index)
+    for _, g in allm.groupby("code"):
+        g = g.sort_values("month_jalali")
+        r = g["return_real"].where(g["month_jalali"] > BASE)
+        out.loc[g.index] = rolling_compound(r.dropna(), 12).reindex(g.index).values
+    return out
+
+
+def dim_series_frame(allm: pd.DataFrame) -> pd.DataFrame:
+    stock_order = {c: i for i, c in enumerate(STOCK_CODES)}
+    d = allm.drop_duplicates("code")[["code", "label", "symbol", "type", "sector"]].copy()
+    d["type"] = d["type"].map(TYPE_DIM)
+    d["series_fa"] = [SERIES_FA.get(c, f"شاخص صنعت {sym}" if t == "sector_index" else sym)
+                      for c, sym, t in zip(d["code"], d["symbol"], d["type"])]
+    d["series"] = [lab if t != "sector_index" else
+                   c.replace("sector_", "").replace("_", " ").title() + " (sector index)"
+                   for c, lab, t in zip(d["code"], d["label"], d["type"])]
+    d["usage_note"] = d["type"].map(USAGE_NOTE)
+    d["_k1"] = d["type"].map(TYPE_ORDER)
+    d["_k2"] = [stock_order.get(c, 0) if t == "stock" else
+                (MARKET_CODES.index(c) if t == "market_index" else 0)
+                for c, t in zip(d["code"], d["type"])]
+    d = d.sort_values(["_k1", "_k2", "code"]).reset_index(drop=True)
+    d["sort_order"] = np.arange(1, len(d) + 1)
+    return d.rename(columns={"code": "series_code"})[
+        ["series_code", "series", "series_fa", "type", "sector", "usage_note", "sort_order"]]
+
+
+def dim_month_frame(months: list[str]) -> pd.DataFrame:
+    return pd.DataFrame({
+        "month": months,
+        "month_label_fa": [month_label_fa(x) for x in months],
+        "month_end_gregorian": [month_end_gregorian(x) for x in months],
+        "jalali_year": [int(x[:4]) for x in months],
+        "sort_key": [int(x[:4]) * 100 + int(x[5:7]) for x in months],
+    })
+
+
+def closure_summary_frame(clo: dict, fa: dict) -> pd.DataFrame:
+    rows = []
+    for _, r in clo["table"].iterrows():
+        for window, sfx, end in (("on_reopening", "reopen", r["first_close_after"]),
+                                 ("after_20_days", "20d", r["close_after_20_trading_days"])):
+            rows.append({
+                "series_code": r["code"], "series": r["series"], "series_fa": fa[r["code"]],
+                "window": window, "window_start": r["last_close_before"], "window_end": end,
+                "nominal": r[f"nominal_change_{sfx}"],
+                "cpi_prorated": r[f"cpi_change_{sfx}_prorated"],
+                "real_prorated": r[f"real_change_{sfx}_prorated"],
+                "cpi_whole_months": r[f"cpi_change_{sfx}_monthly"],
+                "real_whole_months": r[f"real_change_{sfx}_monthly"],
+                "comparable": bool(r["comparable"]),
+            })
+    return pd.DataFrame(rows)
+
+
+def context_frame(rf: dict | None) -> pd.DataFrame:
+    cols = ["bond_ytm", "inflation_12m_avg", "inflation_point_to_point", "real_yield_avg",
+            "real_yield_p2p", "snapshot_date", "source_url", "instrument", "n_bonds"]
+    if not rf:
+        return pd.DataFrame(columns=cols)
+    return pd.DataFrame([{
+        "bond_ytm": rf["ytm_median"], "inflation_12m_avg": rf["inflation_12m_average"],
+        "inflation_point_to_point": rf["inflation_point_to_point"],
+        "real_yield_avg": rf["real_ytm_vs_avg12"], "real_yield_p2p": rf["real_ytm_vs_p2p"],
+        "snapshot_date": rf["snapshot_jalali"], "source_url": rf["source"],
+        "instrument": "اوراق مرابحه دولت (اراد)", "n_bonds": rf["n_bonds"],
+    }])[cols]
+
+
+def export_powerbi(res: dict) -> dict[str, str]:
+    """Write the Power BI CSVs (UTF-8) to data/processed/powerbi/."""
+    m, port, rt, yearly, corr = res["monthly"], res["portfolio"], res["risk"], res["yearly"], res["corr"]
     PBI.mkdir(parents=True, exist_ok=True)
     allm = pd.concat([m, port], ignore_index=True)
+    dim_series = dim_series_frame(allm)
+    fa = dict(zip(dim_series["series_code"], dim_series["series_fa"]))
     ml = pd.DataFrame({
         "month": allm["month_jalali"],
         "month_end_gregorian": allm["month_jalali"].map(month_end_gregorian),
-        "series": allm["label"], "series_fa": allm["symbol"], "series_code": allm["code"],
+        "series": allm["label"], "series_fa": allm["code"].map(fa), "series_code": allm["code"],
         "type": allm["type"], "sector": allm["sector"],
-        "usage_note": np.select(
-            [allm["type"] == "sector_index", allm["type"] == "portfolio_hindsight",
-             allm["type"] == "stock"],
-            ["trend only: unknown whether dividends are included; do not compare with stocks",
-             "hindsight-selected portfolio, not an investable strategy",
-             "individual stock: dispersion, not the market"], ""),
+        "usage_note": allm["type"].map(TYPE_DIM).map(USAGE_NOTE),
         "nominal_return_per_month": allm["return_nominal"],
         "real_return_per_month": allm["return_real"],
         "inflation_per_month": allm["inflation_monthly"],
+        "real_return_rolling_12m": rolling_real_12m_long(allm),
         "nominal_index_1402_06_eq_100": allm["growth_nominal"],
         "real_index_1402_06_eq_100": allm["growth_real"],
         "nominal_cum_since_1402_06": allm["growth_nominal"] / 100 - 1,
@@ -799,12 +895,29 @@ def export_powerbi(m, port, rt, yearly, corr) -> dict[str, str]:
         "flag_market_closure": allm["market_closure_in_month"].astype(bool),
         "flag_long_suspension": allm["long_suspension"].astype(bool),
         "flag_no_trade": allm["no_trade_in_month"].astype(bool),
-    })
-    cl = corr.stack().rename("corr_real_return_per_month").reset_index()
-    cl.columns = ["series_a", "series_b", "corr_real_return_per_month"]
+    }).sort_values(["series_code", "month"]).reset_index(drop=True)
+    # 10 x 10: the 8 stocks and both market indices (the notebook's 9 x 9 matrix plus the
+    # equal-weight index; same method: Pearson on monthly real returns, 36 months)
+    codes10 = STOCK_CODES + MARKET_CODES
+    corr10 = wide(m, "return_real", codes10).corr().rename_axis(index="a", columns="b")
+    order = dict(zip(dim_series["series_code"], dim_series["sort_order"]))
+    cl = corr10.stack().rename("corr_real_return_per_month").reset_index()
+    cl.columns = ["series_a_code", "series_b_code", "corr_real_return_per_month"]
+    cl = pd.DataFrame({
+        "series_a": cl["series_a_code"].map(LABELS), "series_a_code": cl["series_a_code"],
+        "series_a_fa": cl["series_a_code"].map(fa), "series_a_order": cl["series_a_code"].map(order),
+        "series_b": cl["series_b_code"].map(LABELS), "series_b_code": cl["series_b_code"],
+        "series_b_fa": cl["series_b_code"].map(fa), "series_b_order": cl["series_b_code"].map(order),
+        "corr_real_return_per_month": cl["corr_real_return_per_month"]})
+    frames = {
+        "monthly_long": ml, "risk_summary": rt, "yearly_real": yearly, "correlation_long": cl,
+        "closure_summary": closure_summary_frame(res["closure"], fa),
+        "dim_series": dim_series,
+        "dim_month": dim_month_frame(sorted(allm["month_jalali"].unique())),
+        "context": context_frame(res["risk_free"]),
+    }
     out = {}
-    for name, df in (("monthly_long", ml), ("risk_summary", rt), ("yearly_real", yearly),
-                     ("correlation_long", cl)):
+    for name, df in frames.items():
         p = PBI / f"{name}.csv"
         df.to_csv(p, index=False, encoding="utf-8")
         out[name] = p.relative_to(ROOT).as_posix()
@@ -910,7 +1023,7 @@ def run_all(write: bool = True) -> dict:
         fig_rolling(res["rolling"], FIG / "07_rolling_12m_real.png")
         fig_closure(d, m, res["closure"], FIG / "08_closure_period.png")
         fig_portfolio(m, port, FIG / "09_hindsight_portfolio.png")
-        res["powerbi"] = export_powerbi(m, port, res["risk"], res["yearly"], res["corr"])
+        res["powerbi"] = export_powerbi(res)
     return res
 
 

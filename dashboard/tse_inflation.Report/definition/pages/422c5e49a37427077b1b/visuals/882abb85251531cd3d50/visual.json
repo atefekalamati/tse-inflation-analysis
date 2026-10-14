@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "882abb85251531cd3d50",
+  "position": {
+    "x": 24,
+    "y": 72,
+    "z": 2,
+    "height": 26,
+    "width": 1232,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "ارقام تعطیلی تجمعی در همان بازه‌اند. روش اصلی: تورم روزشمار (درون‌یابی هندسی شاخص قیمت تا تاریخ دقیق). ماه‌های کامل فقط برای آزمون حساسیت آمده است.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514E",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

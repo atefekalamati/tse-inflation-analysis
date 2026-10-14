@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "62d1ea9b4db27d192c68",
+  "position": {
+    "x": 24,
+    "y": 72,
+    "z": 2,
+    "height": 26,
+    "width": 1232,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "نتیجه‌گیری دربارهٔ «بازار» فقط بر اساس شاخص کل و شاخص کل (هم‌وزن) است. «واقعی» یعنی تعدیل‌شده با شاخص قیمت مصرف‌کنندهٔ مرکز آمار ایران.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514E",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

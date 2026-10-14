@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "4c4d2326b1da31e59732",
+  "position": {
+    "x": 24,
+    "y": 44,
+    "z": 1,
+    "height": 28,
+    "width": 1232,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "بازده واقعی ۱۲ ماههٔ شاخص کل فقط در ۶ ماه از ۲۵ ماه مثبت بود؛ همبستگی ماهانهٔ سهام با شاخص کل بالاست (۰٫۷۰ تا ۰٫۹۵)؛ بیشتر سهام همراه بازار بالا و پایین رفتند.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#1F4E79",
+                      "fontFamily": "Segoe UI",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

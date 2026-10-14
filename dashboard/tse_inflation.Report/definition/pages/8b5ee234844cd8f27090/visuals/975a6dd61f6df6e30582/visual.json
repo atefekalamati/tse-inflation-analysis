@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "975a6dd61f6df6e30582",
+  "position": {
+    "x": 24,
+    "y": 72,
+    "z": 2,
+    "height": 26,
+    "width": 1232,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "این ۸ سهم پراکندگی میان صنایع را نشان می‌دهند، نه بازار را. سبد هم‌وزن ۸ سهم با نگاه به گذشته انتخاب شده و راهبرد قابل اجرا نیست. شاخص‌های صنایع در این گزارش نمایش داده نمی‌شوند.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514E",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "8b5ee234844cd8f27090",
+  "displayName": "پراکندگی: ۸ سهم نمونه، نه کل بازار",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "939cc97bd3ca9b99c3dc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_series"
+              }
+            },
+            "Property": "type"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dim_series",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "type"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'stock'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'market_index'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'portfolio'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User",
+        "isLockedInViewMode": true
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "79c07acf465ebcde82ee",
+      "target": "31fef5419b5ac95208eb",
+      "type": "NoFilter"
+    },
+    {
+      "source": "79c07acf465ebcde82ee",
+      "target": "9c471ef4fcaa6429746f",
+      "type": "NoFilter"
+    },
+    {
+      "source": "79c07acf465ebcde82ee",
+      "target": "0dc91e7939d0cebe0dd4",
+      "type": "NoFilter"
+    },
+    {
+      "source": "79c07acf465ebcde82ee",
+      "target": "f00baa0967e94ae1c768",
+      "type": "NoFilter"
+    }
+  ]
+}

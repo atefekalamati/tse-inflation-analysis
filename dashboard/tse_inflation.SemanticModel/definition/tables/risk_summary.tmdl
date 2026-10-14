@@ -1,0 +1,191 @@
+table risk_summary
+	lineageTag: 7be5e75b-3ddd-5a95-9da2-892aac3e691e
+
+	column series_code
+		dataType: string
+		isHidden
+		lineageTag: 50634b52-06b0-52cf-b0e1-46b9f2fbe800
+		summarizeBy: none
+		sourceColumn: series_code
+
+		annotation SummarizationSetBy = User
+
+	column series
+		dataType: string
+		isHidden
+		lineageTag: bc30b620-a600-56d6-a5dd-98514170e414
+		summarizeBy: none
+		sourceColumn: series
+
+		annotation SummarizationSetBy = User
+
+	column type
+		dataType: string
+		isHidden
+		lineageTag: f53da5f5-1222-508d-a35a-1cceb243e00e
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = User
+
+	column months
+		dataType: int64
+		formatString: 0
+		lineageTag: f3ff507c-7c21-55ea-a80f-3903544d17d9
+		summarizeBy: none
+		sourceColumn: months
+
+		annotation SummarizationSetBy = User
+
+	column nominal_cum_3y
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 98102601-5d26-58a6-9792-8364315cf8a6
+		summarizeBy: none
+		sourceColumn: nominal_cum_3y
+
+		annotation SummarizationSetBy = User
+
+	column real_cum_3y
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 398be822-4926-5acf-a429-78f4c37ead68
+		summarizeBy: none
+		sourceColumn: real_cum_3y
+
+		annotation SummarizationSetBy = User
+
+	column nominal_cagr
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: a9d25470-b9a5-5a37-81cd-84669f817c4b
+		summarizeBy: none
+		sourceColumn: nominal_cagr
+
+		annotation SummarizationSetBy = User
+
+	column real_cagr
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: e93f0292-d07a-591b-a790-db224db1a785
+		summarizeBy: none
+		sourceColumn: real_cagr
+
+		annotation SummarizationSetBy = User
+
+	column real_vol_per_year
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 0128e795-b940-5a3b-8912-9f69c547db3e
+		summarizeBy: none
+		sourceColumn: real_vol_per_year
+
+		annotation SummarizationSetBy = User
+
+	column real_max_drawdown_peak_to_trough
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 36627cd2-4307-5c7f-89e7-c2da22aa29ff
+		summarizeBy: none
+		sourceColumn: real_max_drawdown_peak_to_trough
+
+		annotation SummarizationSetBy = User
+
+	column dd_peak
+		dataType: string
+		lineageTag: d25bd74c-efcb-512f-9249-1085e6354827
+		summarizeBy: none
+		sourceColumn: dd_peak
+
+		annotation SummarizationSetBy = User
+
+	column dd_trough
+		dataType: string
+		lineageTag: b9533498-b55b-51dd-884e-46fe4bbea12e
+		summarizeBy: none
+		sourceColumn: dd_trough
+
+		annotation SummarizationSetBy = User
+
+	column dd_recovery
+		dataType: string
+		lineageTag: 7595f160-786d-5cb8-aed5-2449a8b22965
+		summarizeBy: none
+		sourceColumn: dd_recovery
+
+		annotation SummarizationSetBy = User
+
+	column pct_months_beat_inflation
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 3ba38fbd-7d68-5f7c-8ae9-6fa4032b2043
+		summarizeBy: none
+		sourceColumn: pct_months_beat_inflation
+
+		annotation SummarizationSetBy = User
+
+	column real_worst_month_per_month
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 19e07737-d5b1-5ff3-81f1-282585307112
+		summarizeBy: none
+		sourceColumn: real_worst_month_per_month
+
+		annotation SummarizationSetBy = User
+
+	column worst_month
+		dataType: string
+		lineageTag: 269e4841-7f4f-5620-b15c-5e4051b4682f
+		summarizeBy: none
+		sourceColumn: worst_month
+
+		annotation SummarizationSetBy = User
+
+	column real_best_month_per_month
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 97241b9b-67d5-583a-807b-0cef22062fc6
+		summarizeBy: none
+		sourceColumn: real_best_month_per_month
+
+		annotation SummarizationSetBy = User
+
+	column best_month
+		dataType: string
+		lineageTag: 52f15649-2ae8-5e8e-b41c-c1b2ab58d550
+		summarizeBy: none
+		sourceColumn: best_month
+
+		annotation SummarizationSetBy = User
+
+	column real_cagr_per_unit_vol
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 9810e6fd-db85-50df-9b3d-4b98c326bb5b
+		summarizeBy: none
+		sourceColumn: real_cagr_per_unit_vol
+
+		annotation SummarizationSetBy = User
+
+	column flagged_months
+		dataType: int64
+		formatString: 0
+		lineageTag: 451409d4-9680-5682-844e-5810e3410aee
+		summarizeBy: none
+		sourceColumn: flagged_months
+
+		annotation SummarizationSetBy = User
+
+	partition risk_summary = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "risk_summary.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Renamed = Table.RenameColumns(Promoted, {{"code", "series_code"}}),
+				    Typed = Table.TransformColumnTypes(Renamed, {{"series_code", type text}, {"series", type text}, {"type", type text}, {"months", Int64.Type}, {"nominal_cum_3y", type number}, {"real_cum_3y", type number}, {"nominal_cagr", type number}, {"real_cagr", type number}, {"real_vol_per_year", type number}, {"real_max_drawdown_peak_to_trough", type number}, {"dd_peak", type text}, {"dd_trough", type text}, {"dd_recovery", type text}, {"pct_months_beat_inflation", type number}, {"real_worst_month_per_month", type number}, {"worst_month", type text}, {"real_best_month_per_month", type number}, {"best_month", type text}, {"real_cagr_per_unit_vol", type number}, {"flagged_months", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "c3181e8f8a292696b440",
+  "position": {
+    "x": 24,
+    "y": 44,
+    "z": 1,
+    "height": 28,
+    "width": 1232,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "قیمت‌ها در ۳ سال ۳٫۶۲ برابر شد؛ شاخص کل ۶٫۶٪ و شاخص هم‌وزن ۲۶٫۴٪ از قدرت خرید را از دست دادند (تجمعی ۳ ساله).",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#1F4E79",
+                      "fontFamily": "Segoe UI",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

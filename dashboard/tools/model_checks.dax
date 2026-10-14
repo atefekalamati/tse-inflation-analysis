@@ -1,0 +1,156 @@
+// 1 headline measures, evaluated with no filters
+EVALUATE
+ROW (
+    "cpi_growth_x", [CPI growth (×)],
+    "index_real_cum_3y", [Index real cum 3y],
+    "ew_real_cum_3y", [Equal-weight real cum 3y],
+    "stocks_beating", [Stocks beating inflation],
+    "closure_loss_prorated", [Closure real loss (pro-rated)],
+    "closure_loss_whole_months", [Closure real loss (whole months)]
+)
+-- next
+// 2 headline measures under the page-1 page filter (type in market_index, cpi)
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "cpi_growth_x", [CPI growth (×)],
+        "index_real_cum_3y", [Index real cum 3y],
+        "stocks_beating", [Stocks beating inflation],
+        "closure_loss_prorated", [Closure real loss (pro-rated)]
+    ),
+    dim_series[type] IN { "market_index", "cpi" }
+)
+-- next
+// 3 selected-series measures: default (no single selection) under the page-2 filter
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "code", [Selected series code],
+        "name", [Selected series],
+        "cagr", [Selected real CAGR],
+        "vol", [Selected real vol],
+        "mdd", [Selected max drawdown],
+        "months", [Selected months beating inflation],
+        "cum", [Selected real cum 3y]
+    ),
+    dim_series[type] IN { "stock", "market_index", "portfolio" }
+)
+-- next
+// 4 selected-series measures with فملی selected in the slicer
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "code", [Selected series code],
+        "name", [Selected series],
+        "cagr", [Selected real CAGR],
+        "vol", [Selected real vol],
+        "mdd", [Selected max drawdown],
+        "months", [Selected months beating inflation],
+        "cum", [Selected real cum 3y]
+    ),
+    dim_series[series_code] = "fameli"
+)
+-- next
+// 5 per-series risk measures
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_series[series_code],
+    dim_series[type],
+    "nominal_cagr", [Nominal CAGR],
+    "real_cagr", [Real CAGR],
+    "real_cum_3y", [Real cum 3y],
+    "real_vol", [Real vol per year],
+    "real_mdd", [Real max drawdown],
+    "months_beat", [Months beating inflation]
+)
+-- next
+// 6 monthly series values (growth index and rolling 12m) for the market indices and CPI
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_month[month],
+    dim_series[series_code],
+    TREATAS ( { "index_total", "index_equal_weight", "cpi" }, dim_series[series_code] ),
+    "real_growth_index", [Real growth index],
+    "nominal_growth_index", [Nominal growth index],
+    "rolling_12m", [Real return rolling 12m],
+    "real_return_month", [Real return per month]
+)
+ORDER BY dim_series[series_code], dim_month[month]
+-- next
+// 7 yearly blocks
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_series[series_code],
+    yearly_real[block],
+    yearly_real[block_fa],
+    "real_return_per_year", [Real return per year (block)]
+)
+-- next
+// 8 closure measures by series and window
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_series[series_code],
+    closure_summary[window],
+    closure_summary[window_fa],
+    "nominal", [Closure nominal],
+    "cpi_prorated", [Closure CPI (pro-rated)],
+    "real_prorated", [Closure real (pro-rated)],
+    "cpi_whole", [Closure CPI (whole months)],
+    "real_whole", [Closure real (whole months)]
+)
+-- next
+// 9 context measures
+EVALUATE
+ROW (
+    "bond_ytm", [Bond YTM],
+    "infl_avg", [Inflation 12m avg],
+    "infl_p2p", [Inflation point-to-point],
+    "real_avg", [Bond real yield (avg)],
+    "real_p2p", [Bond real yield (p2p)],
+    "source", [Bond source note],
+    "statement", [Bond conditional statement]
+)
+-- next
+// 10 row counts and relationship integrity (blank dimension rows = unmatched keys)
+EVALUATE
+ROW (
+    "dim_series", COUNTROWS ( dim_series ),
+    "dim_month", COUNTROWS ( dim_month ),
+    "monthly_long", COUNTROWS ( monthly_long ),
+    "risk_summary", COUNTROWS ( risk_summary ),
+    "yearly_real", COUNTROWS ( yearly_real ),
+    "closure_summary", COUNTROWS ( closure_summary ),
+    "correlation_long", COUNTROWS ( correlation_long ),
+    "context", COUNTROWS ( context ),
+    "unmatched_series", COUNTROWS ( FILTER ( monthly_long, ISBLANK ( RELATED ( dim_series[series_code] ) ) ) )
+        + COUNTROWS ( FILTER ( risk_summary, ISBLANK ( RELATED ( dim_series[series_code] ) ) ) )
+        + COUNTROWS ( FILTER ( yearly_real, ISBLANK ( RELATED ( dim_series[series_code] ) ) ) )
+        + COUNTROWS ( FILTER ( closure_summary, ISBLANK ( RELATED ( dim_series[series_code] ) ) ) ),
+    "unmatched_month", COUNTROWS ( FILTER ( monthly_long, ISBLANK ( RELATED ( dim_month[month] ) ) ) ),
+    "blank_real_index", COUNTROWS ( FILTER ( monthly_long, ISBLANK ( monthly_long[real_index_1402_06_eq_100] ) ) ),
+    "true_flags", COUNTROWS ( FILTER ( monthly_long, monthly_long[flag_any] = TRUE () ) )
+)
+-- next
+// 11 dim_month content and types
+EVALUATE
+TOPN ( 3, dim_month, dim_month[sort_key], ASC )
+-- next
+// 12 sector indices never reach a stock page: series visible under each page filter
+EVALUATE
+UNION (
+    SELECTCOLUMNS ( CALCULATETABLE ( VALUES ( dim_series[type] ), dim_series[type] IN { "market_index", "cpi" } ), "page", "p1", "type", dim_series[type] ),
+    SELECTCOLUMNS ( CALCULATETABLE ( VALUES ( dim_series[type] ), dim_series[type] IN { "stock", "market_index", "portfolio" } ), "page", "p2", "type", dim_series[type] ),
+    SELECTCOLUMNS ( CALCULATETABLE ( VALUES ( dim_series[type] ), dim_series[type] IN { "market_index", "stock" } ), "page", "p3", "type", dim_series[type] )
+)
+-- next
+// 13 bar colour measure per series (green above 0, red below 0, grey at 0)
+EVALUATE
+SUMMARIZECOLUMNS ( dim_series[series_code], "real_cagr", [Real CAGR], "color", [Real CAGR color] )
+-- next
+// 14 correlation heatmap values (10 x 10)
+EVALUATE
+SUMMARIZECOLUMNS (
+    correlation_long[series_a_code],
+    correlation_long[series_b_code],
+    "corr", [Correlation (real, monthly)]
+)

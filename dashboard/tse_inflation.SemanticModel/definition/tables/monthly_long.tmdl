@@ -1,0 +1,202 @@
+table monthly_long
+	lineageTag: 878d4e1c-ea7b-5ae3-aa41-03785106f91f
+
+	column month
+		dataType: string
+		isHidden
+		lineageTag: 5a04c386-dfdf-5ba3-abd7-a8e367af2cbd
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = User
+
+	column month_end_gregorian
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isHidden
+		lineageTag: 84a0e4fd-4d2c-5c88-836b-60a966c99b75
+		summarizeBy: none
+		sourceColumn: month_end_gregorian
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column series
+		dataType: string
+		isHidden
+		lineageTag: c376a291-9549-5fc5-a57b-680f88d8bc62
+		summarizeBy: none
+		sourceColumn: series
+
+		annotation SummarizationSetBy = User
+
+	column series_fa
+		dataType: string
+		isHidden
+		lineageTag: 7633d0b8-5d28-557f-b689-645b08b8fee2
+		summarizeBy: none
+		sourceColumn: series_fa
+
+		annotation SummarizationSetBy = User
+
+	column series_code
+		dataType: string
+		isHidden
+		lineageTag: 7d8b1e72-91c1-5d70-9bbb-c5de2c3ea130
+		summarizeBy: none
+		sourceColumn: series_code
+
+		annotation SummarizationSetBy = User
+
+	column type
+		dataType: string
+		isHidden
+		lineageTag: 6170950c-9954-5d20-bd6c-45d8f48ac934
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = User
+
+	column sector
+		dataType: string
+		isHidden
+		lineageTag: 260f48fd-4391-5cdb-a2f7-66b9fc4b2499
+		summarizeBy: none
+		sourceColumn: sector
+
+		annotation SummarizationSetBy = User
+
+	column usage_note
+		dataType: string
+		isHidden
+		lineageTag: 1d0c6a18-6089-5210-a140-d2a9102c6c87
+		summarizeBy: none
+		sourceColumn: usage_note
+
+		annotation SummarizationSetBy = User
+
+	column nominal_return_per_month
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: e6c6234f-943e-5a77-a5a9-17b8eb660a2b
+		summarizeBy: none
+		sourceColumn: nominal_return_per_month
+
+		annotation SummarizationSetBy = User
+
+	column real_return_per_month
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 31035a12-bcd8-595f-aa8c-c12ec52ce74e
+		summarizeBy: none
+		sourceColumn: real_return_per_month
+
+		annotation SummarizationSetBy = User
+
+	column inflation_per_month
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 137b2a62-4a21-57f8-9d2b-00fe78908094
+		summarizeBy: none
+		sourceColumn: inflation_per_month
+
+		annotation SummarizationSetBy = User
+
+	column real_return_rolling_12m
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: aebda46a-0737-5c62-8e52-60461860197a
+		summarizeBy: none
+		sourceColumn: real_return_rolling_12m
+
+		annotation SummarizationSetBy = User
+
+	column nominal_index_1402_06_eq_100
+		dataType: double
+		formatString: 0.0
+		lineageTag: 38200436-535b-5c61-8749-9d49d923d5d7
+		summarizeBy: none
+		sourceColumn: nominal_index_1402_06_eq_100
+
+		annotation SummarizationSetBy = User
+
+	column real_index_1402_06_eq_100
+		dataType: double
+		formatString: 0.0
+		lineageTag: 88e43c3c-bc34-5c10-a251-7e0a2b6d5fef
+		summarizeBy: none
+		sourceColumn: real_index_1402_06_eq_100
+
+		annotation SummarizationSetBy = User
+
+	column nominal_cum_since_1402_06
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 2e2fb92d-2d7d-553f-964b-bf4fc14ea913
+		summarizeBy: none
+		sourceColumn: nominal_cum_since_1402_06
+
+		annotation SummarizationSetBy = User
+
+	column real_cum_since_1402_06
+		dataType: double
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 65712446-167f-5f12-ae80-27de645b74f1
+		summarizeBy: none
+		sourceColumn: real_cum_since_1402_06
+
+		annotation SummarizationSetBy = User
+
+	column is_base_month
+		dataType: boolean
+		lineageTag: c1c9e590-ed03-5cdf-b1c7-06329284b7a3
+		summarizeBy: none
+		sourceColumn: is_base_month
+
+		annotation SummarizationSetBy = User
+
+	column flag_any
+		dataType: boolean
+		lineageTag: 1ca30808-6a30-5ef0-8d6d-0e1f3e522826
+		summarizeBy: none
+		sourceColumn: flag_any
+
+		annotation SummarizationSetBy = User
+
+	column flag_market_closure
+		dataType: boolean
+		lineageTag: 5d55a92f-f446-56d3-88e8-29e0bb6f2c33
+		summarizeBy: none
+		sourceColumn: flag_market_closure
+
+		annotation SummarizationSetBy = User
+
+	column flag_long_suspension
+		dataType: boolean
+		lineageTag: 00dbdeb9-66da-509e-a819-636ae52fd653
+		summarizeBy: none
+		sourceColumn: flag_long_suspension
+
+		annotation SummarizationSetBy = User
+
+	column flag_no_trade
+		dataType: boolean
+		lineageTag: 2360d745-b28d-54f5-8a77-f355d3011070
+		summarizeBy: none
+		sourceColumn: flag_no_trade
+
+		annotation SummarizationSetBy = User
+
+	partition monthly_long = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "monthly_long.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"month", type text}, {"month_end_gregorian", type date}, {"series", type text}, {"series_fa", type text}, {"series_code", type text}, {"type", type text}, {"sector", type text}, {"usage_note", type text}, {"nominal_return_per_month", type number}, {"real_return_per_month", type number}, {"inflation_per_month", type number}, {"real_return_rolling_12m", type number}, {"nominal_index_1402_06_eq_100", type number}, {"real_index_1402_06_eq_100", type number}, {"nominal_cum_since_1402_06", type number}, {"real_cum_since_1402_06", type number}, {"is_base_month", type logical}, {"flag_any", type logical}, {"flag_market_closure", type logical}, {"flag_long_suspension", type logical}, {"flag_no_trade", type logical}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

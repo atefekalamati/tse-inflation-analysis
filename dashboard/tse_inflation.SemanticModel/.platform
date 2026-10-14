@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "tse_inflation"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0499928b-043b-57fa-9334-15581e5f9fd1"
+  }
+}

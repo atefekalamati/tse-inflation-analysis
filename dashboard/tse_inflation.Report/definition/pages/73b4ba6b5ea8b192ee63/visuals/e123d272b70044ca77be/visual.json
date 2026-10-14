@@ -1,0 +1,57 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "e123d272b70044ca77be",
+  "position": {
+    "x": 1022.4,
+    "y": 104,
+    "z": 8,
+    "height": 84,
+    "width": 233.6,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Closure real loss (pro-rated)"
+                }
+              },
+              "queryRef": "_Measures.Closure real loss (pro-rated)",
+              "nativeQueryRef": "Closure real loss (pro-rated)",
+              "displayName": "زیان واقعی تعطیلی بازار تا بازگشایی (روزشمار)"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "value": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "22D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

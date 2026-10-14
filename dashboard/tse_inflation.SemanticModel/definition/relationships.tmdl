@@ -1,0 +1,19 @@
+relationship ad0e0310-97df-576d-ad29-6156c5adefaa
+	fromColumn: monthly_long.series_code
+	toColumn: dim_series.series_code
+
+relationship e35b7014-695b-5a01-9899-835559906f80
+	fromColumn: risk_summary.series_code
+	toColumn: dim_series.series_code
+
+relationship f5728e3b-2acd-5615-8a0d-27c6e18bb8e4
+	fromColumn: yearly_real.series_code
+	toColumn: dim_series.series_code
+
+relationship d37f56f4-50a3-5bb2-9592-9e2fee59f1a0
+	fromColumn: closure_summary.series_code
+	toColumn: dim_series.series_code
+
+relationship 0e58c2a5-88fb-5367-a38c-7c49768bca91
+	fromColumn: monthly_long.month
+	toColumn: dim_month.month

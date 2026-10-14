@@ -1,0 +1,221 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "6a8720000353de0c1ea9",
+  "position": {
+    "x": 24,
+    "y": 412,
+    "z": 11,
+    "height": 272,
+    "width": 1232,
+    "tabOrder": 11
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_series"
+                    }
+                  },
+                  "Property": "series_fa"
+                }
+              },
+              "queryRef": "dim_series.series_fa",
+              "nativeQueryRef": "series_fa",
+              "displayName": "سری"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "window_fa"
+                }
+              },
+              "queryRef": "closure_summary.window_fa",
+              "nativeQueryRef": "window_fa",
+              "displayName": "بازه"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "window_start"
+                }
+              },
+              "queryRef": "closure_summary.window_start",
+              "nativeQueryRef": "window_start",
+              "displayName": "از"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "window_end"
+                }
+              },
+              "queryRef": "closure_summary.window_end",
+              "nativeQueryRef": "window_end",
+              "displayName": "تا"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "nominal"
+                }
+              },
+              "queryRef": "closure_summary.nominal",
+              "nativeQueryRef": "nominal",
+              "displayName": "تغییر اسمی"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "cpi_prorated"
+                }
+              },
+              "queryRef": "closure_summary.cpi_prorated",
+              "nativeQueryRef": "cpi_prorated",
+              "displayName": "تورم (روزشمار)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "real_prorated"
+                }
+              },
+              "queryRef": "closure_summary.real_prorated",
+              "nativeQueryRef": "real_prorated",
+              "displayName": "واقعی (روزشمار، اصلی)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "cpi_whole_months"
+                }
+              },
+              "queryRef": "closure_summary.cpi_whole_months",
+              "nativeQueryRef": "cpi_whole_months",
+              "displayName": "تورم (ماه کامل)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "real_whole_months"
+                }
+              },
+              "queryRef": "closure_summary.real_whole_months",
+              "nativeQueryRef": "real_whole_months",
+              "displayName": "واقعی (ماه کامل، حساسیت)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "closure_summary"
+                    }
+                  },
+                  "Property": "comparable"
+                }
+              },
+              "queryRef": "closure_summary.comparable",
+              "nativeQueryRef": "comparable",
+              "displayName": "قابل مقایسه"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'تعطیلی بازار: شاخص‌ها و ۸ سهم نمونه (تجمعی در هر بازه؛ فولاد تا ۱۷ مرداد ۱۴۰۵ متوقف بود و قابل مقایسه نیست)'"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1A1A1A'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'right'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
