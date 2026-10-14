@@ -33,25 +33,6 @@
             }
           ]
         },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Real return rolling 12m"
-                }
-              },
-              "queryRef": "_Measures.Real return rolling 12m",
-              "nativeQueryRef": "Real return rolling 12m",
-              "displayName": "بازده واقعی ۱۲ ماهه‏"
-            }
-          ]
-        },
         "Series": {
           "projections": [
             {
@@ -68,6 +49,25 @@
               "queryRef": "dim_series.series_short_fa",
               "nativeQueryRef": "series_short_fa",
               "displayName": "سری‏"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real return rolling 12m"
+                }
+              },
+              "queryRef": "_Measures.Real return rolling 12m",
+              "nativeQueryRef": "Real return rolling 12m",
+              "displayName": "بازده واقعی ۱۲ ماهه‏"
             }
           ]
         }
@@ -518,6 +518,48 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "3503d6e723a358e2747a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_month"
+              }
+            },
+            "Property": "month_label_fa"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4b1b06a49e66e5102998",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real return rolling 12m"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f40c36d87504cb5a869b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_series"
+              }
+            },
+            "Property": "series_short_fa"
+          }
+        },
+        "type": "Categorical"
       }
     ]
   }

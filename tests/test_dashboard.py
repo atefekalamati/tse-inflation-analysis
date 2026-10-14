@@ -95,8 +95,12 @@ def _pages():
 
 
 def _filter_values(f):
-    return [v[0]["Literal"]["Value"].strip("'")
-            for v in f["filter"]["Where"][0]["Condition"]["In"]["Values"]]
+    """Values of a categorical 'In' filter; [] for the empty filter cards Desktop adds for each
+    field of a visual (no condition, nothing filtered)."""
+    cond = (f.get("filter", {}).get("Where") or [{}])[0].get("Condition", {})
+    if "In" not in cond:
+        return []
+    return [v[0]["Literal"]["Value"].strip("'") for v in cond["In"]["Values"]]
 
 
 def test_sector_indices_never_shown():
@@ -503,7 +507,7 @@ def test_matrices_no_totals_and_columns_fit():
         assert widths[row_ref] + ncol * widths[val_ref] <= v["position"]["width"] - 24, name
         fonts = {e["properties"]["fontSize"]["expr"]["Literal"]["Value"]
                  for k in ("columnHeaders", "rowHeaders") for e in o[k]}
-        assert fonts == {"9D"}
+        assert fonts <= {"8D", "9D"}            # 9pt generated; 8pt allowed (manual fix in Desktop)
 
 
 def test_heatmap_short_names_and_fills_box():

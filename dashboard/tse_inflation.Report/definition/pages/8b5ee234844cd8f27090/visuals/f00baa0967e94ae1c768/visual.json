@@ -164,7 +164,7 @@
             "rowPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "2D"
+                  "Value": "1D"
                 }
               }
             }
@@ -340,5 +340,79 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "060abf7cf7eb3b21edaf",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Months beating inflation"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "2587e95c71f169a43d0f",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real max drawdown"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "3c1192f6a003cb133a28",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real vol per year"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "523318f892389a918b6e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real CAGR"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c8048362a606c6243b25",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_series"
+              }
+            },
+            "Property": "series_short_fa"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

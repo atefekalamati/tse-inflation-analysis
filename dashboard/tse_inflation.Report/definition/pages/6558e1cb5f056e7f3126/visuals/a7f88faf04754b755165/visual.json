@@ -13,26 +13,6 @@
     "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "correlation_long"
-                    }
-                  },
-                  "Property": "series_a_short_fa"
-                }
-              },
-              "queryRef": "correlation_long.series_a_short_fa",
-              "nativeQueryRef": "series_a_short_fa",
-              "active": true,
-              "displayName": "سری‏"
-            }
-          ]
-        },
         "Columns": {
           "projections": [
             {
@@ -50,6 +30,26 @@
               "nativeQueryRef": "series_b_short_fa",
               "active": true,
               "displayName": "در برابر‏"
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "correlation_long"
+                    }
+                  },
+                  "Property": "series_a_short_fa"
+                }
+              },
+              "queryRef": "correlation_long.series_a_short_fa",
+              "nativeQueryRef": "series_a_short_fa",
+              "active": true,
+              "displayName": "سری‏"
             }
           ]
         },
@@ -81,11 +81,25 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8D"
                 }
               }
             },
             "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "autoExpand": {
               "expr": {
                 "Literal": {
                   "Value": "true"
@@ -203,7 +217,7 @@
             "rowPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "15D"
+                  "Value": "14D"
                 }
               }
             }
@@ -262,28 +276,12 @@
       ],
       "rowTotal": [
         {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
+          "properties": {}
         }
       ],
       "columnTotal": [
         {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
+          "properties": {}
         }
       ]
     },
@@ -383,5 +381,51 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "787bd974b0577d6fbafe",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "correlation_long"
+              }
+            },
+            "Property": "series_a_short_fa"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8fc14cf356cf0101f648",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "correlation_long"
+              }
+            },
+            "Property": "series_b_short_fa"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "e0852c42271ccc4ae320",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Correlation (real, monthly)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

@@ -26,15 +26,6 @@ table correlation_long
 
 		annotation SummarizationSetBy = User
 
-	column series_a_short_fa
-		dataType: string
-		lineageTag: bad127d7-ab87-5b33-8b5c-db070ab34cf5
-		summarizeBy: none
-		sourceColumn: series_a_short_fa
-		sortByColumn: series_a_order
-
-		annotation SummarizationSetBy = User
-
 	column series_a_order
 		dataType: int64
 		isHidden
@@ -70,15 +61,6 @@ table correlation_long
 
 		annotation SummarizationSetBy = User
 
-	column series_b_short_fa
-		dataType: string
-		lineageTag: b53bfa63-af0e-53e8-8485-7394596cbcf5
-		summarizeBy: none
-		sourceColumn: series_b_short_fa
-		sortByColumn: series_b_order
-
-		annotation SummarizationSetBy = User
-
 	column series_b_order
 		dataType: int64
 		isHidden
@@ -95,6 +77,24 @@ table correlation_long
 		lineageTag: b6363632-3ac3-55f2-abfb-a512286ae8e6
 		summarizeBy: none
 		sourceColumn: corr_real_return_per_month
+
+		annotation SummarizationSetBy = User
+
+	column series_a_short_fa
+		dataType: string
+		lineageTag: bad127d7-ab87-5b33-8b5c-db070ab34cf5
+		summarizeBy: none
+		sourceColumn: series_a_short_fa
+		sortByColumn: series_a_order
+
+		annotation SummarizationSetBy = User
+
+	column series_b_short_fa
+		dataType: string
+		lineageTag: b53bfa63-af0e-53e8-8485-7394596cbcf5
+		summarizeBy: none
+		sourceColumn: series_b_short_fa
+		sortByColumn: series_b_order
 
 		annotation SummarizationSetBy = User
 

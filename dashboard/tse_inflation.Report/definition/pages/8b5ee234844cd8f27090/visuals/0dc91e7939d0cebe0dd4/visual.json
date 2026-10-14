@@ -13,26 +13,6 @@
     "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_series"
-                    }
-                  },
-                  "Property": "series_short_fa"
-                }
-              },
-              "queryRef": "dim_series.series_short_fa",
-              "nativeQueryRef": "series_short_fa",
-              "active": true,
-              "displayName": "سری‏"
-            }
-          ]
-        },
         "Columns": {
           "projections": [
             {
@@ -50,6 +30,26 @@
               "nativeQueryRef": "block_fa",
               "active": true,
               "displayName": "دوره‏"
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_series"
+                    }
+                  },
+                  "Property": "series_short_fa"
+                }
+              },
+              "queryRef": "dim_series.series_short_fa",
+              "nativeQueryRef": "series_short_fa",
+              "active": true,
+              "displayName": "سری‏"
             }
           ]
         },
@@ -264,28 +264,12 @@
       ],
       "rowTotal": [
         {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
+          "properties": {}
         }
       ],
       "columnTotal": [
         {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
+          "properties": {}
         }
       ]
     },

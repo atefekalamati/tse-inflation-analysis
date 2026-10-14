@@ -277,7 +277,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بیشترین افت واقعی از اوج‏": {
+			          "بیشترین افت واقعی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -329,7 +329,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "نوسان سالانه‏": {
+			          "نوسان واقعی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -368,19 +368,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "Real cum 3y"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "واقعی ۳ ساله‏": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_measures.real_max_drawdown": {
 			      "Definition": {
@@ -392,7 +380,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "بیشترین افت‏": {
+			          "بیشترین افت واقعی‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -413,7 +401,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "ماه‌های برنده‏": {
+			          "درصد ماه‌های جلوتر از تورم‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -638,29 +626,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "series_fa"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "سری‏": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "انتخاب سری‏": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "dim_month.month_label_fa": {
 			      "Definition": {
@@ -693,7 +659,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "دورهٔ ۱۲ ماهه‏": {
+			          "دوره‏": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -879,6 +845,64 @@ cultureInfo en-US
 			          "ConceptualProperty": "comparable"
 			        }
 			      },
+			      "State": "Generated"
+			    },
+			    "correlation_long.series_a_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "correlation_long",
+			          "ConceptualProperty": "series_a_fa"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "correlation_long.series_b_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "correlation_long",
+			          "ConceptualProperty": "series_b_fa"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "dim_series.series_short_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_series",
+			          "ConceptualProperty": "series_short_fa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "سری‏": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "انتخاب سری‏": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "closure_summary.comparable_fa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "closure_summary",
+			          "ConceptualProperty": "comparable_fa"
+			        }
+			      },
 			      "State": "Generated",
 			      "Terms": [
 			        {
@@ -893,11 +917,11 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
-			    "correlation_long.series_a_fa": {
+			    "correlation_long.series_a_short_fa": {
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "correlation_long",
-			          "ConceptualProperty": "series_a_fa"
+			          "ConceptualProperty": "series_a_short_fa"
 			        }
 			      },
 			      "State": "Generated",
@@ -914,11 +938,11 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
-			    "correlation_long.series_b_fa": {
+			    "correlation_long.series_b_short_fa": {
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "correlation_long",
-			          "ConceptualProperty": "series_b_fa"
+			          "ConceptualProperty": "series_b_short_fa"
 			        }
 			      },
 			      "State": "Generated",

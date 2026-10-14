@@ -17,3 +17,4 @@ relationship d37f56f4-50a3-5bb2-9592-9e2fee59f1a0
 relationship 0e58c2a5-88fb-5367-a38c-7c49768bca91
 	fromColumn: monthly_long.month
 	toColumn: dim_month.month
+

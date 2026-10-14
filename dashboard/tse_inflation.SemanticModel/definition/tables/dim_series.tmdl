@@ -28,15 +28,6 @@ table dim_series
 
 		annotation SummarizationSetBy = User
 
-	column series_short_fa
-		dataType: string
-		lineageTag: a5009ce3-f155-5e24-8435-81227e657bf8
-		summarizeBy: none
-		sourceColumn: series_short_fa
-		sortByColumn: sort_order
-
-		annotation SummarizationSetBy = User
-
 	column type
 		dataType: string
 		lineageTag: 4b4d552a-be91-5d65-a647-1903906d4b4f
@@ -68,6 +59,15 @@ table dim_series
 		lineageTag: d1941bef-720d-564d-829a-4a6c6ebc3165
 		summarizeBy: none
 		sourceColumn: sort_order
+
+		annotation SummarizationSetBy = User
+
+	column series_short_fa
+		dataType: string
+		lineageTag: a5009ce3-f155-5e24-8435-81227e657bf8
+		summarizeBy: none
+		sourceColumn: series_short_fa
+		sortByColumn: sort_order
 
 		annotation SummarizationSetBy = User
 

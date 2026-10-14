@@ -48,6 +48,7 @@
               },
               "queryRef": "_Measures.Real vol per year",
               "nativeQueryRef": "Real vol per year",
+              "active": true,
               "displayName": "نوسان واقعی سالانه‏"
             }
           ]
@@ -359,5 +360,51 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2e554444bf7df71b0089",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_series"
+              }
+            },
+            "Property": "series_short_fa"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "131683426c9c207e753e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real vol per year"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d0e305024b7610e68886",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real CAGR"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
